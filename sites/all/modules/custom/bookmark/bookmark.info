@@ -1,0 +1,5 @@
+name = Bookmark
+description = Bookmark case studies.
+version = 7.x.1.0
+core = 7.x
+scripts[] = js/bookmark.js

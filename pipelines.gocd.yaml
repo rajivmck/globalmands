@@ -1,0 +1,54 @@
+pipelines:
+  Globalmands-Drupal-INT:
+    group: globalmands
+    materials:
+      globalmands-drupal-git:
+        git: http://githuben.intranet.mckinsey.com/svc-srv-mediaservice/globalmands.git
+    stages:
+      - deploy:
+          #approval: manual
+          clean_workspace: true
+          jobs:
+            run:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                     - -c
+                     - docker run --rm  --user $(id -u):$(id -g) --publish-all -v /opt:/opt -v /var/go/.ssh:/home/go/.ssh -v $PWD:/app -w /app registry.mckinsey.com/mck/capistrano_drupal bash -c "bundle install --deployment && bundle exec cap integration deploy:setup && bundle install --deployment && bundle exec cap integration deploy"
+
+  Globalmands-Drupal-QA:
+    group: globalmands
+    materials:
+      globalmands-drupal-git:
+        git: http://githuben.intranet.mckinsey.com/svc-srv-mediaservice/globalmands.git
+    stages:
+      - deploy:
+          #approval: manual
+          clean_workspace: true
+          jobs:
+            run:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                     - -c
+                     - docker run --rm  --user $(id -u):$(id -g) --publish-all -v /opt:/opt -v /var/go/.ssh:/home/go/.ssh -v $PWD:/app -w /app registry.mckinsey.com/mck/capistrano_drupal bash -c "bundle install --deployment && bundle exec cap qa deploy:setup && bundle install --deployment && bundle exec cap qa deploy"
+
+  Globalmands-Drupal-PROD:
+    group: globalmands
+    materials:
+      globalmands-drupal-git:
+        git: http://githuben.intranet.mckinsey.com/svc-srv-mediaservice/globalmands.git
+    stages:
+      - deploy:
+          #approval: manual
+          clean_workspace: true
+          jobs:
+            run:
+              tasks:
+                - exec:
+                    command: bash
+                    arguments:
+                     - -c
+                     - docker run --rm  --user $(id -u):$(id -g) --publish-all -v /opt:/opt -v /var/go/.ssh:/home/go/.ssh -v $PWD:/app -w /app registry.mckinsey.com/mck/capistrano_drupal bash -c "bundle install --deployment && bundle exec cap production deploy:setup && bundle install --deployment && bundle exec cap production deploy"

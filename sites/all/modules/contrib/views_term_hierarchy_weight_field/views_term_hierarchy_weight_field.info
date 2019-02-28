@@ -1,0 +1,11 @@
+name = Views term hierarchy weight field
+description = Provides a new field for Views to sort terms in hierarchical order. You can sort them too.
+core = 7.x
+package = Views
+dependencies[] = views
+
+; Information added by Drupal.org packaging script on 2018-05-10
+version = "7.x-1.8"
+core = "7.x"
+project = "views_term_hierarchy_weight_field"
+datestamp = "1525937887"

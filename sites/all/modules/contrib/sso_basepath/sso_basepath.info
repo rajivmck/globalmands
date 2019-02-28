@@ -1,0 +1,5 @@
+name = Fix for sso base path
+description = This is a fix for sso base path in ajax and autocomplete
+core = 7.x
+package = Custom
+weight = 1000

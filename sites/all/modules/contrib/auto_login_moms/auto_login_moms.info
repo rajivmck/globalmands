@@ -1,0 +1,11 @@
+name = Auto Login our moms yo!
+description = Me Mom be stylin' yo. Loggin' in the site be wailin' yo! 
+package = User interface
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2018-06-08
+version = "7.x-1.5"
+core = "7.x"
+project = "auto_login_moms"
+datestamp = "1447719540"
+

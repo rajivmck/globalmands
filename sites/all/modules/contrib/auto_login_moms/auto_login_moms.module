@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Enables scrolling to destination anchor links.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function auto_login_moms_now($username, $password)
+{
+    if(user_authenticate($username, $password))
+    {
+      $user_obj = user_load_by_name($username);
+      $form_state = array();
+      $form_state['uid'] = $user_obj->uid;      
+      user_login_submit(array(), $form_state);
+      drupal_goto("<front>");
+      return true;
+    }
+    else
+    {
+        return false;
+    }
+}

@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * Implement hook_menu().
+ */
+function bookmark_menu() {
+  $items = array();
+  $items['bookmark/add'] = array(
+    'title' => '',
+    'page callback' => 'bookmark_add',
+    'access callback' => TRUE,
+  );
+  $items['bookmark/remove'] = array(
+    'title' => '',
+    'page callback' => 'bookmark_remove',
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+/*
+ * Bookmark add
+ */
+function bookmark_add(){
+  if($_POST['nid']){
+    global $user;
+    $nid = $_POST['nid'];
+    $query = db_insert('bookmark')
+      ->fields(array(
+        'nid' => $nid,
+        'uid' => $user->uid,
+      ))
+      ->execute();
+    $output = array('result' => 'done');
+  }
+  
+  return drupal_json_output($output);
+}
+
+/*
+ * Bookmark add
+ */
+function bookmark_remove(){
+  if($_POST['nid']){
+    global $user;
+    $nid = $_POST['nid'];
+    $query = db_delete('bookmark')
+      ->condition('uid', $user->uid)
+      ->condition('nid', $nid)
+      ->execute();
+    $output = array('result' => 'done');
+  }
+  
+  return drupal_json_output($output);
+}
+
+/*
+ * Bookmark get item
+ */
+function bookmark_get_item($uid, $nid){
+  $items = db_select('bookmark', 'b')
+    ->fields('b', array('nid'))
+    ->condition('b.uid', $uid)
+    ->condition('b.nid', $nid)
+    ->execute()
+    ->fetchField();
+  
+  return $items;
+}
+
+/*
+ * Bookmark get items
+ */
+function bookmark_get_items($uid){
+  $results = FALSE;
+  $items = db_select('bookmark', 'b')
+    ->fields('b', array('nid'))
+    ->condition('b.uid', $uid)
+    ->execute()
+    ->fetchAll();
+  
+  foreach ($items as $item) {
+    $results[] = $item->nid;
+  }
+  
+  $output = implode('+', $results);
+  
+  return $output;
+}

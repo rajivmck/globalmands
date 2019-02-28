@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="237px" height="243px" viewBox="0 0 237 243" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/download</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="M_S_LOP_Case_Studies" transform="translate(-538.000000, -1059.000000)">
+            <rect fill="#FFFFFF" x="0" y="0" width="1800" height="1455"></rect>
+            <g id="Group-4-Copy-2" transform="translate(110.000000, 1141.000000)" stroke="#002A60">
+                <g id="Rectangle">
+                    <g id="icon/download" transform="translate(529.000000, 18.000000)">
+                        <g id="Group-18" transform="translate(0.000000, -0.000000)">
+                            <polyline id="Path-2-Copy-2" stroke-width="2" stroke-linejoin="round" transform="translate(17.888569, 23.787234) rotate(-270.000000) translate(-17.888569, -23.787234) " points="12.3992074 13.1951288 23.3779308 24.1185452 12.3992074 34.3793393"></polyline>
+                            <path d="M17.5,0.45358699 L17.5,27.5626965" id="Line-3-Copy-2" stroke-width="2"></path>
+                            <path d="M0.460526316,37.9680851 L34.589224,37.9680851" id="Line" stroke-width="2" stroke-linecap="square"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

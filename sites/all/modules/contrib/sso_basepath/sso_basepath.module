@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * Implementation of hook_menu().
+ */
+function sso_basepath_menu() {
+   
+   $items = array();
+
+   $items['admin/config/ssobasepath'] = array(
+    'title' => 'SSO Base Path settings',
+    'description' => 'To check if it is sso url or not and do some settings based on that',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sso_basepath_admin'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+   );
+
+   return $items;
+}
+
+/**
+ * Form Structure
+ */
+function sso_basepath_admin() {
+  global $base_path;
+
+  $form = array();
+
+  $form['sso_config_domain'] = array(
+      '#title' => 'Main domain URL',
+      '#description' => 'Non sso domain for this website eg: http://devhome.intranet.mckinsey.com',
+      '#type' => 'textfield',
+      '#required' => TRUE,
+      '#default_value' => variable_get('sso_config_domain', 'http://devhome.intranet.mckinsey.com'),
+  );
+  $form['sso_config_base_path'] = array(
+      '#title' => 'Base Path',
+      '#description' => 'Non sso base path for this website eg: /globalcomm/[projectname]/',
+      '#type' => 'textfield',
+      '#required' => TRUE,
+      '#default_value' => variable_get('sso_config_base_path', '/globalcomm/sjod7/'),
+  );
+  $form['sso_config_check_header'] = array(
+      '#title' => 'Header Var',
+      '#description' => '$_SERVER variable name which will make difference between sso or non sso url.',
+      '#type' => 'textfield',
+      '#required' => TRUE,
+      '#default_value' => variable_get('sso_config_check_header', 'HTTP_PERSON_ID'),
+  );
+  $form['sso_config_current_base_path'] = array(
+    '#type' => 'markup',
+    '#markup' => 'Your current $base_path variable points to: <b>' . $base_path . '</b>',
+  );
+
+  return system_settings_form($form);
+}
+
+
+/* check if sso or non sso url */
+function sso_basepath_sso_or_not() {
+  $var = variable_get('sso_config_check_header');
+  if(isset($_SERVER[$var])){
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}

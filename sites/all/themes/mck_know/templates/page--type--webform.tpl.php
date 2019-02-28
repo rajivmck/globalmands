@@ -1,0 +1,178 @@
+<?php
+
+/**
+ * @file
+ * Default theme implementation to display a single Drupal page.
+ *
+ * The doctype, html, head and body tags are not in this template. Instead they
+ * can be found in the html.tpl.php template in this directory.
+ *
+ * Available variables:
+ *
+ * General utility variables:
+ * - $base_path: The base URL path of the Drupal installation. At the very
+ *   least, this will always default to /.
+ * - $directory: The directory the template is located in, e.g. modules/system
+ *   or themes/bartik.
+ * - $is_front: TRUE if the current page is the front page.
+ * - $logged_in: TRUE if the user is registered and signed in.
+ * - $is_admin: TRUE if the user has permission to access administration pages.
+ *
+ * Site identity:
+ * - $front_page: The URL of the front page. Use this instead of $base_path,
+ *   when linking to the front page. This includes the language domain or
+ *   prefix.
+ * - $logo: The path to the logo image, as defined in theme configuration.
+ * - $site_name: The name of the site, empty when display has been disabled
+ *   in theme settings.
+ * - $site_slogan: The slogan of the site, empty when display has been disabled
+ *   in theme settings.
+ *
+ * Navigation:
+ * - $main_menu (array): An array containing the Main menu links for the
+ *   site, if they have been configured.
+ * - $secondary_menu (array): An array containing the Secondary menu links for
+ *   the site, if they have been configured.
+ * - $breadcrumb: The breadcrumb trail for the current page.
+ *
+ * Page content (in order of occurrence in the default page.tpl.php):
+ * - $title_prefix (array): An array containing additional output populated by
+ *   modules, intended to be displayed in front of the main title tag that
+ *   appears in the template.
+ * - $title: The page title, for use in the actual HTML content.
+ * - $title_suffix (array): An array containing additional output populated by
+ *   modules, intended to be displayed after the main title tag that appears in
+ *   the template.
+ * - $messages: HTML for status and error messages. Should be displayed
+ *   prominently.
+ * - $tabs (array): Tabs linking to any sub-pages beneath the current page
+ *   (e.g., the view and edit tabs when displaying a node).
+ * - $action_links (array): Actions local to the page, such as 'Add menu' on the
+ *   menu administration interface.
+ * - $feed_icons: A string of all feed icons for the current page.
+ * - $node: The node object, if there is an automatically-loaded node
+ *   associated with the page, and the node ID is the second argument
+ *   in the page's path (e.g. node/12345 and node/12345/revisions, but not
+ *   comment/reply/12345).
+ *
+ * Regions:
+ * - $page['help']: Dynamic help text, mostly for admin pages.
+ * - $page['highlighted']: Items for the highlighted content region.
+ * - $page['content']: The main content of the current page.
+ * - $page['sidebar_first']: Items for the first sidebar.
+ * - $page['sidebar_second']: Items for the second sidebar.
+ * - $page['header']: Items for the header region.
+ * - $page['footer']: Items for the footer region.
+ *
+ * @see template_preprocess()
+ * @see template_preprocess_page()
+ * @see template_process()
+ * @see html.tpl.php
+ *
+ * @ingroup themeable
+ */
+?>
+<?php $node = node_load(274); ?>
+<div class="page-class case-wrapper <?php //echo $node->field_theme['und'][0]['value']; ?>">
+<a name="top"></a>
+<header class="global-header global-header-r3 navigation-r3 custom-menu" role="banner">
+  <a aria-hidden="false" aria-label="Toggle Menu" class="skip-main" href="#0" tabindex="0">Skip to main content</a>
+  <button class="menu-toggle" role="button" type="button">
+    <div class="menu-hamburger">
+      <span class="visually-hidden">Toggle Menu</span>
+    </div>
+  </button>
+  <div class="hamburger-curtain"></div>
+  <div class="logo-container">
+    <?php if (isset($node->field_full_image)) { ?>
+      <a class="names cpny-logo alone" href="#" style="background-image: url('<?php echo $bgurl ?>');" ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
+    <?php }
+    else { ?>
+      <a class="names cpny-logo alone" href="#"  ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
+<?php } ?>
+  </div><!--END NAVIGATION MENU-->
+  <div class="site-name">
+    <?php print (variable_get('site_name', '')); ?>
+  </div>
+  <div class="search-box">
+    <div class="search-box-inner">
+      <?php //print drupal_render(drupal_get_form('search_block_form')); 
+
+      ?>
+    </div>
+  </div>
+</header>
+
+<?php if (!empty($node->field_hero_images)): ?>
+
+    <?php //$key = key($node->field_hero_images) ?>
+    <?php //$paragraph = reset($node->field_hero_images[$key]['entity']['paragraphs_item']) ?>
+    <?php
+
+      $p = $node->field_hero_images[LANGUAGE_NONE][0]['value'];
+      $paragraphEntity = entity_load("paragraphs_item",array($p));
+      $paragraph = field_attach_view("paragraphs_item", $paragraphEntity[$p], "full", $langcode = $GLOBALS['language']->language, $options = array());
+      $url = isset($paragraph['field_image'][0]['#item']['uri']) ? file_create_url($paragraph['field_image'][0]['#item']['uri']) : '';
+      $contentColor = isset($paragraph['field_content_font_color']) ? $paragraph['field_content_font_color'][0]['#markup'] : "";
+      $mainHeadingColor = isset($paragraph['field_main_heading_font_color']) ? $paragraph['field_main_heading_font_color'][0]['#markup'] : "";
+      $headline = isset($paragraph['field_hero_headline']) ? $paragraph['field_hero_headline'][0]['#markup'] : "";
+      $bluebanner = isset($paragraph['field_blue_banner_description']) ? $paragraph['field_blue_banner_description'][0]['#markup'] : "";
+    ?>
+
+    <div class="hero-featured  hero-main_0_hero_0 theme-hfc" data-module="ParallaxFactory">
+      <div class="parallax-container selection-banner" style="transform: translate3d(0px, 0px, 0px); background-image: url(<?php echo $url ?>)"></div>
+
+      <div class="section-inner-wrapper">
+          <h1><?php print $headline;?></h1>
+      </div>
+      <div class="blue-bar">
+          <div class="section-inner-wrapper">
+              <div class="col-12">
+                  <div class="valign-wrapper">
+                    <div><img src="./sites/all/themes/mck_know/images/growth-1.png"/> </div>
+                    <div><?php print $bluebanner;?> </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+<?php endif ?>
+  <div class="top-content-wrapper">
+    <div class="section-inner-wrapper">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 content">
+          <?php print theme('custom_main_menu'); ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-wrapper case">
+  
+    <section class="full-text-section case-box section-inner-wrapper">
+      <div class="page-wrapper">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 content">
+            <?php echo render($page['content']) ?>
+          </div>
+        
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<footer class="global-footer">
+  <section class="footer">
+    <div class="footer-inner">
+      <div class="footer-section">
+        <div class="logo-container">
+          <a href="http://www.mckinsey.com" class="mck-footer__logo">McKinsey &amp; Company | © 2018</a>
+          <div class="footer-text"><?php //echo $node->field_title["und"][0]["value"]; ?></div>
+          <?php //print render($page['footer'])  ?>
+        </div>
+        <div class="footer-links">
+          <?php //print render($page['navigation']); ?>
+        </div>
+      </div>
+    </div>
+  </section>
+</footer>
