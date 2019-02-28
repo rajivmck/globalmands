@@ -118,6 +118,9 @@ $ArrayExts = array("pptx", "ppt");
   hide($content['field_industry_sector']);
   hide($content['field_region']);
   hide($content['field_related_materials']);
+  hide($content['field_industries']);
+  hide($content['field_regions']);
+  hide($content['field_case_link']);
 
   /*$referer = explode('/', $_SERVER['HTTP_REFERER']);
   $class = !in_array('front', $referer) ? 'blue' : '';*/
