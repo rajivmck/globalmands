@@ -97,8 +97,10 @@
   </div>
   <div class="search-box">
     <div class="search-box-inner">
-      <?php print drupal_render(drupal_get_form('search_block_form')); 
-
+      <?php //print drupal_render(drupal_get_form('search_block_form')); 
+        $block =block_load('block',1);
+        $output = drupal_render(_block_get_renderable_array(_block_render_blocks(array($block))));        
+        print $output;
       ?>
     </div>
   </div>

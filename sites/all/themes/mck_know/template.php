@@ -158,6 +158,13 @@ function mck_know_form_alter(&$form, &$form_state, $form_id) {
       $form['actions']['submit']['#value'] = 'Submit';
       $form['comment_body'][LANGUAGE_NONE][0]['#attributes']['placeholder'] = 'Add to the conversation now...';
       break;
+    case "views_exposed_form":
+      if ($form['#id'] == 'views-exposed-form-search-m-s-page')  {
+        if (isset($form_state['input']['keyword'])) {
+          $form_state['input']['search_block_form'] = $form_state['input']['keyword'];
+        }
+      }
+      break;
   }
 }
 

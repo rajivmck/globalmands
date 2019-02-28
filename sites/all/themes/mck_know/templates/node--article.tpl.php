@@ -136,7 +136,12 @@ $ArrayExts = array("pptx", "ppt");
             <?php else: ?>
               <span class="star-icon" data-nid="<?php print $node->nid; ?>">Save</span>
             <?php endif; ?>
-              <a href="mailto:email@mckinsey.com&subject=Sharing '<?php print $title ?>' from Global M&S" class="share">Share</a>
+              <!--<a href="mailto:email@mckinsey.com&subject=Sharing '<?php //print $title ?>' from Global M&S" class="share">Share</a>-->
+              <?php if (isset($field_case_link[0]['value'])): ?>
+                <a href="mailto:<?php print $field_case_link[0]['value']; ?>" class="share">Share</a>
+              <?php else: ?>
+                <a href="mailto:email@mckinsey.com&subject=Sharing '<?php print $title ?>' from Global M&S" class="share">Share</a>
+              <?php endif; ?>
               <a href="<?php print file_create_url($field_download[0]['uri']); ?>" class="download" download>Download (<?php print format_size($field_download[0]['filesize']); ?>)</a>
           </div>
   </div>
