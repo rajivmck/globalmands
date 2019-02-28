@@ -121,10 +121,19 @@
   </div>
 </div> 
 
+<?php 
+  if (isset($_GET['search_block_form'])) {
+    $default_value = $_GET['search_block_form'];
+  }
+  if (isset($_GET['keyword'])) {
+    $default_value = $_GET['keyword'];
+  }
+?>
+
 <div id="edit-keyword-wrapper" class="views-exposed-widget views-widget-filter-keys">
-               <div class="views-widget">
-                  <div class="form-item form-type-textfield form-item-keyword">
-                      <input placeholder="Enter keyword and press Enter" title="" type="text" id="edit-keyword" name="search_block_form" value="<?php print($_GET['search_block_form']) ?>" size="85" maxlength="128" class="form-text required ctools-auto-submit-processed">
-                  </div>
-              </div>
-            </div>
+   <div class="views-widget">
+      <div class="form-item form-type-textfield form-item-keyword">
+          <input placeholder="Enter keyword and press Enter" title="" type="text" id="edit-keyword" name="search_block_form" value="<?php print $default_value ?>" size="85" maxlength="128" class="form-text required ctools-auto-submit-processed">
+      </div>
+  </div>
+</div>
