@@ -43,17 +43,51 @@
 
 
   
-    <?php
-    $block = module_invoke('views', 'block_view', '-exp-lop_toolkit-page');
-         print render($block['content']);
-       
+ <div class="row count">
+      <div class="col-7">
+        <div class="result-count">
+          <span><?php print $view->total_rows; ?></span> LOP Toolkits
+        </div>
 
-    ?>
+      </div><!--col-->
+      <div class="col-5">
+                <div class="sort-title float-right">
+                            <?php
+                              $block = module_invoke('views', 'block_view', '-exp-lop_toolkit-page');
+                              print render($block['content']);
+                            ?>
+                        
 
-  <div class="result-count">
-    <span><?php print $view->total_rows; ?></span> LOP Toolkit
-  </div>
+                    </div>
 
+      </div>
+      <div class="offset-xl-5 col-xl-7 offset-lg-4 col-lg-8">
+        <div class="info-box">
+            <div class="row">
+               <div class="col-md-4 col-sm-6">
+               </div>
+              <div class="col-md-4 col-sm-6">
+                    <a href="https://home.intranet.mckinsey.com/practicespaces/ps/marketing-sales/Pricing-Compass.html" target="_blank"><div class="testimonial item"><div class="valign-wrapper"><div><img src="./sites/all/themes/mck_know/images/pricing-1.png"/></div><div>Pricing Compass</div></div>
+                  </div></a>
+              </div>
+                 <div class="col-md-4 col-sm-6">
+                       <a href="https://home.intranet.mckinsey.com/practicespaces/ps/marketing-sales/Sales-Channel-Compass.html" target="_blank"> <div class="growth item"><div class="valign-wrapper"><div><img src="./sites/all/themes/mck_know/images/sales-1.png"/></div><div>Sales Compass</div></div></div></a>
+                  </div>
+              <!--   <div class="col-md-4 col-sm-6">
+                <a href="../globalms/videos">  
+                    <div class="testimonial item">
+                        <div class="valign-wrapper">
+                            <div><img src="./sites/all/themes/mck_know/images/testimonial-icon.png" style="margin-top:5px"/></div>
+                            <div>Testimonial Available</div>
+                        </div>
+                    </div>
+                </a>
+                </div> -->
+            </div>
+            
+            </div>
+        </div><!--col-->
+      </div><!--row-->
   <?php if ($exposed): ?>
     <div class="view-filters">
       <?php print $exposed; ?>

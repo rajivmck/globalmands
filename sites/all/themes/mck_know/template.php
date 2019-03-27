@@ -152,6 +152,7 @@ function mck_know_form_alter(&$form, &$form_state, $form_id) {
       } else {
         $form['actions']['submit']['#src'] = drupal_get_path('theme', 'mck_know') . '/images/search.png';
       }*/
+       $form['#attributes']['onsubmit'] = "if(this.search_block_form.value=='Search'){ alert('Please enter a search keyword'); return false; }";
       $form['actions']['submit']['#src'] = drupal_get_path('theme', 'mck_know') . '/images/search.png';
       break;
     case "comment_node_article_form":

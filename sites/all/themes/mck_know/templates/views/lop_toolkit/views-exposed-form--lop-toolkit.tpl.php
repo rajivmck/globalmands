@@ -28,10 +28,9 @@
   ?>
 <?php endif; ?>
 
-<div class="categories-filters">
+<div class="top-filters">
   <?php foreach ($widgets as $id => $widget): ?>
-     <?php if ($id == 'filter-field_categories_tid'): ?>
-     
+    <?php if ($id == 'filter-field_type_tid'): ?>
       <div id="<?php print $widget->id; ?>-wrapper" class="views-exposed-widget views-widget-<?php print $id; ?>">
         <?php if (!empty($widget->label)): ?>
           <label for="<?php print $widget->id; ?>">
@@ -52,71 +51,23 @@
           </div>
         <?php endif; ?>
       </div>
-     
     <?php endif; ?>
   <?php endforeach; ?>
 </div>
 
-<div class="row" style="width:100%">
-    <div class="col-lg-5 col-md-12">
-        <div class="top-filters">
-          <?php foreach ($widgets as $id => $widget): ?>
-
-            <?php if ($id == 'filter-field_type_tid'): ?>
-              <div id="<?php print $widget->id; ?>-wrapper" class="views-exposed-widget views-widget-<?php print $id; ?>">
-                <?php if (!empty($widget->label)): ?>
-                  <label for="<?php print $widget->id; ?>">
-                    <?php print $widget->label; ?>
-                  </label>
-                <?php endif; ?>
-                <?php if (!empty($widget->operator)): ?>
-                  <div class="views-operator">
-                    <?php print $widget->operator; ?>
-                  </div>
-                <?php endif; ?>
-                <div class="views-widget">
-                  <?php print $widget->widget; ?>
-                </div>
-                <?php if (!empty($widget->description)): ?>
-                  <div class="description">
-                    <?php print $widget->description; ?>
-                  </div>
-                <?php endif; ?>
-              </div>
-            <?php endif; ?>
-          <?php endforeach; ?>
-        </div>
+<?php if (!empty($sort_by)): ?>
+  <div class="sort-by-wrapper">
+    <div class="sort-label">Sort by</div>
+    <div class="views-exposed-widget views-widget-sort-by">
+      <div class="sort-by-value"></div>
+      <?php print $sort_by; ?>
     </div>
-    <div class="col-lg-7 col-md-12">
-        <div class="row info-box">
-               <div class="col-md-4" style="margin-bottom:0;margin-top: 14px;">
-                    <div class="testimonial item"><div class="valign-wrapper"><div><img src="./sites/all/themes/mck_know/images/pricing-1.png"/></div><div>Pricing Compass</div></div>
-                  </div>
-                  </div>
-                 <div class="col-md-4" style="margin-bottom:0;margin-top: 14px;">
-                        <div class="growth item"><div class="valign-wrapper"><div><img src="./sites/all/themes/mck_know/images/sales-1.png"/></div><div>Sales Compass</div></div></div>
-                  </div>
-                <div class="col-md-4" style="margin-bottom:0;margin-top: 4px;">
-                  <?php if (!empty($sort_by)): ?>
-                    <div class="sort-by-wrapper">
-                      <div class="sort-label">Sort by</div>
-                      <div class="views-exposed-widget views-widget-sort-by">
-                        <div class="sort-by-value"></div>
-                        <?php print $sort_by; ?>
-                      </div>
-                      <div class="views-exposed-widget views-widget-sort-order">
-                        <?php print $sort_order; ?>
-                      </div>
-                    </div>
-                  <?php endif; ?>
-                </div>
-
-        </div>
-
-
+    <div class="views-exposed-widget views-widget-sort-order">
+      <?php print $sort_order; ?>
     </div>
-  
-</div><!--v-->
+  </div>
+<?php endif; ?>
+
 
 <div class="viewport">
   <!--<div class="clear-all">

@@ -5,6 +5,7 @@
 
      $("#search-block-form").attr("action", "search-mr?keyword=");
      $("#search-block-form").attr("method", "get");
+     $('#search-block-form input[type="hidden"]').remove();
 
       $('.compass:contains("Pricing Compass")').parent().addClass("pricing-compass");
       $('.compass:contains("Sales Compass")').parent().addClass("sales-compass");
@@ -272,7 +273,7 @@
       });
       
       /*-------Openn video in popup------*/
-      $('a.video-popup',).magnificPopup({
+      $('a.video-popup').magnificPopup({
         disableOn: 700,
         type: 'iframe',
         mainClass: 'mfp-fade',
@@ -301,4 +302,22 @@
     }
   };
 })(jQuery);
+if ($("body").hasClass("case-studies")) {
+    $(window).on('load', function() {
+      var now, lastDatePopupShowed;
+      now = new Date();
 
+      if (localStorage.getItem('lastDatePopupShowed') !== null) {
+        lastDatePopupShowed = new Date(parseInt(localStorage.getItem('lastDatePopupShowed')));
+      }
+
+      if (((now - lastDatePopupShowed) >= (15 * 86400000)) || !lastDatePopupShowed) {
+        $.magnificPopup.open({
+          items: { src: 'http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4' },
+          type: 'iframe'
+        }, 0);
+
+        localStorage.setItem('lastDatePopupShowed', now);
+      }
+    });
+}

@@ -71,41 +71,72 @@
  *
  * @ingroup themeable
  */
+
 ?>
+<header class="global-header global-header-r3 navigation-r3 custom-menu" role="banner">
+  <a aria-hidden="false" aria-label="Toggle Menu" class="skip-main" href="#0" tabindex="0">Skip to main content</a>
+   <button class="menu-toggle" role="button" type="button">
+  <div class="menu-hamburger">
+    <span class="visually-hidden">Toggle Menu</span>
+  </div>
+</button>
+<section class="hamburger-nav" data-module="HamburgerNav">
+  <div class="main-nav-inner">
+    <a class="mck-logo-icon" href="#<?php // echo url('<front>') ?>" tabindex="-1" style="display:  none">
+      <span class="visually-hidden">McKinsey &amp; Company Home</span>
+    </a>
+    <nav class="main-nav" data-level="-menu-level0" role="menu">
+      <ul class="nav-list nav-group-left">
+           <?php echo theme('slide_menu') ?>    
+    </ul>
+    </nav>
+  </div>
+</section>
 
-<header class="global-header global-header-r3 navigation-r3" role="banner">
-      <a aria-hidden="false" aria-label="Toggle Menu" class="skip-main" href="#0" tabindex="0">Skip to main content</a>
-      <?php echo theme('slide_menu') ?>
+<div class="hamburger-curtain"></div>
 
-      <section class="top-bar">
-        <div class="top-bar-inner">
 
-          
 
-          <div class="search-nav" data-module="SearchNav,SearchSuggestions">
-              <div class="click-search"></div>
-            <span class="search-nav-input-icon r2-search"></span> <input aria-live="polite" class="search-nav-input" placeholder="Type to search..." title="Search" value=""> <button class="search-nav-submit" name="search" title="Search" type="button">Search</button> <button class="search-nav-button-close desktop r2-close" type="button"><span class="visually-hidden">Toggle search field</span></button>
-            <ul class="search-nav-suggestions span-full-width"></ul>
-          </div>
+  <div class="top-bar">
+    <div class="top-bar-inner">
+        <div class="top-bar-container">
+            <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name-desktop -show"><?php print $site_name;?></a>
+        
+          <?php print theme('custom_main_menu'); ?>
+          <?php print theme('search'); ?>
         </div>
-        <div class="search-box">
-          <div class="search-box-inner">
-            <?php //print drupal_render(drupal_get_form('search_block_form')); 
-                  $block =block_load('block',1);
-                     $output = drupal_render(_block_get_renderable_array(_block_render_blocks(array($block))));        
-                     print $output;
-            ?>
+          <!--   <div class="valign-wrapper">
+          <div>
+               <a href="feedback" class="feedback-btn">Feedback</a>
           </div>
-        </div>
-      </section>
-      <div class="logo-container">
-          <a class="names cpny-logo alone" href="<?php echo url('<front>') ?>"><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
-        <span><a href="<?php echo url('<front>') ?>"><span class="mck-header__portal-title">Home</span></a><?php print theme('custom_main_menu'); ?></span>
-      </div><!--END NAVIGATION MENU-->
+          <div>
+         
+              <a href="http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4" class="video-popup video-button">Click to view welcome video</a>
+            </div>
+          </div> -->
 
+    </div>
+  </div>
+  <div class="logo-container">
+    <?php if (isset($node->field_full_image)) { ?>
+      <a class="names cpny-logo alone" href="#" style="background-image: url('<?php echo $bgurl ?>');" ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
+        <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name half"><?php print $site_name;?></a>
+    <?php }
+    else { ?>
+      <a class="names mck-logo-icon alone" href="#"  ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
+       <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name half"><?php print $site_name;?></a>
+      
+<?php } ?>
+  </div><!--END NAVIGATION MENU-->
+  <div class="search-box">
+    <div class="search-box-inner">
+      <?php print drupal_render(drupal_get_form('search_block_form')); 
 
-     
-    </header>
+      ?>
+    </div>
+  </div>
+  
+</header>
 <?php echo render($page['content']) ?>
 
 <?php //print render($messages) ?>

@@ -1,5 +1,29 @@
-
+@media screen and (min-width: 73.75em){
+	.search-box .form-actions input.form-submit {
+		height: 90px;
+		width: 87px;
+	}
+}
 @media (min-width: 768px) {
+	.doc-body{
+		min-height:150px
+	}
+	.newsletter-image{
+		min-height: 	150px
+	}
+	.col-lg-8 .col-lg-4 .bottom-box img {
+	    margin-top: -35px;
+	}
+	.file-icon{
+		text-align:center;	
+	}
+
+	.case-wrapper .doc-title, .case-wrapper .doc-title a{
+		font-size: 	.9rem
+	}
+	.front-wrapper .doc-title, .case-wrapper .doc-title{
+		width: 	100%
+	}
 	.popup-wrapper .popup-content,.popup-wrapper .popup-sidebar{
 		width: 	100%
 	}
@@ -11,20 +35,14 @@
 	.bottom-box .valign-wrapper > div:nth-child(1){
 		width: 100%
 	}
-	.bottom-box .valign-wrapper{
-		display: 	block
-	}
+	
 	.top-filters{
 		margin-bottom: 	0
 	}
-	.navigation-r3 .menu-toggle{
+/*	.navigation-r3 .menu-toggle{
 		display:block;
-	}
-	.navigation-r3 .logo-container .mck-logo-icon.alone {
-	    -webkit-transform: translateY(11px);
-	    -ms-transform: translateY(11px);
-	    transform: translateY(11px);
-	}
+	}*/
+	
 	.mck-header__portal-title {
 	    margin-top: 0px;
 	    display: none;
@@ -32,60 +50,11 @@
 	.doc-title {
 	    font-size: 1.2rem;
 	}
-   .navigation-r3 .menu-toggle {
+/*   .navigation-r3 .menu-toggle {
       display: none;
-   }
+   }*/
 
-	.global-primary-nav-r3 {
-		display: block;
-	}
 
-	.global-primary-nav-r3.show-nav {
-	    visibility: visible;
-	    opacity: 1;
-	    filter: alpha(opacity=100);
-	}
-
- .navigation-r3 {
-        height: 80px
-    }
-    .navigation-r3 .top-bar {
-        width: 100%;
-        float: none;
-        display: block
-    }
-    .navigation-r3 .top-bar .top-bar-inner {
-        height: 80px
-    }
-    .navigation-r3 .menu-toggle {
-        width: 80px;
-        height: 80px
-    }
-    .navigation-r3 .logo-container {
-        position: absolute;
-        width: auto;
-        top: 0;
-        height: 80px;
-        min-width: 200px;
-        padding: 14px 28px 14px 108px
-    }
-    .navigation-r3 .logo-container .mck-logo-icon:before {
-        font-size: 20px
-    }
-    .navigation-r3 .logo-container .section-name {
-        font-size: 15px
-    }
-    .navigation-r3 .nav-right .search-nav-button,
-    .navigation-r3 .nav-right .search-nav-button-close {
-        width: 56px
-    }
-    .navigation-r3 .nav-right .search-nav-button {
-        height: 80px;
-        vertical-align: middle
-    }
-	.navigation-r3 .logo-container{
-		padding-left: 10px;
-	}
 
 	.medium-hero.careers.up .body{
 		width: 70%;
@@ -106,8 +75,6 @@
 
 	/*homepage*/
 
-	.navigation-r3 .hamburger-nav .main-nav-inner .mck-logo-icon {
-		display: none;}
 
 	.owl-carousel:after {
 	    height: 180px;
@@ -195,6 +162,21 @@
 	}
 }
 @media (min-width: 1024px) {
+	.doc-body{
+		min-height: 100px;
+	}
+	.newsletter-image{
+		min-height: 	200px
+	}
+	.col-lg-8 .col-lg-4 .bottom-box img {
+	    margin-top: 5px;
+	}
+	.case-wrapper .doc-title, .case-wrapper .doc-title a{
+		font-size: 	.9rem
+	}
+	.front-wrapper .doc-title, .case-wrapper .doc-title{
+		width: 	100%
+	}
 	.top-filters{
 		margin-bottom: 0px;
 	}
@@ -202,12 +184,9 @@
 	    margin-top: 11px;
 	    display: block;
 	}
-	.navigation-r3 .menu-toggle{
+	/*.navigation-r3 .menu-toggle{
 		display:none;
-	}
-	.navigation-r3 .logo-container{
-		padding: 14px 28px 14px 40px;
-	}
+	}*/
 	/*.-recruitingchannel .four-up .item{
 	 	width: 30%;
 	}*/
@@ -215,11 +194,7 @@
 		margin-top:11px;
 		display:block;
 	}
-	.navigation-r3 .logo-container .mck-logo-icon.alone {
-	    -webkit-transform: translateY(3px);
-	    -ms-transform: translateY(3px);
-	    transform: translateY(3px);
-	}
+
 	.viewport .filter-wrapper .form-type-select{
 		padding: 0 0 10px 20px;
 	}
@@ -327,17 +302,7 @@
 	/* about page ends*/
 }
 
-@media screen and (min-width: 1180px){
 
-   .navigation-r3 .logo-container {
-      padding-left: 20px;
-      min-width: 80px;
-   }
-
-   .top-bar-inner .nav-list {
-       padding-left: 320px!important;
-   }
-}
 
 @media (min-width: 1250px) {
 	.mfp-iframe-holder .mfp-content{
@@ -365,6 +330,51 @@
 	}
 
 	@media (max-width: 767px){
+		.global-footer{
+			padding-top:0;
+		}
+		.global-footer .footer-inner{
+			padding:0;
+		}
+		.navigation-r3 .hamburger-nav .main-nav{
+			min-height: 	100vh
+		}
+		.filters-outer{
+			margin-top:0;
+		}
+		.view-resources 
+		{
+			padding:0 15px;
+		}
+		.gearbox{
+			padding: 10px 15px;
+		}
+		.right-sidebar{
+			padding:0;
+		}
+		.row .right-sidebar{
+			margin-top:0;
+		}
+		.search-box .form-actions input.form-submit {
+			display: none
+		}
+		.cpny-logo{
+			width: 	155px
+		}
+		.global-header .site-name {
+		    top: 9px;
+		    left:185px;
+		}
+		.feedback-btn{
+			margin:0 10px 0 0;
+		}
+		/*.navigation-r3 .menu-toggle{
+			display: 	none
+		}*/
+
+		.video-button{
+			display: 	none
+		}
 		.popup-wrapper .popup-content{
 			padding:20px;
 		}
@@ -470,28 +480,14 @@
 	}
 	.section-inner-wrapper{
 		margin:0 auto 20px auto!important;
+		padding: 0!important
 	}
-	.top-filters-wrapper .section-inner-wrapper {
-		padding:0!important;
+	.hero-featured h1 {
+	    font-size: 3rem;
 	}
-	.global-primary-nav-r3.show-nav {
-	    visibility: visible;
-	    opacity: 1;
-	    filter: alpha(opacity=100);
-	}
-	.global-primary-nav-r3 {
-	    display: block;
-	    float:none;
-	}
-	.global-header .site-name{
-		top:15px;
-	}
-	.global-header .search-box
-	{
-		display: none
-	}
-	.hero-featured .section-inner-wrapper{
-		min-height: 170px;
+	.hero-featured .section-inner-wrapper {
+	    min-height: 254px;
+	    padding: 0 15px!important;
 	}
 	.info-box .item{
 		float:left;
@@ -501,6 +497,7 @@
 	}
 	.row .right-sidebar{
 		order:1;
+		margin-top:0;
 	}
 
 	.three-up .item .thumbnail ,
@@ -885,11 +882,6 @@ color: #00306e;}
 	background: none;
 }
 
-.global-footer .footer-section {
-     padding-top: 0px; 
-         margin-top: 50px;
-}
-
 .global-footer .footer-text {
     display: none;
 }
@@ -1056,11 +1048,6 @@ div.modal-forms-modal-content {
 
 @media (max-width: 496px) {
 
-
-	.section-inner-wrapper {
-    height: 100px;
-
-	}
 
 	.sort-by-wrapper {
     left: 19em;

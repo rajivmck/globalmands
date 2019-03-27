@@ -9,7 +9,7 @@
   <?php if ($id == 'nid'): ?>
     <?php $nid = $field->content; ?>
     <?php if (bookmark_get_item($user->uid, $nid)): ?>
-      <?php $fields['nothing']->content = '<div class="field-content bookmark"><span href="#" class="star-icon active" data-nid="' . $nid . '"></span></div>'; ?>
+      <?php $fields['nothing']->content = str_replace('class="star-icon"', 'class="star-icon active"', $fields['nothing']->content); ?>
     <?php endif; ?>
   <?php else: ?>
     <?php print $field->wrapper_prefix; ?>

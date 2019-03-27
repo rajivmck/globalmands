@@ -1,0 +1,5 @@
+name = Bookmark Related Content
+description = Provides a related content block for your bookmarks.
+core = 7.x
+package = Mckinse & Company
+dependencies[] = bookmark

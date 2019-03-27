@@ -30,7 +30,12 @@ $frontpage = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
                     </div>
                 <?php endif ?>
                 </li>
+
             <?php endforeach ?>
+
+                <li class="nav-item">  <a href="feedback" class="feedback-btn">Feedback</a></li>
+              <!--   <li class="nav-item">  <a href="http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4" class="video-popup video-button">Click to view welcome video</a></li> -->
+
         </ul>
     </nav>
 </span>

@@ -131,7 +131,7 @@
 ?>
 
 <div id="edit-keyword-wrapper" class="views-exposed-widget views-widget-filter-keys">
-   <div class="views-widget">
+               <div class="views-widget">
       <div class="form-item form-type-textfield form-item-keyword">
           <input placeholder="Enter keyword and press Enter" title="" type="text" id="edit-keyword" name="search_block_form" value="<?php print $default_value ?>" size="85" maxlength="128" class="form-text required ctools-auto-submit-processed">
       </div>

@@ -90,6 +90,7 @@
   }
 
  $base_url="http://".$_SERVER['SERVER_NAME'].dirname($_SERVER["REQUEST_URI"].'?').'/';
+ $curr_node_url = url('node/'.$node->nid, array('absolute' => TRUE));
 
 $videoUri = isset($node->field_file['und'][0]['uri']) ? $node->field_file['und'][0]['uri']: NULL;
 $videoUrl =    !empty($videoUri) ? file_create_url($videoUri) : NULL;
@@ -143,7 +144,7 @@ $ArrayExts = array("pptx", "ppt");
               <?php if (isset($field_case_link[0]['value'])): ?>
                 <a href="mailto:<?php print $field_case_link[0]['value']; ?>" class="share">Share</a>
               <?php else: ?>
-                <a href="mailto:email@mckinsey.com&subject=Sharing '<?php print $title ?>' from Global M&S" class="share">Share</a>
+                <a href="mailto:?subject=Sharing '<?php print $title ?>' from Global MS&body=Case Study Link: <?php print $curr_node_url ?>'<?php print $title ?>' " class="share">Share</a>
               <?php endif; ?>
               <a href="<?php print file_create_url($field_download[0]['uri']); ?>" class="download" download>Download (<?php print format_size($field_download[0]['filesize']); ?>)</a>
           </div>

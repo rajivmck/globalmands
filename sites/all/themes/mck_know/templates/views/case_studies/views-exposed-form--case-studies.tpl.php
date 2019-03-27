@@ -82,10 +82,11 @@
   <div class="filterby filter-row">
     <?php
       $allowed_taxonomies = array(
-            "filter-field_service_line_tid" => "service_line",
+            "filter-field_service_line_tid"=> "service_line",
             "filter-field_growth_platform_tid" => "growth_platforms",
-            "filter-field_industries_tid"   => "case_industries",
-            "filter-field_regions_tid"      => "region"
+            "filter-field_industries_tid"  => "case_industries",
+            "filter-field_regions_tid"     => "region"
+            
         
       );
 

@@ -77,37 +77,29 @@
 <a name="top"></a>
 <header class="global-header global-header-r3 navigation-r3 custom-menu" role="banner">
   <a aria-hidden="false" aria-label="Toggle Menu" class="skip-main" href="#0" tabindex="0">Skip to main content</a>
-   <button class="menu-toggle" role="button" type="button">
-  <div class="menu-hamburger">
-    <span class="visually-hidden">Toggle Menu</span>
-  </div>
-</button>
-<section class="hamburger-nav" data-module="HamburgerNav">
-  <div class="main-nav-inner">
-    <a class="mck-logo-icon" href="#<?php // echo url('<front>') ?>" tabindex="-1" style="display:  none">
-      <span class="visually-hidden">McKinsey &amp; Company Home</span>
-    </a>
-    <nav class="main-nav" data-level="-menu-level0" role="menu">
-      <ul class="nav-list nav-group-left">
-           <?php echo theme('slide_menu') ?>    
-    </ul>
-    </nav>
-  </div>
-</section>
+  <button class="menu-toggle" role="button" type="button">
+    <div class="menu-hamburger">
+      <span class="visually-hidden">Toggle Menu</span>
+    </div>
+  </button>
+  <div class="hamburger-curtain"></div>
+  <div class="logo-container">
+    <?php if (isset($node->field_full_image)) { ?>
+      <a class="names cpny-logo alone" href="#" style="background-image: url('<?php echo $bgurl ?>');" ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
 
-<div class="hamburger-curtain"></div>
-
-
-
-  <div class="top-bar">
-    <div class="top-bar-inner">
-        <div class="top-bar-container">
-            <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name-desktop -show"><?php print $site_name;?></a>
-        
-          <?php print theme('custom_main_menu'); ?>
-          <?php print theme('search'); ?>
-        </div>
-          <!--   <div class="valign-wrapper">
+    <?php }
+    else { ?>
+      <a class="names cpny-logo alone" href="#"  ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
+      
+<?php } ?>
+  </div><!--END NAVIGATION MENU-->
+  <div class="site-name">
+  <div class="valign-wrapper">
+        <div class="topsite-name">
+        <a href="../globalms"> <?php print (variable_get('site_name', '')); ?></a>
+      </div>
+      <div>
+        <div class="valign-wrapper">
           <div>
                <a href="feedback" class="feedback-btn">Feedback</a>
           </div>
@@ -115,21 +107,11 @@
          
               <a href="http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4" class="video-popup video-button">Click to view welcome video</a>
             </div>
-          </div> -->
-
+          </div>
+      </div>
     </div>
   </div>
-  <div class="logo-container">
-    <?php if (isset($node->field_full_image)) { ?>
-      <a class="names cpny-logo alone" href="#" style="background-image: url('<?php echo $bgurl ?>');" ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
-        <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name half"><?php print $site_name;?></a>
-    <?php }
-    else { ?>
-      <a class="names mck-logo-icon alone" href="#"  ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
-       <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name half"><?php print $site_name;?></a>
-      
-<?php } ?>
-  </div><!--END NAVIGATION MENU-->
+
   <div class="search-box">
     <div class="search-box-inner">
       <?php print drupal_render(drupal_get_form('search_block_form')); 
@@ -137,7 +119,6 @@
       ?>
     </div>
   </div>
-  
 </header>
 
 <?php if (!empty($node->field_hero_images)): ?>
@@ -220,7 +201,7 @@
     <div class="section-inner-wrapper">
       <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 content">
-       
+          <?php print theme('custom_main_menu'); ?>
         </div>
       </div>
     </div>
@@ -229,7 +210,7 @@
     <div class="top-filters-wrapper">
       <div class="section-inner-wrapper">
         <?php
-          $block = module_invoke('views', 'block_view', '-exp-video-page_1');
+          $block = module_invoke('views', 'block_view', '-exp-case_studies-page_1');
           print render($block['content']);
         ?>
       </div>
@@ -240,7 +221,7 @@
           <div class="col-lg-9 col-md-8 col-sm-12 content">
             <?php global $user; ?>
             <?php $args = bookmark_get_items($user->uid);?>
-            <?php print views_embed_view("video", "page_1", $args); ?>
+            <?php print views_embed_view("case_studies", "page_1", $args); ?>
           </div>
           <?php if ($page['left_sidebar']): ?>
             <div class="col-lg-3 col-md-4 col-sm-12 right-sidebar">
