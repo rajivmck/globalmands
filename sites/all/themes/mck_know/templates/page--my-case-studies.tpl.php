@@ -245,15 +245,24 @@
           $block = module_invoke('views', 'block_view', '-exp-case_studies-page_1');
           print render($block['content']);
         ?>
+
       </div>
     </div>
     <section class="full-text-section case-box section-inner-wrapper">
       <div class="page-wrapper">
         <div class="row">
           <div class="col-lg-9 col-md-8 col-sm-12 content">
-            <?php global $user; ?>
-            <?php $args = bookmark_get_items($user->uid);?>
-            <?php print views_embed_view("case_studies", "page_1", $args); ?>
+             
+                <?php global $user; ?>
+                <?php $args = bookmark_get_items($user->uid);?>
+                <?php print views_embed_view("case_studies", "page_1", $args); ?>
+                <div class="more-like-this">
+                 <div class="mx-auto text-center"><div class="header"><h5>More Like This</h5></div></div>
+                 <?php
+                  $block = module_invoke('bookmark_related_content', 'block_view', 'bookmark_related_content');
+                  print render($block['content']);
+                ?>
+                </div>
           </div>
           <?php if ($page['left_sidebar']): ?>
             <div class="col-lg-3 col-md-4 col-sm-12 right-sidebar">
@@ -267,10 +276,17 @@
       </div>
     </section>
   </div>
+
+
 </div>
+
+
 <section class="white-bk">
 <div class="section-inner-wrapper">
   <div>
+
+
+
      <?php
               $blockObject = block_load('views', 'resources-block');
               $block = _block_get_renderable_array(_block_render_blocks(array($blockObject)));
