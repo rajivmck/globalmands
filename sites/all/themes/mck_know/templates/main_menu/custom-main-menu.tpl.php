@@ -6,15 +6,15 @@ $frontpage = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
     <nav class="primary-navigation" role="navigation">
         <ul class="nav-list nav-group-left" style="padding-left: 0px;">
             <?php foreach ($main_menu as $link): ?>
-
                 <?php
-
                 if($curr_path == $link['link']['href']) { ?>
                     <li class="nav-item<?php echo !empty($link['below']) ? ' has-children' : '' ?> active" aria-hidden="true" tabindex="-1">
                 <?php } else { ?>
                     <li class="nav-item<?php echo !empty($link['below']) ? ' has-children' : '' ?>" aria-hidden="true" tabindex="-1">
                 <?php } ?>
-                <a href="<?php echo url($link['link']['href']) ?>"><?php echo $link['link']['title'] ?></a>
+                <a href="<?php echo url($link['link']['href']) ?>"><?php echo $link['link']['title'] ?>
+
+                </a>
 
                 <?php if (!empty($link['below'])): ?>
                     <div class="sub-nav">
@@ -32,10 +32,6 @@ $frontpage = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
                 </li>
 
             <?php endforeach ?>
-
-                <li class="nav-item">  <a href="feedback" class="feedback-btn">Feedback</a></li>
-              <!--   <li class="nav-item">  <a href="http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4" class="video-popup video-button">Click to view welcome video</a></li> -->
-
         </ul>
     </nav>
 </span>

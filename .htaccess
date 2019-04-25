@@ -21,9 +21,6 @@ Options +FollowSymLinks
 # Make Drupal handle any 404 errors.
 ErrorDocument 404 /index.php
 
-php_value post_max_size                   512M
-php_value upload_max_filesize             512M
-
 # Set the default handler.
 DirectoryIndex index.php index.html index.htm
 

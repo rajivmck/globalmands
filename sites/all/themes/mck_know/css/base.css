@@ -43,6 +43,10 @@ body p{
 	font-weight: 300
 }
 
+a {
+    text-decoration: none !important;
+}
+
 .btn{
 	font-family: 'McKinsey Theinhardt', 'Helvetica Neue', Calibri, Corbel, Helvetica, Roboto, Droid, sans-serif!important;
 	color: #000;

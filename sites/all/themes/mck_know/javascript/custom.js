@@ -297,8 +297,8 @@
           break;
         }
       });*/
-      
-      
+
+        exposedSelectListTransform();
     }
   };
 })(jQuery);
@@ -320,4 +320,40 @@ if ($("body").hasClass("case-studies")) {
         localStorage.setItem('lastDatePopupShowed', now);
       }
     });
+}
+
+(function($) {
+    $('body').on('click', '.views-exposed-widget > label', function(){
+        var id = $(this).parent().attr('id');
+        $('body').toggleClass(id);
+    });
+
+    $('body').on('click', '.display-view', function(){
+        $('body').removeClass('card-view');
+        $('body').removeClass('table-view');
+        var view = $(this).attr('data-view');
+        $('body').addClass(view);
+    });
+
+    $('body').on('click', '.practice-recommendation', function(){
+       console.log($(this).val());
+    });
+})(jQuery);
+
+function exposedSelectListTransform() {
+    $ = jQuery;
+
+    if ($('#edit-sort-by').length && $('#select-placeholder #edit-sort-by').length <= 0) {
+        $('#edit-sort-by').clone().appendTo('#select-placeholder');
+
+        $('#select-placeholder #edit-sort-by').prepend('<option selected value="field_date_value">Sort by</option>');
+
+        $('body').on('change', '#select-placeholder #edit-sort-by', function(){
+
+            if ($(this).val()) {
+                $('.views-widget-sort-by #edit-sort-by').val($(this).val());
+                $('.views-submit-button input').click();
+            }
+        });
+    }
 }

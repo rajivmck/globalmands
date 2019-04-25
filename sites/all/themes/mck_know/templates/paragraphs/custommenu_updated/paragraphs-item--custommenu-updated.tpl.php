@@ -33,7 +33,7 @@ var $link6 = '';
 
 if(isset($content['field_link_6'])){
   if(strpos( $content['field_link_6']['#items'][0]['url'], "#" )){
-   $link6 = l($content['field_link_1']['#items'][0]['title'], '', array('fragment' => str_replace("#","",$content['field_link_1']['#items'][0]['url']), 'external' => TRUE));
+   $link6 = l($content['field_link_1']['#items'][0]['title'], '', ['fragment' => str_replace("#","",$content['field_link_1']['#items'][0]['url']), 'external' => TRUE]);
   }else{
     $link6 = $content['field_link_6'];
   }
@@ -43,27 +43,6 @@ if(isset($content['field_link_6'])){
 
 ?>
 
-<header class="global-header global-header-r3 navigation-r3" role="banner">
-  <a aria-hidden="false" aria-label="Toggle Menu" class="skip-main" href="#0" tabindex="0">Skip to main content</a>
- <button class="menu-toggle" role="button" type="button">
-  <div class="menu-hamburger">
-    <span class="visually-hidden">Toggle Menu</span>
-  </div>
-</button>
-<section class="hamburger-nav" data-module="HamburgerNav">
-  <div class="main-nav-inner">
-    <a class="mck-logo-icon" href="<?php echo url('<front>') ?>" tabindex="-1">
-      <span class="visually-hidden">McKinsey &amp; Company Home</span>
-    </a>
-    <nav class="main-nav" data-level="-menu-level0" role="menu">
-      <ul class="nav-list nav-group-left">
-    <li role="menuitem" class="nav-item nav-link-item" aria-hidden="true" tabindex="5"><?php echo $link6; ?></li>
-    </ul>
-    </nav>
-  </div>
-</section>
-
-<div class="hamburger-curtain"></div>
 
 
 	<div class="top-bar-inner">

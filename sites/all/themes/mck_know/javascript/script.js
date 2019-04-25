@@ -66,7 +66,6 @@
 
       return parseInt(levelNum[1]);
     }
-
   });
 
 }(jQuery));

@@ -71,92 +71,92 @@
  *
  * @ingroup themeable
  */
-
 ?>
-<header class="global-header global-header-r3 navigation-r3 custom-menu" role="banner">
-  <a aria-hidden="false" aria-label="Toggle Menu" class="skip-main" href="#0" tabindex="0">Skip to main content</a>
-   <button class="menu-toggle" role="button" type="button">
-  <div class="menu-hamburger">
-    <span class="visually-hidden">Toggle Menu</span>
-  </div>
-</button>
-<section class="hamburger-nav" data-module="HamburgerNav">
-  <div class="main-nav-inner">
-    <a class="mck-logo-icon" href="#<?php // echo url('<front>') ?>" tabindex="-1" style="display:  none">
-      <span class="visually-hidden">McKinsey &amp; Company Home</span>
-    </a>
-    <nav class="main-nav" data-level="-menu-level0" role="menu">
-      <ul class="nav-list nav-group-left">
-           <?php echo theme('slide_menu') ?>    
-    </ul>
-    </nav>
-  </div>
-</section>
+<div class="page-class case-wrapper">
+    <header class="global-header global-header-r3 navigation-r3 custom-menu"
+            role="banner">
+        <section class="hamburger-nav" data-module="HamburgerNav">
+            <div class="main-nav-inner">
+                <a class="mck-logo-icon" href="/"
+                   tabindex="-1" style="display:  none">
+                    <span class="visually-hidden">McKinsey &amp; Company Home</span>
+                </a>
+                <nav class="main-nav" data-level="-menu-level0" role="menu">
+                    <ul class="nav-list nav-group-left">
+                      <?php echo theme('slide_menu') ?>
+                    </ul>
+                </nav>
+            </div>
+        </section>
 
-<div class="hamburger-curtain"></div>
+        <div class="top-bar">
+            <div class="top-bar-inner">
+                <div class="top-bar-container">
+                    <a href="<?php print $front_page; ?>"
+                       style="margin-left: 0px;"
+                       class="names section-name-desktop -show"><?php print $site_name; ?></a>
 
-
-
-  <div class="top-bar">
-    <div class="top-bar-inner">
-        <div class="top-bar-container">
-            <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name-desktop -show"><?php print $site_name;?></a>
-        
-          <?php print theme('custom_main_menu'); ?>
-          <?php print theme('search'); ?>
+                  <?php print theme('custom_main_menu'); ?>
+                  <?php print theme('search'); ?>
+                </div>
+            </div>
         </div>
-          <!--   <div class="valign-wrapper">
-          <div>
-               <a href="feedback" class="feedback-btn">Feedback</a>
-          </div>
-          <div>
-         
-              <a href="http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4" class="video-popup video-button">Click to view welcome video</a>
+        <div class="logo-container">
+            <a class="names mck-logo-icon alone" href="#"><span
+                        class="visually-hidden">McKinsey &amp; Company Home</span></a>
+            <a href="<?php print $front_page; ?>" style="margin-left: 0px;"
+               class="names section-name half"><?php print $site_name; ?></a>
+        </div><!--END NAVIGATION MENU-->
+
+        <div class="search-box">
+            <div class="search-box-inner">
+              <?php print drupal_render(drupal_get_form('search_block_form')); ?>
             </div>
-          </div> -->
+        </div>
 
-    </div>
-  </div>
-  <div class="logo-container">
-    <?php if (isset($node->field_full_image)) { ?>
-      <a class="names cpny-logo alone" href="#" style="background-image: url('<?php echo $bgurl ?>');" ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
-        <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name half"><?php print $site_name;?></a>
-    <?php }
-    else { ?>
-      <a class="names mck-logo-icon alone" href="#"  ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
-       <a href="<?php print $front_page;?>" style="margin-left: 0px;" class="names section-name half"><?php print $site_name;?></a>
-      
-<?php } ?>
-  </div><!--END NAVIGATION MENU-->
-  <div class="search-box">
-    <div class="search-box-inner">
-      <?php print drupal_render(drupal_get_form('search_block_form')); 
+    </header>
 
-      ?>
-    </div>
-  </div>
-  
-</header>
-<?php echo render($page['content']) ?>
-
-<?php //print render($messages) ?>
-
-<!-- Footer Start -->
-<!--<footer class="global-footer">
-    <section class="footer">
-        <div class="footer-inner">
-            <div class="footer-section">
-                <div class="logo-container">
-                    <a href="http://www.mckinsey.com" class="mck-footer__logo">McKinsey &amp; Company | © 2016</a>
-                    <?php //print render($page['footer']) ?>
-                </div>
-                <div class="footer-links">
-                    <?php //print render($page['navigation']); ?>
-                </div>
-            </div>
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-inner-title">Global Banking Impact Case Library</div>
+            <div class="hero-inner-subtitle">This is a central repository for our latest and greatest materials on Global Bank.</div>
         </div>
     </section>
-</footer>-->
-<!-- Footer End -->
+    <div class="section-wrapper case">
+        <section class="full-text-section case-box section-inner-wrapper">
+            <div class="page-wrapper">
+                <div class="row">
+                  <?php if (isset($messages) && $messages): ?>
+                      <div class="col-lg-12">
+                        <?php print $messages; ?>
+                      </div>
+                  <?php endif; ?>
 
-<div style="clear: both;"></div>
+                    <div class="col-lg-12">
+                      <?php echo render($page['content']) ?>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    </div>
+</div>
+
+<footer id="global_footer_0_MainFooter" class="global-footer" lang="en">
+
+    <section class="footer">
+
+        <div class="footer-inner">
+            <div class="mck-logo-icon">
+                <span class="visually-hidden">McKinsey&amp;Company</span>
+            </div>
+
+            <div class="copyright">© 1996-2019
+                McKinsey&nbsp;&amp;&nbsp;Company
+            </div>
+
+        </div>
+
+    </section>
+</footer>

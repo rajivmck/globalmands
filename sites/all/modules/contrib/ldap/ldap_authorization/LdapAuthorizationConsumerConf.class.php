@@ -1,51 +1,39 @@
 <?php
-// $Id$
+
 /**
  * @file
- * class to encapsulate an ldap entry to authorization consumer ids mapping configuration
+ * Class to encapsulate an ldap entry to authorization consumer ids mapping configuration.
  *
- * this is the lightweight version of the class for use on logon etc.
+ * This is the lightweight version of the class for use on logon etc.
  * the LdapAuthorizationConsumerConfAdmin extends this class and has save,
  * iterate, etc methods.
- *
  */
 
 /**
- * LDAP Authorization Consumer Configuration
+ * LDAP Authorization Consumer Configuration.
  */
 class LdapAuthorizationConsumerConf {
 
   public $sid = NULL;
+  public $server;
   public $consumerType = NULL;
   public $consumerModule = NULL;
   public $consumer = NULL;
   public $inDatabase = FALSE;
-
+  public $numericConsumerConfId = NULL;
 
   public $description = NULL;
   public $status = NULL;
   public $onlyApplyToLdapAuthenticated = TRUE;
 
-  public $deriveFromDn = FALSE;
-  public $deriveFromDnAttr = NULL;
+  public $useFirstAttrAsGroupId = FALSE;
 
-  public $deriveFromAttr = FALSE;
-  public $deriveFromAttrAttr = NULL;
-  public $deriveFromAttrUseFirstAttr = FALSE;
-
-  public $deriveFromEntry = FALSE;
-  public $deriveFromEntryEntries = NULL;
-  public $deriveFromEntryAttr = NULL;
-  public $deriveFromEntrySearchAll = FALSE;
-
-
-  public $mappings = array();
+  public $mappings = [];
   public $useMappingsAsFilter = TRUE;
 
   public $synchToLdap = FALSE;
 
   public $synchOnLogon = TRUE;
-  public $synchManually = TRUE;
 
   public $revokeLdapProvisioned = TRUE;
   public $regrantLdapProvisioned = TRUE;
@@ -55,16 +43,19 @@ class LdapAuthorizationConsumerConf {
   public $hasError = FALSE;
   public $errorName = NULL;
 
-
+  /**
+   *
+   */
   public function clearError() {
     $this->hasError = FALSE;
     $this->errorMsg = NULL;
     $this->errorName = NULL;
   }
-   /**
-   * Constructor Method
+
+  /**
+   * Constructor Method.
    */
-  function __construct(&$consumer, $_new = FALSE, $_sid = NULL) {
+  public function __construct(&$consumer, $_new = FALSE, $_sid = NULL) {
     $this->consumer = $consumer;
     $this->consumerType = $consumer->consumerType;
     if ($_new) {
@@ -72,111 +63,97 @@ class LdapAuthorizationConsumerConf {
     }
     else {
       $this->inDatabase = TRUE;
-      $this->loadFromDb();
+      $exists = $this->loadFromDb();
+      if (!$exists) {
+        watchdog('ldap_authorization', 'failed to load existing %consumer object', ['%consumer' => $consumer->consumerType], WATCHDOG_ERROR);
+      }
     }
+    // Default value for deriveFromEntryAttrMatchingUserAttr set up this way for backward compatibility in 1.0 branch,
+    // make deriveFromEntryAttrMatchingUserAttr default to dn in 2.0 branch.
   }
 
+  /**
+   *
+   */
   protected function loadFromDb() {
     if (module_exists('ctools')) {
       ctools_include('export');
-      if ($this->consumerType) {
-        $result = ctools_export_load_object('ldap_authorization', 'names', array($this->consumerType));
-      }
-      else {
-        $result = ctools_export_load_object('ldap_authorization', 'all');
-      }
+      $result = ctools_export_load_object('ldap_authorization', 'names', [$this->consumerType]);
+
       // @todo, this is technically wrong, but I don't quite grok what we're doing in the non-ctools case - justintime
-      $consumer_conf = array_pop($result);
+      $server_record = array_pop($result);
       // There's no ctools api call to get the reserved properties, so instead of hardcoding a list of them
       // here, we just grab everything.  Basically, we sacrifice a few bytes of RAM for forward-compatibility.
-      if ($consumer_conf) {
-        foreach ($consumer_conf as $property => $value) {
-          $this->$property = $value;
-        }
-      }
     }
     else {
       $select = db_select('ldap_authorization', 'ldap_authorization');
       $select->fields('ldap_authorization');
-      if ($this->consumerType) {
-        $select->condition('ldap_authorization.consumer_type',  $this->consumerType);
-      }
-
-      $consumer_conf = $select->execute()->fetchObject();
+      $select->condition('ldap_authorization.consumer_type', $this->consumerType);
+      $server_record = $select->execute()->fetchObject();
     }
 
-    if (!$consumer_conf) {
+    if (!$server_record) {
       $this->inDatabase = FALSE;
-      return;
+      return FALSE;
     }
 
-    $this->sid = $consumer_conf->sid;
-    $this->consumerType = $consumer_conf->consumer_type;
-    $this->description = $consumer_conf->description;
-    $this->status = (bool)$consumer_conf->status;
-    $this->onlyApplyToLdapAuthenticated  = (bool)(@$consumer_conf->only_ldap_authenticated);
-
-    $this->deriveFromDn  = (bool)(@$consumer_conf->derive_from_dn);
-    $this->deriveFromDnAttr = $consumer_conf->derive_from_dn_attr;
-
-    $this->deriveFromAttr  = (bool)($consumer_conf->derive_from_attr);
-    $this->deriveFromAttrAttr =  $this->linesToArray($consumer_conf->derive_from_attr_attr);
-    $this->deriveFromAttrUseFirstAttr  = (bool)($consumer_conf->derive_from_attr_use_first_attr);
-    $this->deriveFromEntrySearchAll = (bool)($consumer_conf->derive_from_entry_search_all);
-
-
-    $this->deriveFromEntry  = (bool)(@$consumer_conf->derive_from_entry);
-    $this->deriveFromEntryEntries = $this->linesToArray($consumer_conf->derive_from_entry_entries);
-    $this->deriveFromEntryAttr = $consumer_conf->derive_from_entry_attr;
-
-    $this->mappings = $this->pipeListToArray($consumer_conf->mappings);
-    $this->useMappingsAsFilter  = (bool)(@$consumer_conf->use_filter);
-
-    $this->synchToLdap = (bool)(@$consumer_conf->synch_to_ldap);
-    $this->synchOnLogon = (bool)(@$consumer_conf->synch_on_logon);
-    $this->regrantLdapProvisioned = (bool)(@$consumer_conf->regrant_ldap_provisioned);
-    $this->revokeLdapProvisioned = (bool)(@$consumer_conf->revoke_ldap_provisioned);
-    $this->createConsumers = (bool)(@$consumer_conf->create_consumers);
-
+    foreach ($this->field_to_properties_map() as $db_field_name => $property_name) {
+      if (isset($server_record->$db_field_name)) {
+        if (in_array($db_field_name, $this->field_to_properties_serialized())) {
+          $this->{$property_name} = unserialize($server_record->$db_field_name);
+        }
+        else {
+          $this->{$property_name} = $server_record->$db_field_name;
+        }
+      }
+    }
+    $this->numericConsumerConfId = isset($server_record->numeric_consumer_conf_id) ? $server_record->numeric_consumer_conf_id : NULL;
+    $this->server = ldap_servers_get_servers($this->sid, NULL, TRUE);
+    return TRUE;
 
   }
+
   /**
-   * Destructor Method
+   * Direct mapping of db to object properties.
    */
-  function __destruct() {
+  public static function field_to_properties_map() {
+    return [
+      'sid' => 'sid',
+      'consumer_type' => 'consumerType',
+      'numeric_consumer_conf_id'  => 'numericConsumerConfId',
+      'status'  => 'status',
+      'only_ldap_authenticated'  => 'onlyApplyToLdapAuthenticated',
+      'use_first_attr_as_groupid'  => 'useFirstAttrAsGroupId',
+      'mappings'  => 'mappings',
+      'use_filter'  => 'useMappingsAsFilter',
+      'synch_to_ldap' => 'synchToLdap',
+      'synch_on_logon'  => 'synchOnLogon',
+      'regrant_ldap_provisioned'  => 'regrantLdapProvisioned',
+      'revoke_ldap_provisioned' => 'revokeLdapProvisioned',
+      'create_consumers'  => 'createConsumers',
+    ];
+  }
+
+  /**
+   *
+   */
+  public static function field_to_properties_serialized() {
+    return ['mappings'];
+  }
+
+  /**
+   * Destructor Method.
+   */
+  public function __destruct() {
 
   }
 
   protected $_sid;
   protected $_new;
 
-  protected $saveable = array(
-    'sid',
-    'consumerType',
-    'description',
-    'status',
-    'onlyApplyToLdapAuthenticated',
-    'deriveFromDn',
-    'deriveFromDnAttr',
-    'deriveFromAttr',
-    'deriveFromAttrAttr',
-    'deriveFromAttrUseFirstAttr',
-    'deriveFromEntry',
-    'deriveFromEntryEntries',
-    'deriveFromEntryAttr',
-    'deriveFromEntrySearchAll',
-    'mappings',
-    'useMappingsAsFilter',
-    'synchToLdap',
-    'synchOnLogon',
-    'synchManually',
-    'revokeLdapProvisioned',
-    'createConsumers',
-    'regrantLdapProvisioned',
-
-  );
-
-
+  /**
+   *
+   */
   protected function linesToArray($lines) {
     $lines = trim($lines);
 
@@ -187,22 +164,24 @@ class LdapAuthorizationConsumerConf {
       }
     }
     else {
-      $array = array();
+      $array = [];
     }
     return $array;
   }
 
-
-
-
-  protected function pipeListToArray($mapping_list_txt) {
-    $result_array = array();
+  /**
+   *
+   */
+  protected function pipeListToArray($mapping_list_txt, $make_item0_lowercase = FALSE) {
+    $result_array = [];
     $mappings = preg_split('/[\n\r]+/', $mapping_list_txt);
     foreach ($mappings as $line) {
       if (count($mapping = explode('|', trim($line))) == 2) {
-        $result_array[] = array(trim($mapping[0]), trim($mapping[1]));
+        $item_0 = ($make_item0_lowercase) ? drupal_strtolower(trim($mapping[0])) : trim($mapping[0]);
+        $result_array[] = [$item_0, trim($mapping[1])];
       }
     }
     return $result_array;
   }
+
 }

@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * Implement hook_menu().
+ */
+function bookmark_new_menu() {
+  $items['bookmark_new/add'] = [
+    'title' => '',
+    'page callback' => 'bookmark_new_add',
+    'delivery callback' => 'bookmark_new_ajax',
+    'access callback' => TRUE,
+  ];
+  $items['bookmark_new/remove'] = [
+    'title' => '',
+    'page callback' => 'bookmark_new_remove',
+    'delivery callback' => 'bookmark_new_ajax',
+    'access callback' => TRUE,
+  ];
+
+  return $items;
+}
+
+function bookmark_new_add() {
+  global $user;
+  $nid = $_POST['nid'];
+
+  $output = [
+    'result' => 'failed',
+  ];
+
+  if ($user->uid) {
+    $node = node_load($nid);
+
+    if ($node) {
+      $user = user_load($user->uid);
+      $wrapper = entity_metadata_wrapper('user', $user);
+
+      foreach ($wrapper->field_bookmarks->value() as $bookmark) {
+        if ($bookmark->nid == $nid) {
+          $ignore = TRUE;
+        }
+      }
+
+      if (!isset($ignore)) {
+        $bookmarks = $wrapper->field_bookmarks->value();
+        $bookmarks[] = $node;
+
+        $wrapper->field_bookmarks->set($bookmarks);
+        $wrapper->save();
+
+        $output = [
+          'result' => 'done',
+          'nid' => $node->nid
+        ];
+      }
+    }
+  }
+
+  return $output;
+}
+
+function bookmark_new_remove() {
+  global $user;
+  $nid = $_POST['nid'];
+
+  $output = [
+    'result' => 'failed',
+  ];
+
+  if ($user->uid) {
+    $node = node_load($nid);
+
+    if ($node) {
+      $user = user_load($user->uid);
+      $wrapper = entity_metadata_wrapper('user', $user);
+      $bookmarks = $wrapper->field_bookmarks->value();
+
+      foreach ($bookmarks as $key => $bookmark) {
+        if ($bookmark->nid == $nid) {
+          $found = $key;
+        }
+      }
+
+      if (isset($found)) {
+        unset($bookmarks[$found]);
+
+        $wrapper->field_bookmarks->set($bookmarks);
+        $wrapper->save();
+
+        $output = [
+          'result' => 'done',
+          'nid' => $node->nid
+        ];
+      }
+    }
+  }
+
+  return $output;
+}
+
+function bookmark_new_ajax($output) {
+  echo drupal_json_output($output);
+}

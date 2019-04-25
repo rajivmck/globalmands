@@ -2,12 +2,13 @@
 
 /**
  * @file
- * Active Directory LDAP Implementation Details
- *
+ * Active Directory LDAP Implementation Details.
  */
 
-require_once(drupal_get_path('module', 'ldap_servers') . '/ldap_types/LdapTypeAbstract.class.php');
-
+ldap_servers_module_load_include('php', 'ldap_servers', 'ldap_types/LdapTypeAbstract.class');
+/**
+ *
+ */
 class LdapTypeNovell extends LdapTypeAbstract {
 
   public $documentation = 'http://www.novell.com/documentation/edir873/index.html?page=/documentation/edir873/edir873/data/h0000007.html';
@@ -19,12 +20,12 @@ class LdapTypeNovell extends LdapTypeAbstract {
   public $encrypted = 0;
   public $user_attr = 'uid';
   public $mail_attr = 'mail';
-  public $supportsNestGroups = FALSE;
 
-  public function getNestedGroupMemberships($user_ldap_entry, $nested = FALSE) {
-    if (!$this->supportsNestedGroups) {
-      return FALSE;
-    }
-  }
+  public $groupObjectClassDefault = 'groupOfNames';
+
+  public $groupDerivationModelDefault = LDAP_SERVERS_DERIVE_GROUP_FROM_ENTRY;
+
+  public $groupUserMembershipsAttrExistsEntryAttrDefault = 'members';
+  public $groupUserMembershipsAttrExistsEntryUserIdDefault = 'dn';
 
 }
