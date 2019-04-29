@@ -7995,6 +7995,14 @@ body.edit-field-tribes-tid-wrapper #edit-field-tribes-tid-wrapper .views-widget 
     margin-bottom: 61px;
 }
 
+.card-view.case-study-view .card-title {
+    margin-bottom: 15px;
+}
+
+.card-view .card-title a {
+    color: #000;
+}
+
 .views-widget-sort-by {
     display: none;
 }
@@ -8119,17 +8127,29 @@ body.table-view .card-view {
     margin-top: 10px;
 }
 
-.node .field {
+.node .field{
     color: #000000;
     font-size: 14px;
     line-height: 21px;
+}
+
+.taxonomy,
+.cst-contacts{
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.cst-contacts {
+    margin-bottom: 15px;
 }
 
 .node .field-label-inline {
     margin-bottom: 10px;
 }
 
-.node .field .field-label {
+.node .field .field-label,
+.view-label{
     display: inline-block;
     font-weight: bold;
 }
@@ -8207,4 +8227,138 @@ body.table-view .card-view {
 .pdf-iframe {
     width: 100%;
     height: 787px;
+}
+
+.action-links-items {
+    position: relative;
+}
+
+.case-study-view .action-links-items {
+    margin-top: 30px;
+}
+
+.pages {
+    position: absolute;
+    display: inline-block;
+    right: 0;
+    bottom: 5px;
+    font-size: 14px;
+}
+
+.date-gray {
+    font-size: 12px;
+}
+
+.go-and-see {
+    display: inline-block;
+    background: url('../images/new/go-and-see-icon.png') no-repeat;
+    background-size: cover;
+    height: 19px;
+    width: 28px;
+}
+
+.go-and-see-title {
+    position: relative;
+    display: inline-block;
+    padding-left: 35px;
+}
+
+.go-and-see-title:after {
+    content: "Text";
+    height: 19px;
+    width: 28px;
+    background: url('../images/new/go-and-see-icon.png') no-repeat;
+    background-size: cover;
+    position: absolute;
+    left: 0;
+    text-indent: -9999px;
+}
+
+.go-and-see.top-right {
+    position: absolute;
+    right: 1.25em;
+    top: 1.25em;
+}
+
+.border-right-view {
+    display: inline-block;
+    position: relative;
+    padding-right: 10px;
+    margin-right: 5px;
+}
+
+.border-right-view:after {
+    content: "|";
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.card-body {
+    position: relative;
+}
+
+.bookmark-abs {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+}
+
+.view-header {
+    font-size: 14px;
+    color: #000;
+}
+
+.card-view.video .video-play{
+    height: 150px;
+    background-size: cover !important;
+    position: relative;
+}
+
+.card-view.video .video-play:after {
+    content: "";
+    position: absolute;
+    background: url('../images/play-button.png') no-repeat;
+    height: 128px;
+    width: 128px;
+    left: -64px;
+    margin-left: 50%;
+    top: 12px;
+}
+
+.card-view.video .card-body {
+    min-height: 170px;
+}
+
+.modal-video {
+    width: 100%;
+    height: 100%;
+}
+
+.modal-dialog {
+    max-width: 750px;
+}
+
+.modal-footer button {
+    margin: 0 auto;
+}
+
+.modal-footer button{
+    background: #051C2C;
+    color: #FFF;
+}
+
+@media screen and (max-width: 767px) {
+   .hero-inner {
+        position: relative;
+        width: 100%;
+        height: auto;
+       right: 0;
+       padding: 1.25em
+   }
+
+    .footer-inner {
+        margin-left: 0 !important;
+        padding: 1.25em !important;
+    }
 }

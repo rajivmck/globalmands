@@ -209,19 +209,6 @@
         }
       });
 
-      // $(document).on('submit','form#search-block-form',function(){
-      //    // code
-      //    //  var action = $(this).val() == "people" ? "user" : "content";
-      //    console.log("asdasd");
-      //    if (!($("#search-block-form").attr('action').indexOf("search-mr") !== -1 )){
-      //      event.preventDefault();
-           
-      //      $(this).submit();
-      //    }
-      // });
-       
-
-
       $(document).ajaxComplete(function(event, xhr, settings) {
         if (settings.data.indexOf("submitted") != -1) {
           Drupal.CTools.Modal.dismiss();
@@ -271,32 +258,7 @@
           $('.carousel-wrapper', parent).removeClass('active');
         }
       });
-      
-      /*-------Openn video in popup------*/
-      $('a.video-popup').magnificPopup({
-        disableOn: 700,
-        type: 'iframe',
-        mainClass: 'mfp-fade',
-        removalDelay: 160,
-        preloader: false,
-        fixedContentPos: false
-      });
-      
-      
-      /*$('#quicktabs-front_page .quicktabs-tabs a').on('click', function(){
-        $('.top-filters-wrapper form').hide();
-        $('.right-sidebar form').hide();
-        switch ($(this).attr('id')) {
-          case 'quicktabs-tab-front_page-0':
-            $('#views-exposed-form-video-page-2').show();
-            $('.right-sidebar #views-exposed-form-video-page-2').show();
-          break;
-          case 'quicktabs-tab-front_page-1':
-            $('#views-exposed-form-case-studies-page-2').show();
-            $('.right-sidebar #views-exposed-form-case-studies-page-2').show();
-          break;
-        }
-      });*/
+
 
         exposedSelectListTransform();
     }
@@ -337,6 +299,20 @@ if ($("body").hasClass("case-studies")) {
 
     $('body').on('click', '.practice-recommendation', function(){
        console.log($(this).val());
+    });
+
+    $('body').on('click', '.video-play', function () {
+        var title = $(this).attr('data-title');
+        var video = $(this).attr('data-video');
+
+        var video_html = '<video class="modal-video" controls>' +
+            '<source id="video-play-modal" src="' + video + '" type="video/mp4">' +
+            'Your browser does not support the video tag.' +
+            '</video>';
+
+        $('.modal-title').text(title);
+        $('.modal-body').html(video_html);
+        $('.modal').modal('show');
     });
 })(jQuery);
 

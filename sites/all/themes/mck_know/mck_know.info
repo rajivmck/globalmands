@@ -25,6 +25,8 @@ stylesheets[all][] = ctools.css
 
 scripts[] = javascript/modernizr.custom.331.js
 scripts[] = javascript/app-9599b9.js
+scripts[] = javascript/popper.js
+scripts[] = javascript/bootstrap.min.js
 scripts[] = javascript/owl.carousel.js
 scripts[] = javascript/slick.min.js
 scripts[] = javascript/jquery.magnific-popup.js

@@ -75,6 +75,13 @@
 <div class="page-class case-wrapper">
     <header class="global-header global-header-r3 navigation-r3 custom-menu"
             role="banner">
+        <button class="menu-toggle" role="button" type="button">
+            <div class="menu-hamburger">
+                <span class="visually-hidden">Toggle Menu</span>
+            </div>
+        </button>
+        <div class="hamburger-curtain"></div>
+        
         <section class="hamburger-nav" data-module="HamburgerNav">
             <div class="main-nav-inner">
                 <a class="mck-logo-icon" href="/"
@@ -160,3 +167,22 @@
 
     </section>
 </footer>
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
