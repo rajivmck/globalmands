@@ -55,6 +55,15 @@
                              href="javascript:void(0);"><i
                                       class="far fa-bookmark"></i></a>
                       </td>
+                <?php elseif ($field == 'field_video_file' && $content): ?>
+                      <td>
+                          <a href="javascript:void(0);" class="video-play-anchor"
+                             data-video="<?php print $row['field_video_file']; ?>" data-title="<?php print $row['title']; ?>">View</a>
+                      </td>
+                <?php elseif ($field == 'field_video_thumbnail' && $content): ?>
+                      <td>
+                          <img src="<?php print $content?>"/>
+                      </td>
                 <?php else: ?>
                       <td <?php if ($field_classes[$field][$row_count]): ?> class="<?php print $field_classes[$field][$row_count]; ?>"<?php endif; ?><?php print drupal_attributes($field_attributes[$field][$row_count]); ?>>
                         <?php print $content; ?>

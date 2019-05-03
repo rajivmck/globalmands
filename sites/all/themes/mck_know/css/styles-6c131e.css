@@ -1436,11 +1436,6 @@ table:not([class^='scf']):not([class^='ui']) tbody tr td {
     vertical-align: top
 }
 
-table:not([class^='scf']):not([class^='ui']) tbody tr td:first-child {
-    width: 40%;
-    padding-right: 24px
-}
-
 @media screen and (max-width: 47.9375em) {
     table:not([class^='scf']):not([class^='ui']) {
         border-top: none;

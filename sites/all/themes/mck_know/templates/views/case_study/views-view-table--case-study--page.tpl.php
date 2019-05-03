@@ -8,7 +8,7 @@
                         <div class="go-and-see top-right"></div>
                     <?php endif; ?>
                       <span class="date-gray"><?php print $row['field_date']; ?> </span>
-                      <h5 class="card-title"><?php print $row['title']; ?></h5>
+                      <h5 class="card-title modal-load" data-case-study-nid="<?php print $row['nid']; ?>"><?php print $row['title']; ?></h5>
                       <div class="info-data">
                           <div class="cst-contacts">
                               <span class="view-label">CST Contacts: </span> <?php print $row['field_cst_contacts']; ?>
@@ -41,7 +41,7 @@
       <?php endforeach; ?>
     </div>
 </div>
-<?php ddl($rows); ?>
+
 <div class="table-view" style="display: none;">
     <table <?php if ($classes): ?> class="table table-sm <?php print $classes; ?>"<?php endif ?><?php print $attributes; ?>>
       <?php if (!empty($title) || !empty($caption)): ?>

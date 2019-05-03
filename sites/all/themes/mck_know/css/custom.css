@@ -5522,33 +5522,9 @@ header.text-l.space a {
 
 
 .pager > li, .pager-current > li {
-    display: inline;
+    display: inline-block;
 }
 
-.pager-current {
-    position: relative;
-    float: left;
-    padding: 6px 12px;
-    margin-left: -1px;
-    line-height: 1.42857143 !important;
-    color: #ffffff !important;
-    text-decoration: none;
-    background-color: #1f40e6;
-    border: 1px solid #1f40e6;
-}
-
-
-.pager > li > a, .pager > li > span {
-    position: relative;
-    float: left;
-    padding: 6px 12px;
-    margin-left: -1px;
-    line-height: 1.42857143;
-    color: #1f40e6;
-    text-decoration: none;
-    background-color: #fff;
-    border: 1px solid #ddd;
-}
 
 .profile-img {
     border-radius: 50%;
@@ -8127,14 +8103,14 @@ body.table-view .card-view {
     margin-top: 10px;
 }
 
-.node .field{
+.node .field {
     color: #000000;
     font-size: 14px;
     line-height: 21px;
 }
 
 .taxonomy,
-.cst-contacts{
+.cst-contacts {
     color: #000000;
     font-size: 12px;
     line-height: 18px;
@@ -8149,7 +8125,7 @@ body.table-view .card-view {
 }
 
 .node .field .field-label,
-.view-label{
+.view-label {
     display: inline-block;
     font-weight: bold;
 }
@@ -8157,6 +8133,10 @@ body.table-view .card-view {
 .node .field-label-inline .field-items,
 .node .field-label-inline .field-items .field-item {
     display: inline-block;
+    position: relative;
+    padding-right: 3px;
+    margin-right: 2px;
+    position: relative;
 }
 
 .group-case-study-detail legend {
@@ -8184,7 +8164,7 @@ body.table-view .card-view {
     padding: 15px;
 }
 
-.field-name-field-id .field-item{
+.field-name-field-id .field-item {
     color: #FFFFFF;
     font-size: 18px;
     font-weight: 500;
@@ -8203,11 +8183,17 @@ body.table-view .card-view {
 .case-study-links {
     float: right;
     margin-bottom: 0;
+    margin-top: 10px;
 }
 
 .case-study-links li {
     display: inline-block;
     margin-bottom: 0;
+    margin-right: 15px;
+}
+
+.case-study-links li:last-child {
+    margin-right: 0;
 }
 
 .case-study-links li a {
@@ -8216,13 +8202,22 @@ body.table-view .card-view {
 
 .case-study-mailto {
     display: inline-block;
-    margin-right: 10px;
+    background: url(../images/new/mail.png) no-repeat 0;
+    padding-left: 35px;
+    padding-bottom: 2px;
+    background-size: 21px;
 }
 
 .case-study-download {
+    background: url(../images/new/download_white.png) no-repeat;
+    background-size: 17px;
     display: inline-block;
-    margin-right: 10px;
+    padding-left: 27px;
+    padding-top: 0px;
+    margin-top: -3px;
+    background-position: 0 4px;
 }
+
 
 .pdf-iframe {
     width: 100%;
@@ -8309,7 +8304,7 @@ body.table-view .card-view {
     color: #000;
 }
 
-.card-view.video .video-play{
+.card-view.video .video-play {
     height: 150px;
     background-size: cover !important;
     position: relative;
@@ -8343,19 +8338,134 @@ body.table-view .card-view {
     margin: 0 auto;
 }
 
-.modal-footer button{
+.modal-footer button {
     background: #051C2C;
     color: #FFF;
 }
 
+div#documentName {
+    display: none;
+}
+
+.node-case-study .field-type-taxonomy-term-reference .field-item:after,
+.node-case-study .field-type-entityreference .field-item:after {
+    content: ', ';
+    position: absolute;
+    right: 0;
+}
+
+.node-case-study .field-type-taxonomy-term-reference .field-item:last-child:after,
+.node-case-study .field-type-entityreference .field-item:last-child:after {
+    content: '';
+    position: absolute;
+    right: 0;
+}
+
+.modal-big .modal-dialog {
+    max-width: 90%;
+}
+
+.modal-big .modal-body {
+    padding-top: 0;
+}
+
+.modal .contextual-links-wrapper {
+    display: none;
+}
+
+.modal-load {
+    cursor: pointer;
+}
+
+.pager-last,
+.pager-first {
+    display: none !important;
+}
+
+.pager > li > a, .pager > li > span {
+    border: none;
+}
+
+.pager {
+    width: 100%;
+    text-align: center;
+}
+
+.pager-item,
+.pager-current{
+    min-width: 43px;
+    padding-bottom: 10px;
+}
+
+.pager li a {
+    color: #000000;
+}
+
+.pager-current {
+    color: #1F40E6 !important;
+    border-bottom: 2px solid #1F40E6;
+}
+
+.pager-previous a{
+    background: url('../images/new/arrow-left.png') no-repeat;
+    width: 88px;
+    height: 58px;
+    text-indent: -9999px;
+    position: absolute;
+    left: 17px;
+    top: 0;
+}
+
+.pager-next a {
+    background: url('../images/new/arrow-right.png') no-repeat;
+    width: 88px;
+    height: 58px;
+    text-indent: -9999px;
+    position: absolute;
+    right: 17px;
+    top: 0;
+}
+
+.pager li {
+    color: #000000;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 29px;
+    text-align: center;
+}
+
+#edit-field-function-tid-wrapper > label:after,
+#edit-field-initiatives-tid-wrapper > label:after,
+#edit-field-regions-tid-wrapper > label:after,
+#edit-field-sub-sector-tid-wrapper > label:after,
+#edit-field-tribes-tid-wrapper > label:after,
+#edit-field-growth-platforms-tid-wrapper > label:after {
+    content: "\f078";
+    font-weight: 900;
+    font-family: "Font Awesome 5 Free";
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#edit-field-function-tid-wrapper > label,
+#edit-field-initiatives-tid-wrapper > label,
+#edit-field-regions-tid-wrapper > label,
+#edit-field-sub-sector-tid-wrapper > label,
+#edit-field-tribes-tid-wrapper > label,
+#edit-field-growth-platforms-tid-wrapper > label,
+#edit-field-function-tid-wrapper > label {
+    position: relative;
+}
+
 @media screen and (max-width: 767px) {
-   .hero-inner {
+    .hero-inner {
         position: relative;
         width: 100%;
         height: auto;
-       right: 0;
-       padding: 1.25em
-   }
+        right: 0;
+        padding: 1.25em
+    }
 
     .footer-inner {
         margin-left: 0 !important;

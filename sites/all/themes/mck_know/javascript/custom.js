@@ -208,15 +208,6 @@
           event.preventDefault();
         }
       });
-
-      $(document).ajaxComplete(function(event, xhr, settings) {
-        if (settings.data.indexOf("submitted") != -1) {
-          Drupal.CTools.Modal.dismiss();
-        }
-        if (settings.data.indexOf("vote") != -1) {
-          $('.rating-count').text($('.total-votes span').text());
-        }
-      });
       
       /*-------Related items-------*/
       initialize_owl($('.owl-carousel'));
@@ -297,8 +288,21 @@ if ($("body").hasClass("case-studies")) {
         $('body').addClass(view);
     });
 
-    $('body').on('click', '.practice-recommendation', function(){
-       console.log($(this).val());
+    $('body').on('click', '.modal-load', function(){
+        var nid = $(this).attr('data-case-study-nid');
+        $('.modal-header').hide();
+
+        $.get(
+            "/case-study/" + nid,
+            function(data) {
+                if (!data.error) {
+
+                    $('.modal-body').html(data.html);
+                    $('.modal').addClass('modal-big');
+                    $('.modal').modal('show');
+                }
+            }
+        );
     });
 
     $('body').on('click', '.video-play', function () {
@@ -309,7 +313,23 @@ if ($("body").hasClass("case-studies")) {
             '<source id="video-play-modal" src="' + video + '" type="video/mp4">' +
             'Your browser does not support the video tag.' +
             '</video>';
+        $('.modal').removeClass('modal-big');
+        $('.modal-header').show();
+        $('.modal-title').text(title);
+        $('.modal-body').html(video_html);
+        $('.modal').modal('show');
+    });
 
+    $('body').on('click', '.video-play-anchor', function () {
+        var title = $(this).attr('data-title');
+        var video = $(this).attr('data-video');
+
+        var video_html = '<video class="modal-video" controls>' +
+            '<source id="video-play-modal" src="' + video + '" type="video/mp4">' +
+            'Your browser does not support the video tag.' +
+            '</video>';
+        $('.modal').removeClass('modal-big');
+        $('.modal-header').show();
         $('.modal-title').text(title);
         $('.modal-body').html(video_html);
         $('.modal').modal('show');

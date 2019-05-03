@@ -8,6 +8,6 @@
   </li>
 
   <li>
-    <a class="item-bookmark case-study-item-bookmark" data-nid="<?php print $info['nid'];?> " href="javascript:void(0);"><i class="far fa-bookmark"></i></a>
+    <a class="item-bookmark case-study-item-bookmark" data-nid="<?php print $info['nid'];?>" href="javascript:void(0);"><i class="far fa-bookmark" style="padding-right: 5px;"></i>  Bookmark</a>
   </li>
 </ul>

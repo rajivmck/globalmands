@@ -1,6 +1,21 @@
 <?php
 
 /**
+ * Implement hook_menu().
+ */
+function mck_global_menu() {
+  $items['case-study/%'] = [
+    'title' => '',
+    'page arguments' => [1],
+    'page callback' => 'mck_global_case_study',
+    'delivery callback' => 'bookmark_new_ajax',
+    'access callback' => TRUE,
+  ];
+
+  return $items;
+}
+
+/**
  * Implements hook_ds_fields_info().
  */
 function mck_global_ds_fields_info() {
@@ -21,7 +36,6 @@ function mck_global_ds_fields_info() {
 
 function mck_global_case_study_header(array $field) {
   $node = $field['entity'];
-  ddl($node);
 
   // @TODO get the share info
 
@@ -59,4 +73,32 @@ function mck_global_theme($existing, $type, $theme, $path) {
       'path' => drupal_get_path('module', 'mck_global') . '/theme',
     ],
   ];
+}
+
+/**
+ * Return a case study full view mode in json.
+ *
+ * @param $nid
+ *
+ * @return array
+ */
+function mck_global_case_study($nid) {
+  $output = [
+    'html' => '',
+    'error' => TRUE,
+  ];
+
+  if ($nid) {
+    $node = node_load($nid);
+
+    $entity_view = entity_view('node', [$node], 'full');
+    $item = render($entity_view);
+
+    $output = [
+      'html' => $item,
+      'error' => FALSE,
+    ];
+  }
+
+  return $output;
 }

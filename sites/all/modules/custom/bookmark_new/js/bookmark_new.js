@@ -41,7 +41,7 @@
         }
       });
 
-      if (typeof(bookmakrs) != "undefined") {
+      if (typeof(bookmarks) != "undefined") {
         $.each(bookmarks, function (key, value) {
           $('[data-nid=' + value + ']').addClass('active');
           $('[data-nid=' + value + '] .far').addClass('fas');
