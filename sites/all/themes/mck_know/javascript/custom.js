@@ -293,7 +293,7 @@ if ($("body").hasClass("case-studies")) {
         $('.modal-header').hide();
 
         $.get(
-            "/case-study/" + nid,
+            Drupal.settings.basePath + "case-study/" + nid,
             function(data) {
                 if (!data.error) {
 
