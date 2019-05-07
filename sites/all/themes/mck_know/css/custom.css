@@ -7977,9 +7977,8 @@ body.edit-field-tribes-tid-wrapper #edit-field-tribes-tid-wrapper .views-widget 
 
 .card-view.case-study-view .card-title {
     margin-bottom: 15px;
-        font-weight: bold;
+    font-weight: bold;
     font-size: .90em;
-    min-height: 120px;
 }
 
 .card-view .card-title a {
@@ -8123,8 +8122,13 @@ body.table-view .card-view {
     line-height: 18px;
 }
 
-.cst-contacts {
+.cst-contacts,
+.case-id{
     margin-bottom: 15px;
+}
+
+.reference-case {
+    margin-top: 15px;
 }
 
 .node .field-label-inline {
@@ -8232,18 +8236,22 @@ body.table-view .card-view {
 }
 
 .action-links-items {
-    position: relative;
+    position: absolute;
+    width: 100%;
+    bottom: 1.25rem;
+    padding: 0 1.25rem;
+    left: 0;
 }
 
-.case-study-view .action-links-items {
-    margin-top: 30px;
+.case-study-view .info-data {
+    margin-bottom: 30px;
 }
 
 .pages {
     position: absolute;
     display: inline-block;
-    right: 0;
-    bottom: 5px;
+    right: 1.25rem;
+    bottom: 0;
     font-size: 14px;
 }
 
@@ -8298,6 +8306,7 @@ body.table-view .card-view {
 
 .card-body {
     position: relative;
+    padding: 1.25rem 1.25rem 2.25rem 1.25rem;
 }
 
 .card{
@@ -8456,6 +8465,20 @@ div#documentName {
     font-weight: 500;
     line-height: 29px;
     text-align: center;
+}
+
+.reference-case {
+    position: relative;
+    padding-left: 20px;
+}
+
+.reference-case:after{
+    content: "\f005";
+    font-weight: 900;
+    font-family: "Font Awesome 5 Free";
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 #edit-field-function-tid-wrapper > label:after,

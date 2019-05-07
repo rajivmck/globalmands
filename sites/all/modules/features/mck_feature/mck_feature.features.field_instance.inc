@@ -58,7 +58,54 @@ function mck_feature_field_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 46,
+      'weight' => 48,
+    ),
+  );
+
+  // Exported field_instance: 'node-case_study-field_additional_keywords'.
+  $field_instances['node-case_study-field_additional_keywords'] = array(
+    'bundle' => 'case_study',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 14,
+      ),
+      'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'ds_extras_field_template' => '',
+    'entity_type' => 'node',
+    'field_name' => 'field_additional_keywords',
+    'label' => 'Additional keywords',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 5,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 50,
     ),
   );
 
@@ -107,7 +154,7 @@ function mck_feature_field_default_field_instances() {
         'progress_indicator' => 'throbber',
       ),
       'type' => 'file_generic',
-      'weight' => 49,
+      'weight' => 51,
     ),
   );
 
@@ -162,7 +209,7 @@ function mck_feature_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'entityreference_autocomplete',
-      'weight' => 47,
+      'weight' => 49,
     ),
   );
 
@@ -232,7 +279,7 @@ function mck_feature_field_default_field_instances() {
         'year_range' => '-3:+3',
       ),
       'type' => 'date_popup',
-      'weight' => 45,
+      'weight' => 47,
     ),
   );
 
@@ -327,7 +374,7 @@ function mck_feature_field_default_field_instances() {
         'display_label' => 1,
       ),
       'type' => 'options_onoff',
-      'weight' => 44,
+      'weight' => 45,
     ),
   );
 
@@ -370,7 +417,13 @@ function mck_feature_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'shs' => array(
+          'create_new_levels' => FALSE,
+          'create_new_terms' => FALSE,
+          'force_deepest' => FALSE,
+        ),
+      ),
       'type' => 'options_buttons',
       'weight' => 36,
     ),
@@ -469,6 +522,56 @@ function mck_feature_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-case_study-field_lop'.
+  $field_instances['node-case_study-field_lop'] = array(
+    'bundle' => 'case_study',
+    'default_value' => array(
+      0 => array(
+        'value' => 0,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 16,
+      ),
+      'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'ds_extras_field_template' => '',
+    'entity_type' => 'node',
+    'field_name' => 'field_lop',
+    'label' => 'LOP',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'display_label' => 1,
+      ),
+      'type' => 'options_onoff',
+      'weight' => 46,
+    ),
+  );
+
   // Exported field_instance: 'node-case_study-field_number_of_pages'.
   $field_instances['node-case_study-field_number_of_pages'] = array(
     'bundle' => 'case_study',
@@ -524,7 +627,7 @@ function mck_feature_field_default_field_instances() {
       'module' => 'number',
       'settings' => array(),
       'type' => 'number',
-      'weight' => 48,
+      'weight' => 50,
     ),
   );
 
@@ -570,6 +673,50 @@ function mck_feature_field_default_field_instances() {
       'settings' => array(),
       'type' => 'options_buttons',
       'weight' => 43,
+    ),
+  );
+
+  // Exported field_instance: 'node-case_study-field_reference_case'.
+  $field_instances['node-case_study-field_reference_case'] = array(
+    'bundle' => 'case_study',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'taxonomy',
+        'settings' => array(),
+        'type' => 'taxonomy_term_reference_link',
+        'weight' => 15,
+      ),
+      'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'ds_extras_field_template' => '',
+    'entity_type' => 'node',
+    'field_name' => 'field_reference_case',
+    'label' => 'Reference Case',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_buttons',
+      'weight' => 44,
     ),
   );
 
@@ -1868,6 +2015,7 @@ function mck_feature_field_default_field_instances() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Additional keywords');
   t('Body');
   t('CST contacts');
   t('Case Study');
@@ -1881,10 +2029,12 @@ function mck_feature_field_default_field_instances() {
   t('Hero images');
   t('ID');
   t('Initiatives');
+  t('LOP');
   t('Length');
   t('Number of Pages');
   t('Paragraph');
   t('Practice Recommended');
+  t('Reference Case');
   t('Regions');
   t('Sub-sector');
   t('Tribes');

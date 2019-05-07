@@ -183,7 +183,9 @@ function mck_feature_field_group_info() {
       5 => 'field_number_of_pages',
       6 => 'field_case_study',
       7 => 'field_id',
-      8 => 'title',
+      8 => 'field_reference_case',
+      9 => 'field_lop',
+      10 => 'title',
     ),
     'format_type' => 'htab',
     'format_settings' => array(

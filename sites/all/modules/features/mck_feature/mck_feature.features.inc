@@ -72,7 +72,7 @@ function mck_feature_image_default_styles() {
 function mck_feature_node_info() {
   $items = array(
     'case_study' => array(
-      'name' => t('Case Study'),
+      'name' => t('Case Studies and LOPs'),
       'base' => 'node_content',
       'description' => '',
       'has_title' => '1',
