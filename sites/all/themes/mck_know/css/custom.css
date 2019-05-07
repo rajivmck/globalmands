@@ -59,8 +59,8 @@
 }
 
 * {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+/*    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;*/
 }
 
 [class*=mck-icon__],
@@ -4189,7 +4189,7 @@ section.promo-quote {
 }
 
 .case-wrapper {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+/*    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
 }
 
 .case-wrapper h2,
@@ -7971,8 +7971,15 @@ body.edit-field-tribes-tid-wrapper #edit-field-tribes-tid-wrapper .views-widget 
     margin-bottom: 61px;
 }
 
+.card{
+    border-radius: 0px;
+}
+
 .card-view.case-study-view .card-title {
     margin-bottom: 15px;
+        font-weight: bold;
+    font-size: .90em;
+    min-height: 120px;
 }
 
 .card-view .card-title a {
@@ -8112,7 +8119,7 @@ body.table-view .card-view {
 .taxonomy,
 .cst-contacts {
     color: #000000;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 18px;
 }
 
@@ -8292,6 +8299,23 @@ body.table-view .card-view {
 .card-body {
     position: relative;
 }
+
+.card{
+    -webkit-transition: opacity .4s;
+    transition: opacity .4s;
+}
+
+ .card:hover {
+    transition: opacity .4s;
+    -webkit-box-shadow: 0 10px 40px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 10px 40px 0 rgba(0,0,0,0.2);
+}
+
+.table-view{
+    font-size: 1.0em;
+    line-height: 1.2em;
+}
+
 
 .bookmark-abs {
     position: absolute;
