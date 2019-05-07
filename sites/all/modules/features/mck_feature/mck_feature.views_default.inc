@@ -895,7 +895,7 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['filters']['field_lop_value']['table'] = 'field_data_field_lop';
   $handler->display->display_options['filters']['field_lop_value']['field'] = 'field_lop_value';
   $handler->display->display_options['filters']['field_lop_value']['value'] = array(
-    0 => '0',
+    1 => '1',
   );
   $handler->display->display_options['path'] = 'lops';
   $handler->display->display_options['menu']['type'] = 'normal';
