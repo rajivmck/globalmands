@@ -55,7 +55,6 @@ function mck_global_case_study_header(array $field) {
 }
 
 function mck_global_viewer_js(array $field) {
-  global $base_path;
   $node = $field['entity'];
   $filename = $node->field_case_study[LANGUAGE_NONE][0]['filename'];
 
