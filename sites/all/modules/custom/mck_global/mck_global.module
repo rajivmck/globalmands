@@ -101,3 +101,20 @@ function mck_global_case_study($nid) {
 
   return $output;
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function mck_global_form_views_exposed_form_alter(&$form, &$form_state) {
+  if (isset($form['field_growth_platforms_tid'])) {
+    $vocabulary = taxonomy_vocabulary_machine_name_load('growth_platforms');
+    $terms = taxonomy_get_tree($vocabulary->vid);
+
+    $terms_tree = [];
+    foreach ($terms as $term) {
+      $terms_tree[$term->tid] = $term->name;
+    }
+
+    $form['field_growth_platforms_tid']['#options'] = $terms_tree;
+  }
+}

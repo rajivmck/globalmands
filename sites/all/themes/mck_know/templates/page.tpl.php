@@ -104,7 +104,6 @@
                        class="names section-name-desktop -show"><?php print $site_name; ?></a>
 
                   <?php print theme('custom_main_menu'); ?>
-                  <?php print theme('search'); ?>
                 </div>
             </div>
         </div>

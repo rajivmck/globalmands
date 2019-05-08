@@ -8505,6 +8505,26 @@ div#documentName {
     position: relative;
 }
 
+.view-search .view-content {
+    margin-top: 0;
+}
+
+.view-search .table {
+    margin-top: 0 !important;
+}
+
+.view-search .views-widget {
+    display: block;
+}
+
+.views-search input[type=text] {
+    height: 25px !important;
+}
+
+.taxonomy-has-parents {
+    padding-left: 1.25rem;
+}
+
 @media screen and (max-width: 767px) {
     .hero-inner {
         position: relative;

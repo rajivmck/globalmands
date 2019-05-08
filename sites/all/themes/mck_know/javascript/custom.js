@@ -3,8 +3,9 @@
         attach: function (context, settings) {
 
 
-            $("#search-block-form").attr("action", "search-mr?keyword=");
+            $("#search-block-form").attr("action", "search-newest");
             $("#search-block-form").attr("method", "get");
+            $(".search-box input[type=text]").attr("name", "search_api_views_fulltext");
             $('#search-block-form input[type="hidden"]').remove();
 
             $('.compass:contains("Pricing Compass")').parent().addClass("pricing-compass");

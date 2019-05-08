@@ -2049,27 +2049,13 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Search';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-  $handler->display->display_options['style_plugin'] = 'default';
-  $handler->display->display_options['style_options']['grouping'] = array(
-    0 => array(
-      'field' => 'field_sub_categories',
-      'rendered' => 1,
-      'rendered_strip' => 0,
-    ),
-  );
-  $handler->display->display_options['style_options']['row_class'] = 'main-row';
-  $handler->display->display_options['row_plugin'] = 'fields';
-  $handler->display->display_options['row_options']['default_field_elements'] = FALSE;
-  /* Field: Indexed Node: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['title']['link_to_entity'] = 1;
+  $handler->display->display_options['style_plugin'] = 'table';
+  /* Field: Indexed Node: Node ID */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'search_api_index_default_node_index';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
   /* Sort criterion: Search: Relevance */
   $handler->display->display_options['sorts']['search_api_relevance']['id'] = 'search_api_relevance';
   $handler->display->display_options['sorts']['search_api_relevance']['table'] = 'search_api_index_default_node_index';
@@ -2080,549 +2066,10 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['filters']['search_api_views_fulltext']['field'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['exposed'] = TRUE;
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator_id'] = 'search_api_views_fulltext_op';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['label'] = 'Fulltext search';
+  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['label'] = 'Search';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator'] = 'search_api_views_fulltext_op';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['identifier'] = 'search';
+  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['identifier'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['remember_roles'] = array(
-    2 => '2',
-    1 => 0,
-    3 => 0,
-  );
-  $handler->display->display_options['filters']['search_api_views_fulltext']['fields'] = array(
-    'body:value' => 'body:value',
-    'title' => 'title',
-  );
-
-  /* Display: Page */
-  $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['defaults']['pager'] = FALSE;
-  $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '20';
-  $handler->display->display_options['pager']['options']['offset'] = '0';
-  $handler->display->display_options['pager']['options']['id'] = '0';
-  $handler->display->display_options['pager']['options']['quantity'] = '9';
-  $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Field: Indexed Node: Node ID */
-  $handler->display->display_options['fields']['nid']['id'] = 'nid';
-  $handler->display->display_options['fields']['nid']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['nid']['field'] = 'nid';
-  $handler->display->display_options['fields']['nid']['label'] = '';
-  $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['nid']['link_to_entity'] = 0;
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['field_tags']['id'] = 'field_tags';
-  $handler->display->display_options['fields']['field_tags']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['field_tags']['field'] = 'field_tags';
-  $handler->display->display_options['fields']['field_tags']['label'] = '';
-  $handler->display->display_options['fields']['field_tags']['element_type'] = 'div';
-  $handler->display->display_options['fields']['field_tags']['element_class'] = 'doc-tags';
-  $handler->display->display_options['fields']['field_tags']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_tags']['element_default_classes'] = FALSE;
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['field_urls']['id'] = 'field_urls';
-  $handler->display->display_options['fields']['field_urls']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['field_urls']['field'] = 'field_urls';
-  $handler->display->display_options['fields']['field_urls']['label'] = '';
-  $handler->display->display_options['fields']['field_urls']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_urls']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_urls']['element_default_classes'] = FALSE;
-  /* Field: Indexed Node: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['title']['alter']['text'] = '<a href="[field_urls]" target="blank">[title]</a>';
-  $handler->display->display_options['fields']['title']['element_type'] = 'div';
-  $handler->display->display_options['fields']['title']['element_class'] = 'doc-title';
-  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['title']['link_to_entity'] = 0;
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['field_date_published']['id'] = 'field_date_published';
-  $handler->display->display_options['fields']['field_date_published']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['field_date_published']['field'] = 'field_date_published';
-  $handler->display->display_options['fields']['field_date_published']['label'] = '';
-  $handler->display->display_options['fields']['field_date_published']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['field_date_published']['alter']['text'] = '[field_date_published]';
-  $handler->display->display_options['fields']['field_date_published']['element_type'] = 'div';
-  $handler->display->display_options['fields']['field_date_published']['element_class'] = 'doc-inline doc-pages';
-  $handler->display->display_options['fields']['field_date_published']['element_label_colon'] = FALSE;
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['field_pages']['id'] = 'field_pages';
-  $handler->display->display_options['fields']['field_pages']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['field_pages']['field'] = 'field_pages';
-  $handler->display->display_options['fields']['field_pages']['label'] = '';
-  $handler->display->display_options['fields']['field_pages']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['field_pages']['alter']['text'] = '| [field_pages] Pages';
-  $handler->display->display_options['fields']['field_pages']['element_type'] = 'div';
-  $handler->display->display_options['fields']['field_pages']['element_class'] = 'doc-inline doc-pages';
-  $handler->display->display_options['fields']['field_pages']['element_label_colon'] = FALSE;
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['field_size']['id'] = 'field_size';
-  $handler->display->display_options['fields']['field_size']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['field_size']['field'] = 'field_size';
-  $handler->display->display_options['fields']['field_size']['label'] = '';
-  $handler->display->display_options['fields']['field_size']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['field_size']['alter']['text'] = '| [field_size] MB | <a class="doc-download" href="[field_urls]"> <span><i class="far fa-arrow-alt-circle-down"></i></span>Download</a>';
-  $handler->display->display_options['fields']['field_size']['element_type'] = 'div';
-  $handler->display->display_options['fields']['field_size']['element_class'] = 'doc-inline doc-size';
-  $handler->display->display_options['fields']['field_size']['element_label_colon'] = FALSE;
-  /* Field: Indexed Node: The main body text */
-  $handler->display->display_options['fields']['body']['id'] = 'body';
-  $handler->display->display_options['fields']['body']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['body']['field'] = 'body';
-  $handler->display->display_options['fields']['body']['label'] = '';
-  $handler->display->display_options['fields']['body']['element_type'] = 'div';
-  $handler->display->display_options['fields']['body']['element_class'] = 'doc-body';
-  $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['field_document']['id'] = 'field_document';
-  $handler->display->display_options['fields']['field_document']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['field_document']['field'] = 'field_document';
-  $handler->display->display_options['fields']['field_document']['label'] = '';
-  $handler->display->display_options['fields']['field_document']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_document']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_document']['element_default_classes'] = FALSE;
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['field_sub_categories']['id'] = 'field_sub_categories';
-  $handler->display->display_options['fields']['field_sub_categories']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['fields']['field_sub_categories']['field'] = 'field_sub_categories';
-  $handler->display->display_options['fields']['field_sub_categories']['label'] = '';
-  $handler->display->display_options['fields']['field_sub_categories']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_sub_categories']['element_type'] = 'h3';
-  $handler->display->display_options['fields']['field_sub_categories']['element_class'] = 'sub-category';
-  $handler->display->display_options['fields']['field_sub_categories']['element_label_colon'] = FALSE;
-  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
-  $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Search: Fulltext search */
-  $handler->display->display_options['filters']['search_api_views_fulltext']['id'] = 'search_api_views_fulltext';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['field'] = 'search_api_views_fulltext';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator_id'] = 'search_api_views_fulltext_op';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator'] = 'search_api_views_fulltext_op';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['identifier'] = 'keyword';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['remember_roles'] = array(
-    2 => '2',
-    1 => 0,
-    4 => 0,
-    3 => 0,
-    5 => 0,
-  );
-  $handler->display->display_options['filters']['search_api_views_fulltext']['fields'] = array(
-    'body:value' => 'body:value',
-    'field_paragraph:field_answer' => 'field_paragraph:field_answer',
-    'field_paragraph:field_column_title' => 'field_paragraph:field_column_title',
-    'field_paragraph:field_heading' => 'field_paragraph:field_heading',
-    'field_paragraph:field_hero_description' => 'field_paragraph:field_hero_description',
-    'field_paragraph:field_hero_headline' => 'field_paragraph:field_hero_headline',
-    'field_paragraph:field_name' => 'field_paragraph:field_name',
-    'field_paragraph:field_paragraph:field_answer' => 'field_paragraph:field_paragraph:field_answer',
-    'field_paragraph:field_paragraph:field_column_title' => 'field_paragraph:field_paragraph:field_column_title',
-    'field_paragraph:field_paragraph:field_hero_description' => 'field_paragraph:field_paragraph:field_hero_description',
-    'field_paragraph:field_paragraph:field_hero_headline' => 'field_paragraph:field_paragraph:field_hero_headline',
-    'field_paragraph:field_paragraph:field_question' => 'field_paragraph:field_paragraph:field_question',
-    'field_paragraph:field_paragraph:field_text_headline' => 'field_paragraph:field_paragraph:field_text_headline',
-    'field_paragraph:field_paragraph:field_text_quote' => 'field_paragraph:field_paragraph:field_text_quote',
-    'field_paragraph:field_paragraph:field_text_quote_byline' => 'field_paragraph:field_paragraph:field_text_quote_byline',
-    'field_paragraph:field_paragraph:field_title' => 'field_paragraph:field_paragraph:field_title',
-    'field_paragraph:field_question' => 'field_paragraph:field_question',
-    'field_paragraph:field_text_headline' => 'field_paragraph:field_text_headline',
-    'field_paragraph:field_text_paragraph:value' => 'field_paragraph:field_text_paragraph:value',
-    'field_paragraph:field_text_quote' => 'field_paragraph:field_text_quote',
-    'field_paragraph:field_text_quote_byline' => 'field_paragraph:field_text_quote_byline',
-    'field_paragraph:field_title' => 'field_paragraph:field_title',
-    'field_sector:name' => 'field_sector:name',
-    'field_sub_categories:name' => 'field_sub_categories:name',
-    'field_tags:name' => 'field_tags:name',
-    'title' => 'title',
-  );
-  /* Filter criterion: Indexed Node: Content type */
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'search_api_index_default_node_index';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'page' => 'page',
-    'case_study' => 'case_study',
-    'credentials' => 'credentials',
-  );
-  $handler->display->display_options['path'] = 'search';
-  $export['search'] = $view;
-
-  $view = new view();
-  $view->name = 'search_m_s';
-  $view->description = '';
-  $view->tag = 'default';
-  $view->base_table = 'node';
-  $view->human_name = 'Search M&S';
-  $view->core = 7;
-  $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
-
-  /* Display: Master */
-  $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'RELATED';
-  $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'perm';
-  $handler->display->display_options['cache']['type'] = 'none';
-  $handler->display->display_options['query']['type'] = 'views_query';
-  $handler->display->display_options['query']['options']['distinct'] = TRUE;
-  $handler->display->display_options['exposed_form']['type'] = 'better_exposed_filters';
-  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
-  $handler->display->display_options['exposed_form']['options']['bef'] = array(
-    'general' => array(
-      'input_required' => 0,
-      'text_input_required' => array(
-        'text_input_required' => array(
-          'value' => 'Select any filter and click on Apply to see results',
-          'format' => 'filtered_html',
-        ),
-      ),
-      'allow_secondary' => 0,
-      'secondary_label' => 'Advanced options',
-      'secondary_collapse_override' => '0',
-    ),
-    'sort' => array(
-      'bef_format' => 'bef_links',
-      'advanced' => array(
-        'collapsible' => 0,
-        'collapsible_label' => 'Sort options',
-        'combine' => 0,
-        'combine_param' => 'sort_bef_combine',
-        'combine_rewrite' => '',
-        'reset' => 0,
-        'reset_label' => '',
-        'is_secondary' => 0,
-        'autosubmit' => 0,
-      ),
-    ),
-    'field_type_tid' => array(
-      'bef_format' => 'bef_links',
-      'more_options' => array(
-        'bef_select_all_none' => FALSE,
-        'bef_collapsible' => 0,
-        'autosubmit' => 0,
-        'is_secondary' => 0,
-        'any_label' => 'All',
-        'bef_filter_description' => '',
-        'tokens' => array(
-          'available' => array(
-            0 => 'global_types',
-            1 => 'vocabulary',
-          ),
-        ),
-        'rewrite' => array(
-          'filter_rewrite_values' => '',
-        ),
-      ),
-    ),
-    'field_recommended_value' => array(
-      'bef_format' => 'default',
-      'more_options' => array(
-        'bef_select_all_none' => FALSE,
-        'bef_collapsible' => 0,
-        'autosubmit' => 0,
-        'is_secondary' => 0,
-        'any_label' => '',
-        'bef_filter_description' => '',
-        'tokens' => array(
-          'available' => array(
-            0 => 'global_types',
-          ),
-        ),
-        'rewrite' => array(
-          'filter_rewrite_values' => '',
-        ),
-      ),
-    ),
-    'field_service_line_tid' => array(
-      'bef_format' => 'bef_ul',
-      'more_options' => array(
-        'bef_select_all_none' => 0,
-        'bef_select_all_none_nested' => 0,
-        'bef_term_description' => 0,
-        'bef_collapsible' => 0,
-        'autosubmit' => 0,
-        'is_secondary' => 0,
-        'any_label' => '',
-        'bef_filter_description' => '',
-        'tokens' => array(
-          'available' => array(
-            0 => 'global_types',
-            1 => 'vocabulary',
-          ),
-        ),
-        'rewrite' => array(
-          'filter_rewrite_values' => '',
-        ),
-      ),
-    ),
-    'field_regions_tid' => array(
-      'bef_format' => 'bef_ul',
-      'more_options' => array(
-        'bef_select_all_none' => 0,
-        'bef_select_all_none_nested' => 0,
-        'bef_term_description' => 0,
-        'bef_collapsible' => 0,
-        'autosubmit' => 0,
-        'is_secondary' => 0,
-        'any_label' => '',
-        'bef_filter_description' => '',
-        'tokens' => array(
-          'available' => array(
-            0 => 'global_types',
-            1 => 'vocabulary',
-          ),
-        ),
-        'rewrite' => array(
-          'filter_rewrite_values' => '',
-        ),
-      ),
-    ),
-    'field_industries_tid' => array(
-      'bef_format' => 'bef_ul',
-      'more_options' => array(
-        'bef_select_all_none' => 0,
-        'bef_select_all_none_nested' => 0,
-        'bef_term_description' => 0,
-        'bef_collapsible' => 0,
-        'autosubmit' => 0,
-        'is_secondary' => 0,
-        'any_label' => '',
-        'bef_filter_description' => '',
-        'tokens' => array(
-          'available' => array(
-            0 => 'global_types',
-            1 => 'vocabulary',
-          ),
-        ),
-        'rewrite' => array(
-          'filter_rewrite_values' => '',
-        ),
-      ),
-    ),
-  );
-  $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-  $handler->display->display_options['pager']['options']['offset'] = '0';
-  $handler->display->display_options['pager']['options']['id'] = '0';
-  $handler->display->display_options['pager']['options']['quantity'] = '9';
-  $handler->display->display_options['style_plugin'] = 'default';
-  $handler->display->display_options['style_options']['row_class'] = 'col-lg-6 col-md-6 col-sm-12';
-  $handler->display->display_options['style_options']['default_row_class'] = FALSE;
-  $handler->display->display_options['style_options']['row_class_special'] = FALSE;
-  $handler->display->display_options['row_plugin'] = 'fields';
-  $handler->display->display_options['row_options']['separator'] = '|';
-  $handler->display->display_options['row_options']['default_field_elements'] = FALSE;
-  /* No results behavior: Global: Text area */
-  $handler->display->display_options['empty']['area']['id'] = 'area';
-  $handler->display->display_options['empty']['area']['table'] = 'views';
-  $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = 'No results';
-  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
-  /* Relationship: Content: Taxonomy terms on node */
-  $handler->display->display_options['relationships']['term_node_tid']['id'] = 'term_node_tid';
-  $handler->display->display_options['relationships']['term_node_tid']['table'] = 'node';
-  $handler->display->display_options['relationships']['term_node_tid']['field'] = 'term_node_tid';
-  /* Field: Content: Nid */
-  $handler->display->display_options['fields']['nid']['id'] = 'nid';
-  $handler->display->display_options['fields']['nid']['table'] = 'node';
-  $handler->display->display_options['fields']['nid']['field'] = 'nid';
-  $handler->display->display_options['fields']['nid']['label'] = '';
-  $handler->display->display_options['fields']['nid']['element_type'] = '0';
-  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['nid']['element_wrapper_type'] = '0';
-  $handler->display->display_options['fields']['nid']['element_default_classes'] = FALSE;
-  /* Field: Global: Custom text */
-  $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
-  $handler->display->display_options['fields']['nothing']['table'] = 'views';
-  $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
-  $handler->display->display_options['fields']['nothing']['label'] = '';
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '<span href="#" class="star-icon" data-nid="[nid]"></span>';
-  $handler->display->display_options['fields']['nothing']['element_type'] = 'div';
-  $handler->display->display_options['fields']['nothing']['element_class'] = 'bookmark';
-  $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['alter']['text'] = '<a href="node/[nid]" class="video-popup">[title]</a>';
-  $handler->display->display_options['fields']['title']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['title']['alter']['path'] = 'node/[nid]';
-  $handler->display->display_options['fields']['title']['alter']['link_class'] = 'video-popup';
-  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
-  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  $handler->display->display_options['fields']['title']['element_type'] = 'div';
-  $handler->display->display_options['fields']['title']['element_class'] = 'doc-title';
-  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
-  /* Field: Content: Body */
-  $handler->display->display_options['fields']['body']['id'] = 'body';
-  $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
-  $handler->display->display_options['fields']['body']['field'] = 'body';
-  $handler->display->display_options['fields']['body']['label'] = '';
-  $handler->display->display_options['fields']['body']['alter']['max_length'] = '180';
-  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = TRUE;
-  $handler->display->display_options['fields']['body']['alter']['trim'] = TRUE;
-  $handler->display->display_options['fields']['body']['element_type'] = 'div';
-  $handler->display->display_options['fields']['body']['element_class'] = 'doc-body';
-  $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
-  /* Field: Global: Custom text */
-  $handler->display->display_options['fields']['nothing_1']['id'] = 'nothing_1';
-  $handler->display->display_options['fields']['nothing_1']['table'] = 'views';
-  $handler->display->display_options['fields']['nothing_1']['field'] = 'nothing';
-  $handler->display->display_options['fields']['nothing_1']['label'] = '';
-  $handler->display->display_options['fields']['nothing_1']['alter']['text'] = '<div class="row">
-		<div class="col-md-8">
-			<div class="bottom-tags">
-
-			  [field_service_line]
-			</div>
-		</div>
-		<div class="col-md-4">
-
-				<div class="bottom-links">
-				  <ul>
-				  	<li>[field_file]</li>
-				  	<li> [field_growth_related]</li>
-				  	<li>[field_compass]</li>
-				  </ul>
-
-				</div>
-		</div>
-</div>';
-  $handler->display->display_options['fields']['nothing_1']['element_type'] = 'div';
-  $handler->display->display_options['fields']['nothing_1']['element_class'] = 'bottom-box';
-  $handler->display->display_options['fields']['nothing_1']['element_label_colon'] = FALSE;
-  /* Field: Content: Additional keywords */
-  $handler->display->display_options['fields']['field_additional_keywords']['id'] = 'field_additional_keywords';
-  $handler->display->display_options['fields']['field_additional_keywords']['table'] = 'field_data_field_additional_keywords';
-  $handler->display->display_options['fields']['field_additional_keywords']['field'] = 'field_additional_keywords';
-  $handler->display->display_options['fields']['field_additional_keywords']['label'] = '';
-  $handler->display->display_options['fields']['field_additional_keywords']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_additional_keywords']['element_label_colon'] = FALSE;
-  /* Sort criterion: Content: Title */
-  $handler->display->display_options['sorts']['title']['id'] = 'title';
-  $handler->display->display_options['sorts']['title']['table'] = 'node';
-  $handler->display->display_options['sorts']['title']['field'] = 'title';
-  $handler->display->display_options['sorts']['title']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['title']['expose']['label'] = 'Title';
-  /* Sort criterion: Content: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['created']['expose']['label'] = 'Added date';
-  /* Sort criterion: Content: Body (body:format) */
-  $handler->display->display_options['sorts']['body_format']['id'] = 'body_format';
-  $handler->display->display_options['sorts']['body_format']['table'] = 'field_data_body';
-  $handler->display->display_options['sorts']['body_format']['field'] = 'body_format';
-  $handler->display->display_options['sorts']['body_format']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['body_format']['expose']['label'] = 'Summary';
-  /* Contextual filter: Content: Nid */
-  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['table'] = 'node';
-  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'node';
-  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
-  $handler->display->display_options['arguments']['nid']['break_phrase'] = TRUE;
-  /* Filter criterion: Content: Published */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'node';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = 1;
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Content: Type */
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'node';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'case_study' => 'case_study',
-    'credentials' => 'credentials',
-    'video' => 'video',
-  );
-
-  /* Display: List */
-  $handler = $view->new_display('page', 'List', 'page');
-  $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Search Results';
-  $handler->display->display_options['exposed_block'] = TRUE;
-  $handler->display->display_options['defaults']['relationships'] = FALSE;
-  $handler->display->display_options['defaults']['sorts'] = FALSE;
-  /* Sort criterion: Content: Title */
-  $handler->display->display_options['sorts']['title']['id'] = 'title';
-  $handler->display->display_options['sorts']['title']['table'] = 'node';
-  $handler->display->display_options['sorts']['title']['field'] = 'title';
-  $handler->display->display_options['sorts']['title']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['title']['expose']['label'] = 'Title';
-  /* Sort criterion: Broken/missing handler */
-  $handler->display->display_options['sorts']['field_year_case_was_tapped_value']['id'] = 'field_year_case_was_tapped_value';
-  $handler->display->display_options['sorts']['field_year_case_was_tapped_value']['table'] = 'field_data_field_year_case_was_tapped';
-  $handler->display->display_options['sorts']['field_year_case_was_tapped_value']['field'] = 'field_year_case_was_tapped_value';
-  $handler->display->display_options['sorts']['field_year_case_was_tapped_value']['order'] = 'DESC';
-  /* Sort criterion: Content: Body (body:format) */
-  $handler->display->display_options['sorts']['body_format']['id'] = 'body_format';
-  $handler->display->display_options['sorts']['body_format']['table'] = 'field_data_body';
-  $handler->display->display_options['sorts']['body_format']['field'] = 'body_format';
-  $handler->display->display_options['sorts']['body_format']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['body_format']['expose']['label'] = 'Summary';
-  $handler->display->display_options['defaults']['arguments'] = FALSE;
-  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
-  $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'node';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = 1;
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Content: Type */
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'node';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'case_study' => 'case_study',
-  );
-  $handler->display->display_options['filters']['type']['group'] = 1;
-  /* Filter criterion: Content: Regions (field_regions) */
-  $handler->display->display_options['filters']['field_regions_tid']['id'] = 'field_regions_tid';
-  $handler->display->display_options['filters']['field_regions_tid']['table'] = 'field_data_field_regions';
-  $handler->display->display_options['filters']['field_regions_tid']['field'] = 'field_regions_tid';
-  $handler->display->display_options['filters']['field_regions_tid']['group'] = 1;
-  $handler->display->display_options['filters']['field_regions_tid']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['field_regions_tid']['expose']['operator_id'] = 'field_regions_tid_op';
-  $handler->display->display_options['filters']['field_regions_tid']['expose']['operator'] = 'field_regions_tid_op';
-  $handler->display->display_options['filters']['field_regions_tid']['expose']['identifier'] = 'field_regions_tid';
-  $handler->display->display_options['filters']['field_regions_tid']['expose']['multiple'] = TRUE;
-  $handler->display->display_options['filters']['field_regions_tid']['expose']['remember_roles'] = array(
-    2 => '2',
-    1 => 0,
-    4 => 0,
-    3 => 0,
-    5 => 0,
-  );
-  $handler->display->display_options['filters']['field_regions_tid']['type'] = 'select';
-  $handler->display->display_options['filters']['field_regions_tid']['vocabulary'] = 'regions';
-  $handler->display->display_options['filters']['field_regions_tid']['hierarchy'] = 1;
-  /* Filter criterion: Search: Search Terms */
-  $handler->display->display_options['filters']['keys']['id'] = 'keys';
-  $handler->display->display_options['filters']['keys']['table'] = 'search_index';
-  $handler->display->display_options['filters']['keys']['field'] = 'keys';
-  $handler->display->display_options['filters']['keys']['group'] = 1;
-  $handler->display->display_options['filters']['keys']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['keys']['expose']['operator_id'] = 'keys_op';
-  $handler->display->display_options['filters']['keys']['expose']['label'] = 'Search Terms';
-  $handler->display->display_options['filters']['keys']['expose']['operator'] = 'keys_op';
-  $handler->display->display_options['filters']['keys']['expose']['identifier'] = 'search_block_form';
-  $handler->display->display_options['filters']['keys']['expose']['required'] = TRUE;
-  $handler->display->display_options['filters']['keys']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
     4 => 0,
@@ -2631,8 +2078,42 @@ function mck_feature_views_default_views() {
     7 => 0,
     9 => 0,
   );
-  $handler->display->display_options['path'] = 'search-mr';
-  $export['search_m_s'] = $view;
+
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Indexed Node: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'search_api_index_default_node_index';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['link_to_entity'] = 0;
+  /* Field: Indexed Node: Node ID */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'search_api_index_default_node_index';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
+  $handler->display->display_options['fields']['nid']['label'] = 'Nid';
+  $handler->display->display_options['fields']['nid']['separator'] = '';
+  $handler->display->display_options['fields']['nid']['link_to_entity'] = 0;
+  /* Field: Indexed Node: Case Study */
+  $handler->display->display_options['fields']['field_case_study']['id'] = 'field_case_study';
+  $handler->display->display_options['fields']['field_case_study']['table'] = 'search_api_index_default_node_index';
+  $handler->display->display_options['fields']['field_case_study']['field'] = 'field_case_study';
+  $handler->display->display_options['fields']['field_case_study']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_case_study']['type'] = 'file_url_plain';
+  /* Field: Indexed Node: Credential */
+  $handler->display->display_options['fields']['field_credential']['id'] = 'field_credential';
+  $handler->display->display_options['fields']['field_credential']['table'] = 'search_api_index_default_node_index';
+  $handler->display->display_options['fields']['field_credential']['field'] = 'field_credential';
+  $handler->display->display_options['fields']['field_credential']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_credential']['type'] = 'file_url_plain';
+  /* Field: Indexed Node: Video */
+  $handler->display->display_options['fields']['field_video_file']['id'] = 'field_video_file';
+  $handler->display->display_options['fields']['field_video_file']['table'] = 'search_api_index_default_node_index';
+  $handler->display->display_options['fields']['field_video_file']['field'] = 'field_video_file';
+  $handler->display->display_options['fields']['field_video_file']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_video_file']['type'] = 'file_url_plain';
+  $handler->display->display_options['path'] = 'search-newest';
+  $export['search'] = $view;
 
   $view = new view();
   $view->name = 'videos';
