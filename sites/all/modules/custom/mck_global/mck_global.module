@@ -59,7 +59,7 @@ function mck_global_viewer_js(array $field) {
   $node = $field['entity'];
   $filename = $node->field_case_study[LANGUAGE_NONE][0]['filename'];
 
-  return '<iframe class="pdf-iframe" src="/ViewerJS/#../system/files/' . $filename . '"></iframe>';
+  return '<iframe class="pdf-iframe" src="' . base_path() . 'ViewerJS/#../system/files/' . $filename . '"></iframe>';
 }
 
 /**
