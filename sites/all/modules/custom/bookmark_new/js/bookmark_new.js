@@ -1,7 +1,6 @@
 (function($){
   Drupal.behaviors.bookmark = {
     attach: function(context, settings) {
-
       /*-------Add to bookmark-------*/
       $('.item-bookmark').click(function(event){
         event.preventDefault();

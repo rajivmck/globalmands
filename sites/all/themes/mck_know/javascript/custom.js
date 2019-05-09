@@ -2,7 +2,6 @@
     Drupal.behaviors.globalmands = {
         attach: function (context, settings) {
 
-
             $("#search-block-form").attr("action", "search-newest");
             $("#search-block-form").attr("method", "get");
             $(".search-box input[type=text]").attr("name", "search_api_views_fulltext");
@@ -357,6 +356,18 @@ function exposedSelectListTransform() {
             if ($(this).val()) {
                 $('.views-widget-sort-by #edit-sort-by').val($(this).val());
                 $('.views-submit-button input').click();
+            }
+        });
+    }
+
+    if ($('#edit-combine').length && $('#search-placeholder #edit-combine').length <= 0) {
+        $('#edit-combine').clone().appendTo('#search-placeholder');
+        $('#search-placeholder #edit-combine').attr('placeholder', 'Search');
+
+        $("body").on("keydown", '#search-placeholder #edit-combine', function search(e) {
+            if (e.keyCode == 13) {
+                $('#edit-combine').val($(this).val());
+                $('.view input[type=submit]').click();
             }
         });
     }

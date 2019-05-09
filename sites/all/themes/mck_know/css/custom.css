@@ -5510,6 +5510,10 @@ header.text-l.space a {
     top: 14px;
 }
 
+#edit-combine-wrapper {
+    display: none;
+}
+
 .ajax-loader {
     background-image: url(../images/ajax-loader.gif);
     width: 64px;
@@ -7993,6 +7997,11 @@ body.edit-field-tribes-tid-wrapper #edit-field-tribes-tid-wrapper .views-widget 
     display: none;
 }
 
+#select-placeholder {
+    display: inline-block;
+    margin-top: 1px;
+}
+
 #select-placeholder #edit-sort-by {
     height: 40px;
     width: 236px;
@@ -8226,7 +8235,7 @@ body.table-view .card-view {
     padding-left: 27px;
     padding-top: 0px;
     margin-top: -3px;
-    background-position: 0 4px;
+    background-position: 0 0;
 }
 
 
@@ -8524,6 +8533,17 @@ div#documentName {
 .taxonomy-has-parents {
     padding-left: 1.25rem;
 }
+
+#search-placeholder #edit-combine {
+    width: 36%;
+    display: inline-block;
+    min-height: 40px;
+    margin: 0;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+
 
 @media screen and (max-width: 767px) {
     .hero-inner {

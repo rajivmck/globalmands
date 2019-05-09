@@ -262,6 +262,7 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'better_exposed_filters';
   $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
+  $handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = FALSE;
   $handler->display->display_options['exposed_form']['options']['bef'] = array(
     'general' => array(
       'input_required' => 0,
@@ -409,11 +410,9 @@ function mck_feature_views_default_views() {
         ),
       ),
     ),
-    'shs_term_node_tid_depth' => array(
-      'bef_format' => 'bef',
+    'combine' => array(
+      'bef_format' => 'default',
       'more_options' => array(
-        'bef_select_all_none' => 0,
-        'bef_collapsible' => 0,
         'autosubmit' => 0,
         'is_secondary' => 0,
         'any_label' => '',
@@ -421,7 +420,6 @@ function mck_feature_views_default_views() {
         'tokens' => array(
           'available' => array(
             0 => 'global_types',
-            1 => 'vocabulary',
           ),
         ),
         'rewrite' => array(
@@ -448,6 +446,7 @@ function mck_feature_views_default_views() {
 
 <div class="col-lg-8">
 <div class="float-right">
+<span id="search-placeholder"></span>
 <span id="select-placeholder"></span>
 <span class="view">View</span>
 <i data-view="card-view" class="grid-display display-view fas fa-th-large"></i>
@@ -456,6 +455,13 @@ function mck_feature_views_default_views() {
 </div>
 </div>
 ';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<span class="no-results">No results found.</span>';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: Content: ID */
   $handler->display->display_options['fields']['field_id']['id'] = 'field_id';
   $handler->display->display_options['fields']['field_id']['table'] = 'field_data_field_id';
@@ -536,6 +542,11 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['fields']['field_reference_case']['field'] = 'field_reference_case';
   $handler->display->display_options['fields']['field_reference_case']['type'] = 'taxonomy_term_reference_plain';
   $handler->display->display_options['fields']['field_reference_case']['delta_offset'] = '0';
+  /* Field: Content: Additional keywords */
+  $handler->display->display_options['fields']['field_additional_keywords']['id'] = 'field_additional_keywords';
+  $handler->display->display_options['fields']['field_additional_keywords']['table'] = 'field_data_field_additional_keywords';
+  $handler->display->display_options['fields']['field_additional_keywords']['field'] = 'field_additional_keywords';
+  $handler->display->display_options['fields']['field_additional_keywords']['exclude'] = TRUE;
   /* Sort criterion: Content: Date (field_date) */
   $handler->display->display_options['sorts']['field_date_value']['id'] = 'field_date_value';
   $handler->display->display_options['sorts']['field_date_value']['table'] = 'field_data_field_date';
@@ -704,6 +715,29 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['filters']['field_lop_value']['value'] = array(
     1 => '1',
   );
+  /* Filter criterion: Global: Combine fields filter */
+  $handler->display->display_options['filters']['combine']['id'] = 'combine';
+  $handler->display->display_options['filters']['combine']['table'] = 'views';
+  $handler->display->display_options['filters']['combine']['field'] = 'combine';
+  $handler->display->display_options['filters']['combine']['operator'] = 'contains';
+  $handler->display->display_options['filters']['combine']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['combine']['expose']['operator_id'] = 'combine_op';
+  $handler->display->display_options['filters']['combine']['expose']['label'] = 'Combine fields filter';
+  $handler->display->display_options['filters']['combine']['expose']['operator'] = 'combine_op';
+  $handler->display->display_options['filters']['combine']['expose']['identifier'] = 'combine';
+  $handler->display->display_options['filters']['combine']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    4 => 0,
+    3 => 0,
+    5 => 0,
+    7 => 0,
+    9 => 0,
+  );
+  $handler->display->display_options['filters']['combine']['fields'] = array(
+    'title' => 'title',
+    'field_additional_keywords' => 'field_additional_keywords',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -733,6 +767,7 @@ function mck_feature_views_default_views() {
 
 <div class="col-lg-8">
 <div class="float-right">
+<span id="search-placeholder"></span>
 <span id="select-placeholder"></span>
 <span class="view">View</span>
 <i data-view="card-view" class="grid-display display-view fas fa-th-large"></i>
@@ -896,6 +931,29 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['filters']['field_lop_value']['field'] = 'field_lop_value';
   $handler->display->display_options['filters']['field_lop_value']['value'] = array(
     1 => '1',
+  );
+  /* Filter criterion: Global: Combine fields filter */
+  $handler->display->display_options['filters']['combine']['id'] = 'combine';
+  $handler->display->display_options['filters']['combine']['table'] = 'views';
+  $handler->display->display_options['filters']['combine']['field'] = 'combine';
+  $handler->display->display_options['filters']['combine']['operator'] = 'contains';
+  $handler->display->display_options['filters']['combine']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['combine']['expose']['operator_id'] = 'combine_op';
+  $handler->display->display_options['filters']['combine']['expose']['label'] = 'Combine fields filter';
+  $handler->display->display_options['filters']['combine']['expose']['operator'] = 'combine_op';
+  $handler->display->display_options['filters']['combine']['expose']['identifier'] = 'combine';
+  $handler->display->display_options['filters']['combine']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    4 => 0,
+    3 => 0,
+    5 => 0,
+    7 => 0,
+    9 => 0,
+  );
+  $handler->display->display_options['filters']['combine']['fields'] = array(
+    'title' => 'title',
+    'field_additional_keywords' => 'field_additional_keywords',
   );
   $handler->display->display_options['path'] = 'lops';
   $handler->display->display_options['menu']['type'] = 'normal';
@@ -1162,6 +1220,13 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['footer']['view']['id'] = 'view';
   $handler->display->display_options['footer']['view']['table'] = 'views';
   $handler->display->display_options['footer']['view']['field'] = 'view';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<span class="no-results">No results found.</span>';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -1630,6 +1695,13 @@ function mck_feature_views_default_views() {
 </div>
 </div>
 ';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<span class="no-results">No results found.</span>';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Relationship: Entity Reference: Referenced Entity */
   $handler->display->display_options['relationships']['field_bookmarks_target_id']['id'] = 'field_bookmarks_target_id';
   $handler->display->display_options['relationships']['field_bookmarks_target_id']['table'] = 'field_data_field_bookmarks';
@@ -2052,6 +2124,13 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['style_plugin'] = 'table';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<span class="no-results">No results found.</span>';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: Indexed Node: Node ID */
   $handler->display->display_options['fields']['nid']['id'] = 'nid';
   $handler->display->display_options['fields']['nid']['table'] = 'search_api_index_default_node_index';
@@ -2367,6 +2446,13 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['footer']['view']['id'] = 'view';
   $handler->display->display_options['footer']['view']['table'] = 'views';
   $handler->display->display_options['footer']['view']['field'] = 'view';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<span class="no-results">No results found.</span>';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
