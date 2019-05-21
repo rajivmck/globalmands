@@ -8390,14 +8390,16 @@ div#documentName {
 }
 
 .node-case-study .field-type-taxonomy-term-reference .field-item:after,
-.node-case-study .field-type-entityreference .field-item:after {
+.node-case-study .field-type-entityreference .field-item:after,
+.node-case-study .field-type-link-field .field-item:after {
     content: ', ';
     position: absolute;
     right: 0;
 }
 
 .node-case-study .field-type-taxonomy-term-reference .field-item:last-child:after,
-.node-case-study .field-type-entityreference .field-item:last-child:after {
+.node-case-study .field-type-entityreference .field-item:last-child:after,
+.node-case-study .field-type-link-field .field-item:last-child:after {
     content: '';
     position: absolute;
     right: 0;
@@ -8543,7 +8545,9 @@ div#documentName {
     padding: 5px;
 }
 
-
+#edit-field-date-value-wrapper .views-widget {
+    display: block;
+}
 
 @media screen and (max-width: 767px) {
     .hero-inner {

@@ -738,6 +738,27 @@ function mck_feature_views_default_views() {
     'title' => 'title',
     'field_additional_keywords' => 'field_additional_keywords',
   );
+  /* Filter criterion: Content: Date (field_date) */
+  $handler->display->display_options['filters']['field_date_value']['id'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['table'] = 'field_data_field_date';
+  $handler->display->display_options['filters']['field_date_value']['field'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['operator'] = '>=';
+  $handler->display->display_options['filters']['field_date_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_date_value']['expose']['operator_id'] = 'field_date_value_op';
+  $handler->display->display_options['filters']['field_date_value']['expose']['label'] = 'Date';
+  $handler->display->display_options['filters']['field_date_value']['expose']['operator'] = 'field_date_value_op';
+  $handler->display->display_options['filters']['field_date_value']['expose']['identifier'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    4 => 0,
+    3 => 0,
+    5 => 0,
+    7 => 0,
+    9 => 0,
+  );
+  $handler->display->display_options['filters']['field_date_value']['granularity'] = 'year';
+  $handler->display->display_options['filters']['field_date_value']['year_range'] = '-3:+0';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -955,6 +976,27 @@ function mck_feature_views_default_views() {
     'title' => 'title',
     'field_additional_keywords' => 'field_additional_keywords',
   );
+  /* Filter criterion: Content: Date (field_date) */
+  $handler->display->display_options['filters']['field_date_value']['id'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['table'] = 'field_data_field_date';
+  $handler->display->display_options['filters']['field_date_value']['field'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['operator'] = '>=';
+  $handler->display->display_options['filters']['field_date_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_date_value']['expose']['operator_id'] = 'field_date_value_op';
+  $handler->display->display_options['filters']['field_date_value']['expose']['label'] = 'Date';
+  $handler->display->display_options['filters']['field_date_value']['expose']['operator'] = 'field_date_value_op';
+  $handler->display->display_options['filters']['field_date_value']['expose']['identifier'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    4 => 0,
+    3 => 0,
+    5 => 0,
+    7 => 0,
+    9 => 0,
+  );
+  $handler->display->display_options['filters']['field_date_value']['granularity'] = 'year';
+  $handler->display->display_options['filters']['field_date_value']['year_range'] = '-3:+0';
   $handler->display->display_options['path'] = 'lops';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'LOPS';
@@ -1442,6 +1484,27 @@ function mck_feature_views_default_views() {
   );
   $handler->display->display_options['filters']['field_tribes_tid']['type'] = 'select';
   $handler->display->display_options['filters']['field_tribes_tid']['vocabulary'] = 'tribes';
+  /* Filter criterion: Content: Date (field_date) */
+  $handler->display->display_options['filters']['field_date_value']['id'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['table'] = 'field_data_field_date';
+  $handler->display->display_options['filters']['field_date_value']['field'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['operator'] = '>=';
+  $handler->display->display_options['filters']['field_date_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_date_value']['expose']['operator_id'] = 'field_date_value_op';
+  $handler->display->display_options['filters']['field_date_value']['expose']['label'] = 'Date';
+  $handler->display->display_options['filters']['field_date_value']['expose']['operator'] = 'field_date_value_op';
+  $handler->display->display_options['filters']['field_date_value']['expose']['identifier'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    4 => 0,
+    3 => 0,
+    5 => 0,
+    7 => 0,
+    9 => 0,
+  );
+  $handler->display->display_options['filters']['field_date_value']['granularity'] = 'year';
+  $handler->display->display_options['filters']['field_date_value']['year_range'] = '-3:+0';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -2663,6 +2726,27 @@ function mck_feature_views_default_views() {
   );
   $handler->display->display_options['filters']['field_tribes_tid']['type'] = 'select';
   $handler->display->display_options['filters']['field_tribes_tid']['vocabulary'] = 'tribes';
+  /* Filter criterion: Content: Date (field_date) */
+  $handler->display->display_options['filters']['field_date_value']['id'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['table'] = 'field_data_field_date';
+  $handler->display->display_options['filters']['field_date_value']['field'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['operator'] = '>=';
+  $handler->display->display_options['filters']['field_date_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_date_value']['expose']['operator_id'] = 'field_date_value_op';
+  $handler->display->display_options['filters']['field_date_value']['expose']['label'] = 'Date';
+  $handler->display->display_options['filters']['field_date_value']['expose']['operator'] = 'field_date_value_op';
+  $handler->display->display_options['filters']['field_date_value']['expose']['identifier'] = 'field_date_value';
+  $handler->display->display_options['filters']['field_date_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    4 => 0,
+    3 => 0,
+    5 => 0,
+    7 => 0,
+    9 => 0,
+  );
+  $handler->display->display_options['filters']['field_date_value']['granularity'] = 'year';
+  $handler->display->display_options['filters']['field_date_value']['year_range'] = '-3:+0';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
