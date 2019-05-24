@@ -254,6 +254,7 @@ function mck_feature_default_search_api_index() {
         "field_function:name" : { "type" : "list\\u003Ctext\\u003E" },
         "field_growth_platforms" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
         "field_growth_platforms:name" : { "type" : "list\\u003Ctext\\u003E" },
+        "field_id" : { "type" : "text" },
         "field_initiatives" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
         "field_initiatives:name" : { "type" : "list\\u003Ctext\\u003E" },
         "field_practice_recommended_term" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
@@ -425,6 +426,11 @@ function mck_feature_default_search_api_server() {
           "field_sub_sector:name" : {
             "table" : "search_api_db_default_node_index_text",
             "type" : "list\\u003Ctext\\u003E",
+            "boost" : "1.0"
+          },
+          "field_id" : {
+            "table" : "search_api_db_default_node_index_text",
+            "type" : "text",
             "boost" : "1.0"
           }
         }

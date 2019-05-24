@@ -473,15 +473,6 @@ function mck_feature_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
-  /* Field: Content: CST contacts */
-  $handler->display->display_options['fields']['field_cst_contacts']['id'] = 'field_cst_contacts';
-  $handler->display->display_options['fields']['field_cst_contacts']['table'] = 'field_data_field_cst_contacts';
-  $handler->display->display_options['fields']['field_cst_contacts']['field'] = 'field_cst_contacts';
-  $handler->display->display_options['fields']['field_cst_contacts']['settings'] = array(
-    'bypass_access' => 0,
-    'link' => 0,
-  );
-  $handler->display->display_options['fields']['field_cst_contacts']['delta_offset'] = '0';
   /* Field: Content: Date */
   $handler->display->display_options['fields']['field_date']['id'] = 'field_date';
   $handler->display->display_options['fields']['field_date']['table'] = 'field_data_field_date';
@@ -495,24 +486,45 @@ function mck_feature_views_default_views() {
     'multiple_to' => '',
     'show_remaining_days' => 0,
   );
-  /* Field: Content: Tribes */
-  $handler->display->display_options['fields']['field_tribes']['id'] = 'field_tribes';
-  $handler->display->display_options['fields']['field_tribes']['table'] = 'field_data_field_tribes';
-  $handler->display->display_options['fields']['field_tribes']['field'] = 'field_tribes';
-  $handler->display->display_options['fields']['field_tribes']['type'] = 'taxonomy_term_reference_plain';
-  $handler->display->display_options['fields']['field_tribes']['delta_offset'] = '0';
   /* Field: Content: Sub-sector */
   $handler->display->display_options['fields']['field_sub_sector']['id'] = 'field_sub_sector';
   $handler->display->display_options['fields']['field_sub_sector']['table'] = 'field_data_field_sub_sector';
   $handler->display->display_options['fields']['field_sub_sector']['field'] = 'field_sub_sector';
   $handler->display->display_options['fields']['field_sub_sector']['type'] = 'taxonomy_term_reference_plain';
   $handler->display->display_options['fields']['field_sub_sector']['delta_offset'] = '0';
+  /* Field: Content: Function */
+  $handler->display->display_options['fields']['field_function']['id'] = 'field_function';
+  $handler->display->display_options['fields']['field_function']['table'] = 'field_data_field_function';
+  $handler->display->display_options['fields']['field_function']['field'] = 'field_function';
+  $handler->display->display_options['fields']['field_function']['type'] = 'taxonomy_term_reference_plain';
+  $handler->display->display_options['fields']['field_function']['delta_offset'] = '0';
+  /* Field: Content: Tribes */
+  $handler->display->display_options['fields']['field_tribes']['id'] = 'field_tribes';
+  $handler->display->display_options['fields']['field_tribes']['table'] = 'field_data_field_tribes';
+  $handler->display->display_options['fields']['field_tribes']['field'] = 'field_tribes';
+  $handler->display->display_options['fields']['field_tribes']['type'] = 'taxonomy_term_reference_plain';
+  $handler->display->display_options['fields']['field_tribes']['delta_offset'] = '0';
+  /* Field: Content: Growth Platforms */
+  $handler->display->display_options['fields']['field_growth_platforms']['id'] = 'field_growth_platforms';
+  $handler->display->display_options['fields']['field_growth_platforms']['table'] = 'field_data_field_growth_platforms';
+  $handler->display->display_options['fields']['field_growth_platforms']['field'] = 'field_growth_platforms';
+  $handler->display->display_options['fields']['field_growth_platforms']['type'] = 'taxonomy_term_reference_plain';
+  $handler->display->display_options['fields']['field_growth_platforms']['delta_offset'] = '0';
   /* Field: Content: Regions */
   $handler->display->display_options['fields']['field_regions']['id'] = 'field_regions';
   $handler->display->display_options['fields']['field_regions']['table'] = 'field_data_field_regions';
   $handler->display->display_options['fields']['field_regions']['field'] = 'field_regions';
   $handler->display->display_options['fields']['field_regions']['type'] = 'taxonomy_term_reference_plain';
   $handler->display->display_options['fields']['field_regions']['delta_offset'] = '0';
+  /* Field: Content: CST contacts */
+  $handler->display->display_options['fields']['field_cst_contacts']['id'] = 'field_cst_contacts';
+  $handler->display->display_options['fields']['field_cst_contacts']['table'] = 'field_data_field_cst_contacts';
+  $handler->display->display_options['fields']['field_cst_contacts']['field'] = 'field_cst_contacts';
+  $handler->display->display_options['fields']['field_cst_contacts']['settings'] = array(
+    'bypass_access' => 0,
+    'link' => 0,
+  );
+  $handler->display->display_options['fields']['field_cst_contacts']['delta_offset'] = '0';
   /* Field: Content: Go & See Available */
   $handler->display->display_options['fields']['field_go_see_available']['id'] = 'field_go_see_available';
   $handler->display->display_options['fields']['field_go_see_available']['table'] = 'field_data_field_go_see_available';

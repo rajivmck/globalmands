@@ -105,7 +105,7 @@ function mck_feature_field_default_field_instances() {
         'rows' => 5,
       ),
       'type' => 'text_textarea',
-      'weight' => 55,
+      'weight' => 56,
     ),
   );
 
@@ -921,6 +921,52 @@ function mck_feature_field_default_field_instances() {
       'settings' => array(),
       'type' => 'options_buttons',
       'weight' => 39,
+    ),
+  );
+
+  // Exported field_instance: 'node-case_study-field_team_structure'.
+  $field_instances['node-case_study-field_team_structure'] = array(
+    'bundle' => 'case_study',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 20,
+      ),
+      'full' => array(
+        'label' => 'inline',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 18,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'ds_extras_field_template' => '',
+    'entity_type' => 'node',
+    'field_name' => 'field_team_structure',
+    'label' => 'Team Structure',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'ldap_user',
+      'settings' => array(),
+      'type' => 'ldap_user_hidden',
+      'weight' => 55,
     ),
   );
 
@@ -2219,6 +2265,7 @@ function mck_feature_field_default_field_instances() {
   t('Regions');
   t('Related Documents');
   t('Sub-sector');
+  t('Team Structure');
   t('Tribes');
   t('Video');
   t('Video Thumbnail');

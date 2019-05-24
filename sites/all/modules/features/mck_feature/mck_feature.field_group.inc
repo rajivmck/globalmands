@@ -36,6 +36,7 @@ function mck_feature_field_group_info() {
       9 => 'field_fee_structure',
       10 => 'field_video_links',
       11 => 'field_related_documents',
+      12 => 'field_team_structure',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
@@ -192,7 +193,8 @@ function mck_feature_field_group_info() {
       11 => 'field_fee_structure',
       12 => 'field_video_links',
       13 => 'field_related_documents',
-      14 => 'title',
+      14 => 'field_team_structure',
+      15 => 'title',
     ),
     'format_type' => 'htab',
     'format_settings' => array(

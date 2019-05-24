@@ -16,24 +16,32 @@
                       </div>
 
                       <div class="info-data">
-                          <?php if ($row['field_cst_contacts']): ?>
-                              <div class="cst-contacts">
-                                  <span class="view-label">CST Contacts: </span> <?php print $row['field_cst_contacts']; ?>
-                              </div>
-                          <?php endif; ?>
-
                           <div class="taxonomy">
-                              <div>
-                                  <span class="view-label">Tribes: </span> <?php print $row['field_tribes']; ?>
-                              </div>
-
                               <div>
                                   <span class="view-label">Sub-sector: </span> <?php print $row['field_sub_sector']; ?>
                               </div>
 
                               <div>
+                                  <span class="view-label">Function: </span> <?php print $row['field_function']; ?>
+                              </div>
+
+                              <div>
+                                  <span class="view-label">Tribes: </span> <?php print $row['field_tribes']; ?>
+                              </div>
+
+                              <div>
+                                  <span class="view-label">Growth Platform: </span> <?php print $row['field_growth_platforms']; ?>
+                              </div>
+
+                              <div>
                                   <span class="view-label">Regions: </span> <?php print $row['field_regions']; ?>
                               </div>
+
+                            <?php if ($row['field_cst_contacts']): ?>
+                                <div class="cst-contacts">
+                                    <span class="view-label">CST Contacts: </span> <?php print $row['field_cst_contacts']; ?>
+                                </div>
+                            <?php endif; ?>
 
                               <?php if ($row['field_reference_case']): ?>
                                   <div>

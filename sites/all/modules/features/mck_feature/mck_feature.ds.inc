@@ -81,6 +81,7 @@ function mck_feature_ds_layout_settings_info() {
         16 => 'field_fee_structure',
         17 => 'field_video_links',
         18 => 'field_related_documents',
+        19 => 'field_team_structure',
       ),
       'col_right' => array(
         6 => 'viewer_js',
@@ -106,6 +107,7 @@ function mck_feature_ds_layout_settings_info() {
       'field_fee_structure' => 'col_left',
       'field_video_links' => 'col_left',
       'field_related_documents' => 'col_left',
+      'field_team_structure' => 'col_left',
     ),
     'classes' => array(),
     'wrappers' => array(
