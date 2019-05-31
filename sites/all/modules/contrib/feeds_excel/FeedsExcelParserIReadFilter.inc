@@ -18,13 +18,11 @@ class FeedsExcelParserIReadFilter implements PHPExcel_Reader_IReadFilter {
     $this->startRow   = $startRow;
     $this->endRow     = $startRow + $chunkSize;
     $this->rowCounter = &drupal_static('feeds_excel_parser_row_counter');
-    if (!isset($this->rowCounter)) {
-      $this->rowCounter = 0;
-    }
+    $this->rowCounter = 0;
   }
 
   public function readCell($column, $row, $worksheetName = '') {
-    $this->rowCounter++;
+    $this->rowCounter = $row;
     return ($row >= $this->startRow && $row < $this->endRow);
   }
 }

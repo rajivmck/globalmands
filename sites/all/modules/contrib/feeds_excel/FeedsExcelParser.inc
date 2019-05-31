@@ -129,8 +129,8 @@ class FeedsExcelParser extends FeedsParser {
         foreach ($row->getCellIterator() as $cell_index => $cell) {
 
           // Detect headers row.
-          if (!$this->config['no_headers'] && $row_index === 1) {
-            $state->pointer['headers'][$cell_index] = $cell->getCalculatedValue();
+          if (!$this->config['no_headers'] && $row_index === 1 && !is_null($header = $cell->getCalculatedValue())) {
+            $state->pointer['headers'][$cell_index] = $header;
             continue;
           }
 
