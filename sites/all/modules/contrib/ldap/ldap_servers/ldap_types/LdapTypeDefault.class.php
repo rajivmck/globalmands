@@ -2,13 +2,12 @@
 
 /**
  * @file
- * Generic LDAP Implementation Details.
- */
-
-module_load_include('php', 'ldap_servers', 'ldap_types/LdapTypeAbstract.class');
-/**
+ * Generic LDAP Implementation Details
  *
  */
+
+require_once(drupal_get_path('module', 'ldap_servers') . '/ldap_types/LdapTypeAbstract.class.php');
+
 class LdapTypeDefault extends LdapTypeAbstract {
 
   public $name = 'Default LDAP';
@@ -21,10 +20,11 @@ class LdapTypeDefault extends LdapTypeAbstract {
   public $mail_attr = 'mail';
   public $supportsNestGroups = FALSE;
 
-  /**
-   * Constructor Method.
+ /**
+   * Constructor Method
+   *
    */
-  public function __construct($params = []) {
+  function __construct($params = array()) {
     foreach ($params as $k => $v) {
       if (property_exists($this, $k)) {
         $this->{$k} = $v;

@@ -2,38 +2,31 @@
 
 /**
  * @file
- * Defines the default query object which builds and execute a ldap query.
- */
-
-/**
- *
+ * Defines the default query object which builds and execute a ldap query
  */
 class ldap_views_plugin_query_ldap extends views_plugin_query {
 
   /**
-   * The base dn for the LDAP search.
+   * The base dn for the LDAP search
    */
   private $basedn = '';
 
   /**
-   * A list of filters to apply to the LDAP search.
+   * A list of filters to apply to the LDAP search
    */
-  private $filter = [];
+  private $filter = array();
 
   /**
    * Builds the necessary info to execute the query.
    */
-  public function build(&$view) {
+  function build(&$view) {
     $view->init_pager($view);
 
     // Let the pager modify the query to add limits.
     $this->pager->query();
   }
 
-  /**
-   *
-   */
-  public function add_field($table, $field, $alias = '', $params = []) {
+  function add_field($table, $field, $alias = '', $params = array()) {
     // We check for this specifically because it gets a special alias.
     if ($table == $this->base_table && $field == $this->base_field && empty($alias)) {
       $alias = $this->base_field;
@@ -43,20 +36,21 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
       $alias = $table . '_' . $field;
     }
 
-    // Make sure an alias is assigned.
+    // Make sure an alias is assigned
     $alias = $alias ? $alias : $field;
 
     // PostgreSQL truncates aliases to 63 characters: http://drupal.org/node/571548
+
     // We limit the length of the original alias up to 60 characters
-    // to get a unique alias later if its have duplicates.
+    // to get a unique alias later if its have duplicates
     $alias = drupal_substr($alias, 0, 60);
 
     // Create a field info array.
-    $field_info = [
+    $field_info = array(
       'field' => $field,
       'table' => $table,
       'alias' => $alias,
-    ] + $params;
+    ) + $params;
 
     // Test to see if the field is actually the same or not. Due to
     // differing parameters changing the aggregation function, we need
@@ -74,27 +68,18 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
     return $alias;
   }
 
-  /**
-   *
-   */
-  public function add_orderby($table, $field, $order, $alias = '', $params = []) {
-    $this->orderby[] = [
+  function add_orderby($table, $field, $order, $alias = '', $params = array()) {
+    $this->orderby[] = array(
       'field' => $field,
-      'direction' => drupal_strtoupper($order),
-    ];
+      'direction' => drupal_strtoupper($order)
+    );
   }
 
-  /**
-   *
-   */
-  public function add_basedn($basedn) {
+  function add_basedn($basedn) {
     $this->basedn = !empty($this->basedn) ? $this->basedn : $basedn;
   }
 
-  /**
-   *
-   */
-  public function add_filter($filter) {
+  function add_filter($filter) {
     if (empty($filter)) {
       return;
     }
@@ -123,7 +108,7 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
    *
    * @see QueryConditionInterface::condition()
    */
-  public function add_where($group, $field, $value = NULL, $operator = NULL) {
+  function add_where($group, $field, $value = NULL, $operator = NULL) {
     // Ensure all variants of 0 are actually 0. Thus '', 0 and NULL are all
     // the default group.
     if (empty($group)) {
@@ -135,29 +120,23 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
       $this->set_where_group('AND', $group);
     }
 
-    $this->where[$group]['conditions'][] = [
+    $this->where[$group]['conditions'][] = array(
       'field' => $field,
       'value' => $value,
       'operator' => ltrim($operator, '!'),
       'negate' => drupal_substr($operator, 0, 1) == '!',
-    ];
+    );
   }
 
   /**
-   * Construct the filter.
+   * Construct the filter
    *
    * @param $where
    *   'where' or 'having'.
-   *
-   * @return string
    */
-  public function build_condition() {
-    $operator = ['AND' => '&', 'OR' => '|'];
+  function build_condition() {
+    $operator = array('AND' => '&', 'OR' => '|');
     $main_group = '';
-    if (!isset($this->where)) {
-      // Initialize where clause if not set.
-      $this->where = [];
-    }
     foreach ($this->where as $group => $info) {
       if (!empty($info['conditions'])) {
         $sub_group = '';
@@ -171,17 +150,11 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
     return count($this->where) <= 1 ? $main_group : '(' . $operator[$this->group_operator] . $main_group . ')';
   }
 
-  /**
-   *
-   */
-  public function build_ldap_basedn($basedn) {
-    return !empty($this->basedn) ? [$this->basedn] : $basedn;
+  function build_ldap_basedn($basedn) {
+    return !empty($this->basedn) ? array($this->basedn) : $basedn;
   }
 
-  /**
-   *
-   */
-  public function build_contextual_filter() {
+  function build_contextual_filter() {
     $contextual_filter = '';
     foreach ($this->filter as $condition) {
       $contextual_filter .= drupal_substr($condition, 0, 1) != '(' ? "($condition)" : $condition;
@@ -189,13 +162,10 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
     return $contextual_filter;
   }
 
-  /**
-   *
-   */
-  public function build_ldap_filter($filter) {
+  function build_ldap_filter($filter) {
     $condition     = $this->build_condition();
     $contextual    = $this->build_contextual_filter();
-    $search_filter = !empty($contextual) && !empty($condition) ? '(&' . $condition . $contextual . ')' : $condition . $contextual;
+    $search_filter = !empty($contextual) && !empty($condition)? '(&' . $condition . $contextual . ')' : $condition . $contextual;
     return !empty($search_filter) ? $search_filter : $filter;
   }
 
@@ -217,7 +187,7 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
    *   The alias used to refer to this specific table, or NULL if the table
    *   cannot be ensured.
    */
-  public function ensure_table($table, $relationship = NULL, $join = NULL) {
+  function ensure_table($table, $relationship = NULL, $join = NULL) {
     return $table;
   }
 
@@ -230,9 +200,9 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
    *
    * $view->result should contain an array of objects.
    */
-  public function execute(&$view) {
-    $start       = microtime(TRUE);
-    $entries     = [];
+  function execute(&$view) {
+    $start       = microtime();
+    $entries     = array();
     $num_entries = 0;
 
     if (empty($this->options['qid'])) {
@@ -250,66 +220,57 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
     $ldap_server->bind();
     // TODO: Can't use sizelimit if it must be ordered || cache?
     // $ldap_server->search() hasn't orderby (ldap_sort)
-    // But we can't use ldap_sort because there's no DESC option.
+    // But we can't use ldap_sort because there's no DESC option
     foreach ($this->build_ldap_basedn($ldap_data->baseDn) as $basedn) {
 
-      $result = $ldap_server->search($basedn, $this->build_ldap_filter($ldap_data->filter), array_values($attributes), 0, $ldap_data->sizelimit, $ldap_data->timelimit, $ldap_data->deref, $ldap_data->scope);
-      // ldap_sort can't be used because there's no DESC option
-      // Not an error.
-      if ($result !== FALSE) {
-        $entries = array_merge($entries, $result);
-        $num_entries += $result['count'];
-        unset($result['count']);
+      $result     = $ldap_server->search($basedn, $this->build_ldap_filter($ldap_data->filter), array_values($attributes), 0, $ldap_data->sizelimit, $ldap_data->timelimit, $ldap_data->deref, $ldap_data->scope);
+/***
+    // ldap_sort can't be used because there's no DESC option
+    if (!empty($this->orderby)) {
+      // Array reverse, because the most specific are first - PHP works the opposite way of SQL.
+      foreach (array_reverse($this->orderby) as $field) {
+        @ldap_sort($ldap_server->connection, $result, $field['field']);
       }
     }
-    if (property_exists($view->query, 'limit')) {
-      $limit = $view->query->limit;
+ */
+      $entries = array_merge($entries, $result);
+      $num_entries += array_shift($result);
     }
-    $offset      = property_exists($view->query, 'offset') ? $view->query->offset : 0;
-    $result      = [];
-    $sort_fields = [];
+
+    $limit       = $view->query->limit;
+    $offset      = $view->query->offset;
+    $result      = array();
+    $sort_fields = array();
     if (!empty($this->orderby)) {
       foreach ($this->orderby as $orderby) {
         $sort_fields[drupal_strtolower($orderby['field'])]['direction'] = $orderby['direction'];
-        $sort_fields[drupal_strtolower($orderby['field'])]['data']      = [];
+        $sort_fields[drupal_strtolower($orderby['field'])]['data']      = array();
       }
 
     }
 
     foreach ($entries as $key => &$entry) {
-      if (isset($entry['jpegphoto'])) {
-        $entry['jpegphoto'][0] = '<img src="data:image/jpeg;base64,' . base64_encode($entry['jpegphoto'][0]) . '" alt="photo" />';
-      }
-      if (isset($entry['thumbnailphoto'])) {
-        $entry['thumbnailphoto'][0] = '<img src="data:image/jpeg;base64,' . base64_encode($entry['thumbnailphoto'][0]) . '" alt="photo" />';
-      }
-      foreach ($view->field as $field) {
-        if (!isset($field_alias[$field->field_alias])) {
-          continue;
-        }
-        $alias = $field_alias[$field->field_alias];
-        if (is_array($entry) && array_key_exists($alias, $entry)) {
-          if (is_array($entry[$alias])) {
-            switch ($field->options['multivalue']) {
-              case 'v-all':
-                // Remove 'count' index.
-                unset($entry[$alias]['count']);
-                $entry[$alias] = implode($field->options['value_separator'], $entry[$alias]);
-                break;
-
-              case 'v-count':
-                $entry[$alias] = $entry[$alias]['count'];
-                break;
-
-              case 'v-index':
-                $index = $field->options['index_value'] >= 0 ? intval($field->options['index_value']) : $entry[$alias]['count'] + $field->options['index_value'];
-                $entry[$alias] = array_key_exists($index, $entry[$alias]) ? $entry[$alias][$index] :
-                                                                            $entry[$alias][0];
-                break;
+        foreach ($view->field as $field) {
+          $alias = $field_alias[$field->field_alias];
+          if (array_key_exists($alias, $entry)) {
+            if (is_array($entry[$alias])) {
+              switch ($field->options['multivalue']) {
+                case 'v-all':
+                  // remove 'count' index
+                  array_shift($entry[$alias]);
+                  $entry[$alias] = implode($field->options['value_separator'], $entry[$alias]);
+                  break;
+                case 'v-count':
+                  $entry[$alias] = $entry[$alias]['count'];
+                  break;
+                case 'v-index':
+                  $index = $field->options['index_value'] >= 0 ? intval($field->options['index_value']) : $entry[$alias]['count'] + $field->options['index_value'];
+                  $entry[$alias] = array_key_exists($index, $entry[$alias]) ? $entry[$alias][$index] :
+                                                                              $entry[$alias][0];
+                  break;
             }
           }
-          // Order criteria
-          // If the field with alias $alias has a corresponding entry in $sort_fields, copy its value into the data key of $sort_fields for later sorting.
+          // order criteria
           if (array_key_exists($alias, $sort_fields)) {
             $sort_fields[$alias]['data'][$key] = $entry[$alias];
           }
@@ -317,9 +278,9 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
       }
     }
     if (!empty($this->orderby) && !empty($entries)) {
-      $params = [];
+      $params = array();
       // In PHP 5.3 every parameter in the array has to be a reference when calling array_multisort() with call_user_func_array().
-      $asc = SORT_ASC;
+      $asc  = SORT_ASC;
       $desc = SORT_DESC;
       foreach ($sort_fields as &$field) {
         $params[] = &$field['data'];
@@ -331,31 +292,13 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
         }
       }
       $params[] = &$entries;
-
-      // Some LDAP setups output a 'count' variable in the array, which changes
-      // the array size; temporarily remove it, sort the arrays, and then put it
-      // back.
-      if (array_key_exists('count', $entries)) {
-        // Remove the count variable.
-        $countValue = $entries['count'];
-        unset($entries['count']);
-        $params[] = &$entries;
-        call_user_func_array('array_multisort', $params);
-        $params['count'] = $countValue;
-      }
-      else {
-        $params[] = &$entries;
-        call_user_func_array('array_multisort', $params);
-      }
+      call_user_func_array('array_multisort', $params);
     }
 
     for ($i = 0; (!isset($limit) || $i < $limit) && $offset + $i < $num_entries; $i++) {
-      $row = [];
+      $row = array();
       $entry = &$entries[$offset + $i];
       foreach ($view->field as $field) {
-        if (!isset($field_alias[$field->field_alias])) {
-          continue;
-        }
         if (array_key_exists($field_alias[$field->field_alias], $entry)) {
           $row[$field->field_alias] = $entry[$field_alias[$field->field_alias]];
         }
@@ -363,53 +306,54 @@ class ldap_views_plugin_query_ldap extends views_plugin_query {
       $result[] = $row;
     }
 
-    $view->result                    = $result;
-    $view->total_rows                = $num_entries;
-    $view->execute_time              = microtime(TRUE) - $start;
-    $view->query->pager->total_items = $num_entries;
+    $view->result       = $result;
+    $view->total_rows   = $num_entries;
+    $view->execute_time = microtime() - $start;
+    $view->query->pager->total_items  = $num_entries;
     $view->query->pager->update_page_info();
 
   }
 
-  /**
-   *
-   */
-  public function option_definition() {
+  function option_definition() {
     $options = parent::option_definition();
-    $options['qid'] = ['default' => ''];
+    $options['qid'] = array('default' => '');
 
     return $options;
   }
 
-  /**
-   *
-   */
-  public function options_form(&$form, &$form_state) {
-    $queries = [];
+  function options_form(&$form, &$form_state) {
+/*
+    $ldap_data = entity_load('ldap_data', FALSE);
+    $options   = array();
+    foreach ($ldap_data as $data) {
+        $options[$data->qid] = $data->name;
+    }
+*/
+    $queries = array();
     $queries['all'] = LdapQueryAdmin::getLdapQueryObjects();
 
-    foreach ($queries['all'] as $_sid => $ldap_query) {
-      if ($ldap_query->status == 1) {
-        $options[$ldap_query->qid] = $ldap_query->name;
-      }
+  foreach ($queries['all'] as $_sid => $ldap_query) {
+    if ($ldap_query->status == 1) {
+      //$queries['enabled'][$_qid] = $ldap_query;
+      $options[$ldap_query->qid] = $ldap_query->name;
     }
-    $form['qid'] = [
+  }
+// ******************************************************
+      $form['qid'] = array(
       '#type' => 'select',
       '#title' => t('LDAP Search'),
       '#options' => $options,
       '#default_value' => $this->options['qid'],
       '#description' => t("The LDAP server to query."),
-    ];
+    );
   }
 
-  /**
-   * Let modules modify the query just prior to finalizing it.
-   */
-  public function alter(&$view) {
-    foreach (module_implements('views_query_alter') as $module) {
-      $function = $module . '_views_query_alter';
-      $function($view, $this);
+/* Only when adding dynamic fields in ldap_views_views_data_alter()
+  function options_submit(&$form, &$form_state) {
+    parent::options_submit(&$form, &$form_state);
+    if ($form_state['values']['query']['options']['qid'] != $form_state['view']->query->options['qid']) {
+      views_invalidate_cache();
     }
   }
-
+ */
 }

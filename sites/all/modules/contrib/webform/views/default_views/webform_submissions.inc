@@ -2,10 +2,11 @@
 
 /**
  * @file
- * View definition webform_submissions.
+ * webform_submissions view definition.
  */
 
-// --- Paste exported view below ---.
+// --- Paste exported view below ---
+
 $view = new view();
 $view->name = 'webform_submissions';
 $view->description = '';
@@ -207,5 +208,6 @@ $translatables['webform_submissions'] = array(
 );
 
 
-// --- Paste exported view above ---.
+// --- Paste exported view above ---
+
 $views[$view->name] = $view;

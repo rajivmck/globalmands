@@ -1,3 +1,4 @@
+// $Id: README.txt,v 1.2 2010/12/29 01:37:46 johnbarclay Exp $
 
 Vocubulary of LDAP Authorization and its Code
 
@@ -26,7 +27,7 @@ Examples:  ldap_authorization_drupal_role
 
 
 ----------------------
-"Authorization ID" aka "Consumer ID"
+"Authorization ID"
 ----------------------
 The id of an individual authorization such as a drupal role or organic group.
 
@@ -48,32 +49,3 @@ LDAP Server Configuration
 Each Consumer Configuration will use a single ldap server configuration to bind
 and query ldap.  The ldap server configuration is also used to map the drupal
 username to an ldap user entry.
-
-
-----------------------
-LDAP Authorization data storage:
----------------------
-
-Authorization data is stored in user->data array
-
-such as:
-
-$user->data = array(
-  'ldap_authorizations' => array(
-    'og_group' => array (
-      '3-2' => array (
-        'date_granted' => 1329105152,
-      ),
-      '2-3' => array (
-        'date_granted' => 1329105152,
-      ),
-    ),
-    'drupal_role' => array (
-      '7' => array (
-        'date_granted' => 1329105152,
-      ),
-      '5' => array (
-        'date_granted' => 1329105152,
-      ),
-    ),
-  );

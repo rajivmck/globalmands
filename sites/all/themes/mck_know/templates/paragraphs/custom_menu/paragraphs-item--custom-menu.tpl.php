@@ -27,33 +27,52 @@
  */
 
 
-$links = isset($content['field_paragraph']) ? render($content['field_paragraph']) : '';
-$bguri = isset($content['field_full_image']['#items'][0]['uri']) ? $content['field_full_image']['#items'][0]['uri'] : NULL;
-$bgurl = isset($bguri) ? file_create_url($bguri) : NULL;
+$links         = isset($content['field_paragraph']) ? render($content['field_paragraph']) : '';
+$bguri         = isset($content['field_full_image']['#items'][0]['uri']) ? $content['field_full_image']['#items'][0]['uri'] : NULL;
+$bgurl         = isset($bguri) ? file_create_url($bguri) : NULL;
 
 ?>
+<a name="top"></a>
+<header class="global-header global-header-r3 navigation-r3 custom-menu" role="banner">
+  <a aria-hidden="false" aria-label="Toggle Menu" class="skip-main" href="#0" tabindex="0">Skip to main content</a>
+ <button class="menu-toggle" role="button" type="button">
+  <div class="menu-hamburger">
+    <span class="visually-hidden">Toggle Menu</span>
+  </div>
+</button>
+<section class="hamburger-nav" data-module="HamburgerNav">
+  <div class="main-nav-inner">
+    <a class="mck-logo-icon" href="#<?php // echo url('<front>') ?>" tabindex="-1">
+      <span class="visually-hidden">McKinsey &amp; Company Home</span>
+    </a>
+    <nav class="main-nav" data-level="-menu-level0" role="menu">
+      <ul class="nav-list nav-group-left">
+          <?php echo $links;  ?>        
+    </ul>
+    </nav>
+  </div>
+</section>
+
+<div class="hamburger-curtain"></div>
 
 
-<div class="top-bar-inner">
-    <div class="global-primary-nav-r3 show-nav" data-module="PrimaryNavigation"
-         role="banner">
-        <nav class="primary-navigation" role="navigation">
-            <ul class="nav-list nav-group-left">
-              <?php echo $links; ?>
-            </ul>
-        </nav>
-    </div>
+	<div class="top-bar-inner">
+	  <div class="global-primary-nav-r3 show-nav" data-module="PrimaryNavigation" role="banner">
+		  <nav class="primary-navigation" role="navigation">
+        <ul class="nav-list nav-group-left">
+            <?php echo $links;  ?>
+        </ul>
+		  </nav>
+	</div>
 
-</div>
-<div class="logo-container">
-  <?php if (isset($content["field_full_image"])) { ?>
-      <a class="names cpny-logo alone" href="#"
-         style="background-image: url('<?php echo $bgurl ?>');"><span
-                  class="visually-hidden">McKinsey &amp; Company Home</span></a>
-  <?php } else { ?>
-      <a class="names cpny-logo alone" href="#"><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
-  <?php } ?>
-</div><!--END NAVIGATION MENU-->
+	</div>
+  <div class="logo-container">
+  <?php if(isset($content["field_full_image"])){ ?>
+    <a class="names cpny-logo alone" href="#" style="background-image: url('<?php echo $bgurl ?>');" ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
+    <?php }else{ ?>
+  <a class="names cpny-logo alone" href="#"  ><span class="visually-hidden">McKinsey &amp; Company Home</span></a>
+    <?php }?>
+  </div><!--END NAVIGATION MENU-->
 </header>
 
 

@@ -1,6 +1,2 @@
-# Design and development
-* [ANDiTKO](https://anditko.com/)
-
-# Icons
-* [Icons8](https://icons8.com/)
-* [VisualPharm](https://visualpharm.com/)
+Designed and developed by: ANDiTKO -> http://anditko.com
+Some of the Icons are from the Icons8 set -> http://icons8.com/ and -> http://VisualPharm.com

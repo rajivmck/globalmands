@@ -1,24 +1,23 @@
 <?php
+// $Id: LdapQueryAdmin.class.php,v 1.6 2011/01/12 21:51:37 npiacentine Exp $
 
 /**
  * @file
- * LDAP Query Admin Class.
- */
-
-module_load_include('php', 'ldap_query', 'LdapQuery.class');
-/**
+ * LDAP Query Admin Class
  *
  */
+
+
+require_once('LdapQuery.class.php');
+
 class LdapQueryAdmin extends LdapQuery {
 
   /**
-   * @param string $sid
-   *   either 'all' or the ldap server sid.
-   * @param $type
-   *   = 'all', 'enabled'
+   * @param string $sid either 'all' or the ldap server sid
+   * @param $type = 'all', 'enabled'
    */
   public static function getLdapQueryObjects($sid = 'all', $type = 'enabled', $class = 'LdapQuery') {
-    $queries = [];
+    $queries = array();
     if (module_exists('ctools')) {
       ctools_include('export');
       $select = ctools_export_load_object('ldap_query', 'all');
@@ -31,8 +30,8 @@ class LdapQueryAdmin extends LdapQuery {
       }
       catch (Exception $e) {
         drupal_set_message(t('query index query failed. Message = %message, query= %query',
-          ['%message' => $e->getMessage(), '%query' => $e->query_string]), 'error');
-        return [];
+          array('%message' => $e->getMessage(), '%query' => $e->query_string)), 'error');
+        return array();
       }
     }
     foreach ($select as $result) {
@@ -41,7 +40,8 @@ class LdapQueryAdmin extends LdapQuery {
           ($sid == 'all' || $query->sid == $sid)
           &&
           (!$type || $type == 'all' || ($query->status = 1 && $type == 'enabled'))
-        ) {
+        )
+      {
         $queries[$result->qid] = $query;
       }
     }
@@ -49,16 +49,10 @@ class LdapQueryAdmin extends LdapQuery {
 
   }
 
-  /**
-   *
-   */
-  public function __construct($qid) {
+  function __construct($qid) {
     parent::__construct($qid);
   }
 
-  /**
-   *
-   */
   protected function populateFromDrupalForm($op, $values) {
 
     foreach ($this->fields() as $field_id => $field) {
@@ -75,36 +69,31 @@ class LdapQueryAdmin extends LdapQuery {
     $this->inDatabase = ($op == 'edit');
   }
 
-  /**
-   *
-   */
   public function save($op) {
 
     $op = $this->inDatabase ? 'edit' : 'insert';
 
-    // Add or edit with ctolls.
-    if (module_exists('ctools')) {
+    if (module_exists('ctools')) { // add or edit with ctolls
 
       ctools_include('export');
       $ctools_values = clone $this;
 
       foreach ($this->fields() as $field_id => $field) {
         $value = $this->{$field['property_name']};
-        // Field not exportable.
-        if (isset($field['exportable']) && $field['exportable'] === FALSE) {
+        if (isset($field['exportable']) && $field['exportable'] === FALSE) { // field not exportable
           unset($ctools_values->{$field['property_name']});
         }
-        // Field in property with different name.
-        elseif (isset($field['schema']) && $field['property_name'] != $field_id) {
+        elseif (isset($field['schema']) && $field['property_name'] != $field_id) { // field in property with different name
           $ctools_values->{$field_id} = $value;
           unset($ctools_values->{$field['property_name']});
         }
         else {
-          // Do nothing.  property is already in cloned objecat.
+          // do nothing.  property is already in cloned objecat
+
         }
       }
 
-      // Populate our object with ctool's properties.  copying all properties for backward compatibility.
+      // Populate our object with ctool's properties.  copying all properties for backward compatibility
       $object = ctools_export_crud_new('ldap_query');
 
       foreach ($object as $property_name => $value) {
@@ -113,22 +102,18 @@ class LdapQueryAdmin extends LdapQuery {
         }
       }
       $result = ctools_export_crud_save('ldap_query', $ctools_values);
-      // ctools_export_crud_save doesn't invalidate cache.
-      ctools_export_load_object_reset('ldap_query');
     }
     else {
-      $values = [];
+      $values = array();
       foreach ($this->fields() as $field_id => $field) {
         if (isset($field['schema'])) {
           $values[$field_id] = $this->{$field['property_name']};
         }
       }
-      // Edit w/o ctools.
-      if ($op == 'edit') {
+      if ($op == 'edit') { // edit w/o ctools
         $result = drupal_write_record('ldap_query', $values, 'qid');
       }
-      // Insert.
-      else {
+      else { // insert
         $result = drupal_write_record('ldap_query', $values);
       }
     }
@@ -141,16 +126,9 @@ class LdapQueryAdmin extends LdapQuery {
     }
   }
 
-  /**
-   *
-   */
   public function delete($qid) {
     if ($qid == $this->qid) {
       $this->inDatabase = FALSE;
-      if (module_exists('ctools')) {
-        ctools_include('export');
-        ctools_export_load_object_reset('ldap_query');
-      }
       return db_delete('ldap_query')->condition('qid', $qid)->execute();
     }
     else {
@@ -158,56 +136,50 @@ class LdapQueryAdmin extends LdapQuery {
     }
   }
 
-  /**
-   *
-   */
   public function getActions() {
-    $switch = ($this->status) ? 'disable' : 'enable';
-    $actions = [];
-    $actions[] = l(t('edit'), LDAP_QUERY_MENU_BASE_PATH . '/query/edit/' . $this->qid);
+    $switch = ($this->status ) ? 'disable' : 'enable';
+    $actions = array();
+    $actions[] =  l(t('edit'), LDAP_QUERY_MENU_BASE_PATH . '/query/edit/' . $this->qid);
     if (property_exists($this, 'type')) {
       if ($this->type == 'Overridden') {
-        $actions[] = l(t('revert'), LDAP_QUERY_MENU_BASE_PATH . '/query/delete/' . $this->qid);
+          $actions[] = l(t('revert'), LDAP_QUERY_MENU_BASE_PATH . '/query/delete/' . $this->qid);
       }
       if ($this->type == 'Normal') {
-        $actions[] = l(t('delete'), LDAP_QUERY_MENU_BASE_PATH . '/query/delete/' . $this->qid);
+          $actions[] = l(t('delete'), LDAP_QUERY_MENU_BASE_PATH . '/query/delete/' . $this->qid);
       }
     }
     else {
-      $actions[] = l(t('delete'), LDAP_QUERY_MENU_BASE_PATH . '/query/delete/' . $this->qid);
+        $actions[] = l(t('delete'), LDAP_QUERY_MENU_BASE_PATH . '/query/delete/' . $this->qid);
     }
     $actions[] = l(t('test'), LDAP_QUERY_MENU_BASE_PATH . '/query/test/' . $this->qid);
     $actions[] = l($switch, LDAP_QUERY_MENU_BASE_PATH . '/query/' . $switch . '/' . $this->qid);
     return $actions;
   }
 
-  /**
-   *
-   */
   public function drupalForm($op) {
-    $form['#prefix'] = t('<p>Setup an LDAP query to be used by other modules
-      such as LDAP Feeds.</p>');
+    $form['#prefix'] = t('<p>Setup an LDAP query to be used by other modules such as LDAP Feeds, LDAP Provision, etc.</p>');
 
-    $form['basic'] = [
+    $form['basic'] = array(
       '#type' => 'fieldset',
       '#title' => t('Basic LDAP Query Settings'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-    ];
+    );
 
-    $form['query'] = [
+    $form['query'] = array(
       '#type' => 'fieldset',
       '#title' => t('Query'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-    ];
+    );
 
-    $form['query_advanced'] = [
+    $form['query_advanced'] = array(
       '#type' => 'fieldset',
       '#title' => t('Advanced Query Settings'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-    ];
+    );
+
 
     foreach ($this->fields() as $field_id => $field) {
       $field_group = isset($field['form']['field_group']) ? $field['form']['field_group'] : FALSE;
@@ -216,8 +188,7 @@ class LdapQueryAdmin extends LdapQuery {
         $form_item['#default_value'] = $this->{$field['property_name']};
         if ($field_group) {
           $form[$field_group][$field_id] = $form_item;
-          // Sirrelevant to form api.
-          unset($form[$field_group][$field_id]['field_group']);
+          unset($form[$field_group][$field_id]['field_group']); // sirrelevant to form api
         }
         else {
           $form[$field_id] = $form_item;
@@ -237,26 +208,24 @@ class LdapQueryAdmin extends LdapQuery {
 
     $form['basic']['sid']['#options'] = $server_options;
 
-    $form['submit'] = [
+    $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Save Query'),
-    ];
+    );
 
     $action = ($op == 'add') ? 'Add' : 'Update';
-    $form['submit'] = [
+      $form['submit'] = array(
       '#type' => 'submit',
       '#value' => $action,
       '#weight' => 100,
-    ];
+    );
 
     return $form;
   }
 
-  /**
-   *
-   */
-  public function drupalFormValidate($op, $values) {
-    $errors = [];
+
+  public function drupalFormValidate($op, $values)  {
+    $errors = array();
 
     if ($op == 'delete') {
       if (!$this->qid) {
@@ -270,17 +239,14 @@ class LdapQueryAdmin extends LdapQuery {
     return $errors;
   }
 
-  /**
-   *
-   */
   protected function validate($op) {
-    $errors = [];
+    $errors = array();
     if ($op == 'add') {
       $ldap_queries = $this->getLdapQueryObjects('all', 'all');
       if (count($ldap_queries)) {
         foreach ($ldap_queries as $qid => $ldap_query) {
           if ($this->qid == $ldap_query->qid) {
-            $errors['qid'] = t('An LDAP Query with the name %qid already exists.', ['%qid' => $this->qid]);
+            $errors['qid'] = t('An LDAP Query with the name %qid already exists.', array('%qid' => $this->qid));
           }
         }
       }
@@ -289,9 +255,6 @@ class LdapQueryAdmin extends LdapQuery {
     return $errors;
   }
 
-  /**
-   *
-   */
   public function drupalFormSubmit($op, $values) {
 
     $this->populateFromDrupalForm($op, $values);
@@ -299,8 +262,7 @@ class LdapQueryAdmin extends LdapQuery {
     if ($op == 'delete') {
       $this->delete($this);
     }
-    // Add or edit.
-    else {
+    else { // add or edit
       try {
         $save_result = $this->save($op);
       }
@@ -311,9 +273,6 @@ class LdapQueryAdmin extends LdapQuery {
     }
   }
 
-  /**
-   *
-   */
   protected function arrayToLines($array) {
     $lines = "";
     if (is_array($array)) {
@@ -325,11 +284,10 @@ class LdapQueryAdmin extends LdapQuery {
     return $lines;
   }
 
-  /**
-   *
-   */
+
+
   protected function arrayToCsv($array) {
-    return join(",", $array);
+    return join(",",$array);
   }
 
 }

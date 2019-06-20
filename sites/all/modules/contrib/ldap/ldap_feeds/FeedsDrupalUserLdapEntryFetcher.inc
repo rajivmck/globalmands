@@ -2,14 +2,12 @@
 
 /**
  * @file
- * FeedsDrupalUserLdapEntryFetcher.
+ * FeedsDrupalUserLdapEntryFetcher
  */
 
 define('LDAP_FEEDS_DRUPAL_USER_FETCHER_FILTER_AUTHENTICATED', FALSE);
 define('LDAP_FEEDS_DRUPAL_USER_FETCHER_FILTER_ROLES', FALSE);
-/**
- *
- */
+
 class FeedsDrupalUserLdapEntryFetcherResult extends FeedsFetcherResult {
 
   public $filterLdapAuthenticated;
@@ -30,50 +28,46 @@ class FeedsDrupalUserLdapEntryFetcherResult extends FeedsFetcherResult {
   }
 
   /**
-   * Overrides parent::getRaw();.
+   * Overrides parent::getRaw();
    */
   public function getRaw() {
 
-    // Needs to loop through all users, and query ldap for each, one at a time.
-    $query = new EntityFieldQuery();
+    // needs to loop through all users, and query ldap for each, one at a time
+
+    $query = new EntityFieldQuery;
     $entities = $query
       ->entityCondition('entity_type', 'user')
       ->execute();
     $users = entity_load('user', array_keys($entities['user']));
-    if ($this->filterRoles) {
-      $selectedRoles = array_filter($this->filterRoles);
-      $filterOnRoles = (boolean) (count($selectedRoles));
-    }
-    else {
-      $filterOnRoles = FALSE;
-    }
+    $selectedRoles = array_filter($this->filterRoles);
+    $filterOnRoles = (boolean)(count($selectedRoles));
 
     foreach ($users as $uid => $user) {
       if (
         $uid == 0 ||
         $uid == 1 ||
-        ($this->filterLdapAuthenticated && !isset($user->data['ldap_user'])) ||
+        ($this->filterLdapAuthenticated && !isset($user->data['ldap_authentication'])) ||
         ($filterOnRoles && !array_intersect(array_values($selectedRoles), array_keys($user->roles)))
         ) {
         continue;
       }
 
-      if ($ldap_user = ldap_servers_get_user_ldap_data($user)) {
-        unset($ldap_user['mail']);
-        $ldap_user['attr']['count'] = $ldap_user['attr']['count'] + count($this->availableDrupalUserAttributes);
+      if ($ldap_entry = ldap_servers_get_user_ldap_data($user)) {
+        unset($ldap_entry['mail']);
+        $ldap_entry['attr']['count'] = $ldap_entry['attr']['count'] + count($this->availableDrupalUserAttributes);
         foreach ($this->availableDrupalUserAttributes as $attr_name => $attr_conf) {
-          $ldap_user['attr'][] = $attr_conf['token'];
-          $ldap_user['attr'][$attr_conf['token']]['count'] = 1;
-          $ldap_user['attr'][$attr_conf['token']][0] = (string) $user->{$attr_name};
+          $ldap_entry['attr'][] = $attr_conf['token'];
+          $ldap_entry['attr'][$attr_conf['token']]['count'] = 1;
+          $ldap_entry['attr'][$attr_conf['token']][0] = (string)$user->{$attr_name};
         }
 
-        $results[] = $ldap_user;
+        $results[] = $ldap_entry;
       }
     }
     $results['count'] = count($results);
+   // drupal_set_message("<pre>" . print_r($results, TRUE));
     return $results;
   }
-
 }
 
 /**
@@ -94,11 +88,11 @@ class FeedsDrupalUserLdapEntryFetcher extends FeedsFetcher {
    * Override parent::configDefaults().
    */
   public function configDefaults() {
-    return [
-      'filterLdapAuthenticated' => [],
+    return array(
+      'filterLdapAuthenticated' => array(),
       'availableDrupalUserAttributes' => ldap_feeds_drupal_user_attributes(),
-      'filterRoles' => [],
-    ];
+      'filterRoles' => array(),
+    );
   }
 
   /**
@@ -106,13 +100,13 @@ class FeedsDrupalUserLdapEntryFetcher extends FeedsFetcher {
    */
   public function configForm(&$form_state) {
 
-    $form = [];
-    $form['filterLdapAuthenticated'] = [
+    $form = array();
+    $form['filterLdapAuthenticated'] = array(
       '#type' => 'checkbox',
       '#title' => t('Only return ldap authenticated users.'),
-      '#default_value' => $this->config['filterLdapAuthenticated'],
+      '#default_value' =>  $this->config['filterLdapAuthenticated'],
       '#description' => t('If checked, only users who are associated with ldap accounts will be returned.'),
-    ];
+    );
 
     return $form;
   }
@@ -128,18 +122,20 @@ class FeedsDrupalUserLdapEntryFetcher extends FeedsFetcher {
    * Override parent::sourceForm().
    */
   public function sourceForm($source_config) {
-    $tokens = [
-      '!edit_link' => l(t('Edit Feed'), 'admin/structure/feeds/' . $this->id),
-    ];
+    $tokens = array(
+      '!edit_link' => l(t('Edit Feed'), 'admin/structure/feeds/edit/' . $this->id),
+    );
 
-    $form_state = [];
+    $form_state = array();
     $form = $this->configForm($form_state);
-    $form['addendum'] = [
+    $form['addendum'] = array(
       '#type' => 'markup',
       '#markup' => t('This import is configured at !edit_link.', $tokens),
-    ];
+    );
 
     return $form;
   }
+
+
 
 }

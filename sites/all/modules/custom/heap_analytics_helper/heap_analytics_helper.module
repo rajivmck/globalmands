@@ -1,0 +1,164 @@
+<?php
+
+/**
+ * @file
+ * Provides option to send user properties to heap.
+ */
+
+/**
+ * Implements hook_page_alter().
+ */
+function heap_analytics_helper_page_alter(&$page) {
+
+  $fmno = (!empty($_SERVER['HTTP_FMNO'])) ? $_SERVER['HTTP_FMNO'] : '';
+  if (!empty($fmno)) {
+    $id = variable_get('heap_analytics_environment_id', NULL);
+    $status = drupal_get_http_header('Status');
+    $trackable_status_codes = [
+      '403 Forbidden',
+      '404 Not Found',
+    ];
+    if (!empty($id) && (_heap_analytics_visibility_pages() || in_array($status, $trackable_status_codes))) {
+      $data = custom_get_user_data_api_for_heap($fmno);
+      $heapStorageSettings = get_heap_storage_settings();
+      drupal_add_js(['heap_analytics_helper' => ['heapData' => ['id' => $id, 'data' => $data, 'heapStorage' => $heapStorageSettings]]], ['type' => 'setting']);
+      drupal_add_js(drupal_get_path('module', 'heap_analytics_helper') . '/js/heap_helper.js', ['type' => 'file',]);
+    }
+  }
+}
+
+/**
+ * Get user data from API by FMNO.
+ */
+function custom_get_user_data_api_for_heap($fmno) {
+  $null = 'n/a';
+  global $user;
+  if ($cache = cache_get('api_data_'.$fmno)) {
+    $cacheddata = $cache->data;
+  }
+  if (isset($cacheddata['fmno']) && !empty($cacheddata['fmno']) && $cacheddata['fmno'] == $fmno) {
+    $api_result = $cacheddata;
+  }else{
+  $api_result = [];
+  $api_base = variable_get('apiexchange_url');
+  $url = $api_base . "/v3/persons/?q=*&core.fmno=" . $fmno . "&wt=json";
+  $url_loc = $api_base . "/v1/geo_offices/?q=*&geoLocationCode=" . $geoLocCode . "&wt=json";
+  $json_response = apiexchange_oauth_access_token_validate($url);
+
+  if (!empty($json_response['response'])) {
+    $apiOutput = $json_response['response']['persons'][0]['core'];
+    $careerTitle = $json_response['response']['persons'][0]['hr']['careerTitle'];
+    
+    $api_result['fmno'] = (!empty($apiOutput['fmno'])) ? $apiOutput['fmno'] : $null;
+    $api_result['first_name'] = (!empty($apiOutput['firstName'])) ? $apiOutput['firstName'] : $null;
+    $api_result['last_name'] = (!empty($apiOutput['lastName'])) ? $apiOutput['lastName'] : $null;
+    $api_result['email'] = (!empty($user->mail)) ? $user->mail : $null;
+    $api_result['role'] = (!empty($careerTitle)) ? $careerTitle : $null;
+    $api_result['mc_role_cat'] = (!empty($apiOutput['jobRoleCategoryName'])) ? $apiOutput['jobRoleCategoryName'] : $null;
+    $api_result['mc_role_subcat'] = (!empty($apiOutput['jobRoleSubCategoryName'])) ? $apiOutput['jobRoleSubCategoryName'] : $null;
+    $api_result['office_code'] = (!empty($apiOutput['gocOfficeCode'])) ? $apiOutput['gocOfficeCode'] : '';
+    $api_result['geoLocationCode'] = (!empty($apiOutput['geoLocationCode'])) ? $apiOutput['geoLocationCode'] : $null;
+  }
+  // For location specific api
+  $loc = (!empty($api_result['geoLocationCode'])) ? $api_result['geoLocationCode'] : $null;
+  $url_loc = $api_base . "/v1/geo_offices/?q=*&geoLocationCode=" . $loc . "&wt=json";
+  $json_response_offices = apiexchange_oauth_access_token_validate($url_loc, 'GET', 'json', NULL, 0);
+  if (is_array($json_response_offices) && !empty($json_response_offices && isset($json_response_offices['response']['docs'][0])) ) {
+    $data = $json_response_offices['response']['docs'][0];
+  }
+  $api_result['city'] = !empty($data['city']) ? $data['city'] : $null;
+  $api_result['countryName'] = !empty($data['countryName']) ? $data['countryName'] : $null;
+  $api_result['regionName'] = !empty($data['regionName']) ? $data['regionName'] : $null;
+  cache_set('api_data_'.$fmno, $api_result, 'cache');
+  }
+  return $api_result;
+}
+
+/**
+ * Disabling heap script
+ */
+function heap_analytics_helper_js_alter(&$javascript) {
+  $i = 0;
+  $needle = 'cdn.heapanalytics.com';
+  foreach ($javascript[$i] as $key => $value) {
+    if (isset($javascript[$i]) && strpos($javascript[$i]['data'], $needle) !== false) {
+      unset($javascript[$i]);
+    }
+    $i++;
+  }
+}
+
+/**
+ * Get heap config settings.
+ */
+function get_heap_storage_settings() {
+  $heap_storage = [];
+  $force_ssl = variable_get('force_ssl', true);
+  $secure_cookie = variable_get('secure_cookie', true);
+  $disable_text_capture = variable_get('disable_text_capture', true);
+  /*Getting value of New Field to get  Cookie Path and pass it to the array by Jaspreet Singh on 16-11-2018*/
+  $heapanalytics_cookie_path = variable_get('heapanalytics_cookie_path', NULL);
+  $heap_storage = ['forceSSL' => $force_ssl, 'secureCookie' => $secure_cookie, 'dtc' => $disable_text_capture,'cookiePath' => $heapanalytics_cookie_path];
+  return $heap_storage;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function heap_analytics_helper_permission() {
+  return array(
+    'administer heapanalytics' => array(
+      'title' => t('administer heapanalytics'),
+      'description' => t('Admin of Heapanalytics.'),
+    ),
+  );
+}
+
+function heap_analytics_helper_menu() {
+
+  $items['admin/config/heap-analytics/configuration'] = array(
+    'title' => 'Heap analytics configuration',
+    'description' => 'Configurations of heap js.',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('administer heapanalytics'),
+    'page arguments' => array('heap_analytics_helper_settings_form'),
+    'weight' => 10,
+  );
+  return $items;
+}
+
+function heap_analytics_helper_settings_form($form, &$form_state) {
+
+  $form['force_ssl'] = [
+    '#type' => 'textfield',
+    '#title' => t('Force SSL'),
+    '#required' => TRUE,
+    '#maxlength' => 255,
+    '#default_value' => variable_get('force_ssl', 'true'),
+  ];
+
+  $form['secure_cookie'] = [
+    '#type' => 'textfield',
+    '#title' => t('Secure Cookie'),
+    '#required' => TRUE,
+    '#maxlength' => 255,
+    '#default_value' => variable_get('secure_cookie', 'true'),
+  ];
+
+  $form['disable_text_capture'] = [
+    '#type' => 'textfield',
+    '#title' => t('Disable text capture'),
+    '#required' => TRUE,
+    '#maxlength' => 255,
+    '#default_value' => variable_get('disable_text_capture', 'true'),
+  ];
+  /*Adding New Field to Store Cookie Path and it's optional by Jaspreet Singh on 16-11-2018*/
+  $form['heapanalytics_cookie_path'] = [
+    '#type' => 'textfield',
+    '#title' => t('Heap Analytics Cookie Path'),
+    '#required' => FALSE,
+    '#maxlength' => 255,
+    '#default_value' => variable_get('heapanalytics_cookie_path'),
+  ];
+  return system_settings_form($form);
+}

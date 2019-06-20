@@ -1,30 +1,32 @@
 <?php
+// $Id: ldap_authentication.admin.inc,v 1.1.4.2 2011/02/08 06:01:00 johnbarclay Exp $
 
 /**
  * @file
  * Administrative page callbacks for the ldap_authentication module.
  */
 
+
 /**
- * Form for adding, updating, and deleting a single ldap authorization mapping.
+ * form for adding, updating, and deleting a single ldap authorization mapping
  *
- * @param mixed $form
- * @param mixed $form_state
- *
+ * @param <type> $form
+ * @param <type> $form_state
  * @return array drupal form array
  */
 function ldap_authentication_admin_form($form, &$form_state) {
-  ldap_servers_module_load_include('php', 'ldap_authentication', 'LdapAuthenticationConfAdmin.class');
-  $auth_conf = new LdapAuthenticationConfAdmin();
-  return $auth_conf->drupalForm();
+    require_once('LdapAuthenticationConfAdmin.class.php');
+    $auth_conf = new LdapAuthenticationConfAdmin();
+    return $auth_conf->drupalForm();
 }
 
+
 /**
- * Validate handler for the ldap_authentication_admin_form.
+ * validate handler for the ldap_authentication_admin_form
  */
 function ldap_authentication_admin_form_validate($form, &$form_state) {
 
-  ldap_servers_module_load_include('php', 'ldap_authentication', 'LdapAuthenticationConfAdmin.class');
+  require_once('LdapAuthenticationConfAdmin.class.php');
   $auth_conf = new LdapAuthenticationConfAdmin();
   $errors = $auth_conf->drupalFormValidate($form_state['values']);
   foreach ($errors as $error_name => $error_text) {
@@ -33,16 +35,17 @@ function ldap_authentication_admin_form_validate($form, &$form_state) {
 
 }
 
-/**
- * Submit handler function for ldap_authentication_admin_form.
- */
-function ldap_authentication_admin_form_submit($form, &$form_state) {
 
-  ldap_servers_module_load_include('php', 'ldap_authentication', 'LdapAuthenticationConfAdmin.class');
+/**
+ * submit handler function for ldap_authorization_admin_form
+ */
+
+function ldap_authentication_admin_form_submit($form, &$form_state) {
+  require_once('LdapAuthenticationConfAdmin.class.php');
   $auth_conf = new LdapAuthenticationConfAdmin();
-  // Add form data to object and save or create.
-  $auth_conf->drupalFormSubmit($form_state['values']);
-  if (!$auth_conf->hasEnabledAuthenticationServers()) {
+  $auth_conf->drupalFormSubmit($form_state['values']);  // add form data to object and save or create
+
+  if (!$auth_conf->enabled_servers()) {
     drupal_set_message(t('No LDAP servers are enabled for authentication,
       so no LDAP Authentication can take place.  This essentially disables
       LDAP Authentication.'), 'warning');

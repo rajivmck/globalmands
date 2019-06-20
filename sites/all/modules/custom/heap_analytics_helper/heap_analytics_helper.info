@@ -1,0 +1,4 @@
+name = Heap Analytics Helper
+core = 7.x
+
+dependencies[] = heap_analytics

@@ -2,92 +2,94 @@
 
 /**
  * @file
- * Definition of ldap_views module.
+ * Definition of ldap_views module
  */
 
 /**
  * Implements hook_views_data().
  */
+
 function ldap_views_views_data() {
   $data['ldap']['table']['group'] = t('LDAP Query');
 
-  $data['ldap']['table']['base'] = [
+  $data['ldap']['table']['base'] = array(
     'field' => 'dn',
     'title' => t('LDAP Query'),
     'help' => t('Data from LDAP Server.'),
     'query class' => 'ldap_views',
-  ];
-  // Basedn.
-  $data['ldap']['basedn'] = [
+  );
+  // basedn
+  $data['ldap']['basedn'] = array(
     'title' => t('LDAP Base DN'),
     'help' => t('The LDAP search base entry'),
-    'argument' => [
+    'argument' => array(
       'handler' => 'ldap_views_handler_argument',
-    ],
-  ];
+    ),
+  );
   // filter
-  // Generic column.
-  $data['ldap']['attribute'] = [
+  // Generic column
+  $data['ldap']['attribute'] = array(
     'title' => t('LDAP Attribute'),
     'help' => t('An attribute in LDAP Server'),
-    'argument' => [
+    'argument' => array(
       'handler' => 'ldap_views_handler_argument_attribute',
-    ],
-    'field' => [
+    ),
+    'field' => array(
       'handler' => 'ldap_views_handler_field_attribute',
-    ],
-    'sort' => [
+    ),
+    'sort' => array(
       'handler' => 'ldap_views_handler_sort_attribute',
-    ],
-    'filter' => [
+    ),
+    'filter' => array(
       'handler' => 'ldap_views_handler_filter_attribute',
-    ],
-  ];
-  $data['ldap']['dn'] = [
+    ),
+  );
+  $data['ldap']['dn'] = array(
     'title' => t('DN'),
     'help' => t('Distinguished name'),
-    'field' => [
+    'field' => array(
       'handler' => 'ldap_views_handler_field',
-    ],
-    'sort' => [
+    ),
+    'sort' => array(
       'handler' => 'ldap_views_handler_sort',
-    ],
-    'filter' => [
+    ),
+    'filter' => array(
       'handler' => 'views_handler_filter_string',
-    ],
-  ];
-  $data['ldap']['cn'] = [
+    ),
+  );
+  $data['ldap']['cn'] = array(
     'title' => t('CN'),
     'help' => t('Common name'),
-    'argument' => [
+    'argument' => array(
       'handler' => 'ldap_views_handler_argument',
-    ],
-    'field' => [
+    ),
+    'field' => array(
       'handler' => 'ldap_views_handler_field',
-    ],
-    'sort' => [
+    ),
+    'sort' => array(
       'handler' => 'ldap_views_handler_sort',
-    ],
-    'filter' => [
+    ),
+    'filter' => array(
       'handler' => 'ldap_views_handler_filter',
-    ],
-  ];
-  $data['ldap']['objectClass'] = [
+    ),
+  );
+  $data['ldap']['objectClass'] = array(
     'title' => t('Object Class'),
     'help' => t('The LDAP objectClass'),
-    'argument' => [
+    'argument' => array(
       'handler' => 'ldap_views_handler_argument',
-    ],
-    'field' => [
+    ),
+    'field' => array(
       'handler' => 'ldap_views_handler_field',
-    ],
-    'sort' => [
+    ),
+    'sort' => array(
       'handler' => 'ldap_views_handler_sort',
-    ],
-    'filter' => [
+    ),
+    'filter' => array(
       'handler' => 'ldap_views_handler_filter',
-    ],
-  ];
+    ),
+  );
+
 
   return $data;
 }
@@ -95,13 +97,13 @@ function ldap_views_views_data() {
 /*
 Alternative to 'attribute' field: add fields here, but we need the qid. Alternative: bundles + entity fields
 function ldap_views_views_data_alter(&$data) {
-$data['ldap']['example_field'] = array(
-'title' => t('Example field'),
-'help' => t('Some example content that references a user'),
-'field' => array(
-'handler' => 'ldap_views_handler_field',
-),
-);
+  $data['ldap']['example_field'] = array(
+    'title' => t('Example field'),
+    'help' => t('Some example content that references a user'),
+    'field' => array(
+      'handler' => 'ldap_views_handler_field',
+    ),
+  );
 
 }
  */
@@ -110,13 +112,13 @@ $data['ldap']['example_field'] = array(
  * Implements hook_views_plugins().
  */
 function ldap_views_views_plugins() {
-  return [
-    'query' => [
-      'ldap_views' => [
+  return array(
+    'query' => array(
+      'ldap_views' => array(
         'title' => t('LDAP'),
         'help' => t('Reads from an ldap server.'),
         'handler' => 'ldap_views_plugin_query_ldap',
-      ],
-    ],
-  ];
+      ),
+    ),
+  );
 }

@@ -1,7 +1,11 @@
 <?php 
   global $base_url;
 ?>
-
+<button class="menu-toggle" role="button" type="button">
+  <div class="menu-hamburger">
+    <span class="visually-hidden">Toggle Menu</span>
+  </div>
+</button>
 <section class="hamburger-nav" data-module="HamburgerNav">
   <div class="main-nav-inner">
     <a class="mck-logo-icon" href="<?php echo url('<front>') ?>" tabindex="-1">
@@ -24,6 +28,9 @@
 
         </li>
       <?php endforeach ?>
+         <li class="nav-item">  <a href="feedback" class="nav-item nav-link-item" >Feedback</a></li>
+           
+          <li class="nav-item">  <a href="case-library-submissions" class="nav-item nav-link-item" >Submit a use case</a></li>
       </ul>
     </nav>
   </div>

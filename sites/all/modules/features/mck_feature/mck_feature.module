@@ -1,8 +1,0 @@
-<?php
-
-/**
- * @file
- * Code for the MCK Feature feature.
- */
-
-include_once 'mck_feature.features.inc';

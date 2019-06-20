@@ -174,7 +174,6 @@ class SearchApiDbService extends SearchApiAbstractService {
   public function supportsFeature($feature) {
     $supported = array(
       'search_api_autocomplete' => TRUE,
-      'search_api_between' => TRUE,
       'search_api_facets' => TRUE,
       'search_api_facets_operator_or' => TRUE,
       'search_api_random_sort' => TRUE,
@@ -1113,11 +1112,6 @@ class SearchApiDbService extends SearchApiAbstractService {
         return 0 + $value;
 
       case 'boolean':
-        // Numeric strings need to be converted to a numeric type before
-        // converting to a boolean, as strings like '0.00' evaluate to TRUE.
-        if (is_string($value) && is_numeric($value)) {
-          $value = 0 + $value;
-        }
         return $value ? 1 : 0;
 
       case 'date':
@@ -1692,63 +1686,57 @@ class SearchApiDbService extends SearchApiAbstractService {
         }
       }
       else {
-        list ($field, $value, $operator) = $f;
-        if (!isset($fields[$field])) {
-          throw new SearchApiException(t('Unknown field in filter clause: @field.', array('@field' => $field)));
+        if (!isset($fields[$f[0]])) {
+          throw new SearchApiException(t('Unknown field in filter clause: @field.', array('@field' => $f[0])));
         }
-        $field_info = $fields[$field];
-        $not_between = $operator === 'NOT BETWEEN';
-        $not_equals = $not_between || $operator === '<>' || $operator === '!=';
-        $text_type = search_api_is_text_type($field_info['type']);
+        $field = $fields[$f[0]];
+        $not_equals = $f[2] == '<>' || $f[2] == '!=';
+        $text_type = search_api_is_text_type($field['type']);
         // If the field is in its own table, we have to check for NULL values in
         // a special way (i.e., check for missing entries in that table).
-        if ($value === NULL && ($field_info['column'] === 'value' || $text_type)) {
-          $query = $this->connection->select($field_info['table'], 't')
+        if ($f[1] === NULL && ($field['column'] === 'value' || $text_type)) {
+          $query = $this->connection->select($field['table'], 't')
             ->fields('t', array('item_id'));
           if ($text_type) {
-            $query->condition('t.field_name', $field);
+            $query->condition('t.field_name', $f[0]);
           }
           $cond->condition('t.item_id', $query, $not_equals ? 'IN' : 'NOT IN');
           continue;
         }
         if ($text_type) {
-          $keys = $this->prepareKeys($value);
+          $keys = $this->prepareKeys($f[1]);
           if (!isset($keys)) {
             continue;
           }
-          $query = $this->createKeysQuery($keys, array($field => $field_info), $fields);
+          $query = $this->createKeysQuery($keys, array($f[0] => $field), $fields);
           // We only want the item IDs, so we use the keys query as a nested query.
           $query = $this->connection->select($query, 't')->fields('t', array('item_id'));
           $cond->condition('t.item_id', $query, $not_equals ? 'NOT IN' : 'IN');
         }
         else {
-          $new_join = search_api_is_list_type($field_info['type'])
+          $new_join = search_api_is_list_type($field['type'])
               && ($filter->getConjunction() == 'AND'
-                  || empty($first_join[$field]));
-          if ($new_join || empty($tables[$field])) {
-            $tables[$field] = $this->getTableAlias($field_info, $db_query, $new_join);
-            $first_join[$field] = TRUE;
+                  || empty($first_join[$f[0]]));
+          if ($new_join || empty($tables[$f[0]])) {
+            $tables[$f[0]] = $this->getTableAlias($field, $db_query, $new_join);
+            $first_join[$f[0]] = TRUE;
           }
-          $column = $tables[$field] . '.' . $field_info['column'];
-          if ($value === NULL) {
-            $method = ($operator == '=') ? 'isNull' : 'isNotNull';
+          $column = $tables[$f[0]] . '.' . $field['column'];
+          if ($f[1] === NULL) {
+            $method = ($f[2] == '=') ? 'isNull' : 'isNotNull';
             $cond->$method($column);
           }
-          elseif ($not_equals && search_api_is_list_type($field_info['type'])) {
+          elseif ($not_equals && search_api_is_list_type($field['type'])) {
             // The situation is more complicated for multi-valued fields, since
             // we must make sure that results are excluded if ANY of the field's
             // values equals the one given in this condition.
-            $sub_operator = ($not_between) ? 'BETWEEN' : '=';
-            $query = $this->connection->select($field_info['table'], 't')
+            $query = $this->connection->select($field['table'], 't')
               ->fields('t', array('item_id'))
-              ->condition($field_info['column'], $value, $sub_operator);
+              ->condition($field['column'], $f[1]);
             $cond->condition('t.item_id', $query, 'NOT IN');
           }
-          elseif ($not_between) {
-            $cond->where("$column NOT BETWEEN {$value[0]} AND {$value[1]}");
-          }
           else {
-            $cond->condition($column, $value, $operator);
+            $cond->condition($column, $f[1], $f[2]);
           }
         }
       }
@@ -1866,20 +1854,13 @@ class SearchApiDbService extends SearchApiAbstractService {
         $alias = $this->getTableAlias($field, $db_query);
         $db_query->orderBy($alias . '.' . $fields[$field_name]['column'], $order);
         // PostgreSQL automatically adds a field to the SELECT list when sorting
-        // on it. Therefore, if we have aggregations present we also have to
+        // on it. Therefore, if we have aggregrations present we also have to
         // add the field to the GROUP BY (since Drupal won't do it for us).
         // However, if no aggregations are present, a GROUP BY would lead to
         // another error. Therefore, we only add it if there is already a GROUP
         // BY.
         if ($db_query->getGroupBy()) {
           $db_query->groupBy($alias . '.' . $fields[$field_name]['column']);
-        }
-        // For SELECT DISTINCT queries in combination with an ORDER BY clause,
-        // MySQL 5.7 and higher require that the ORDER BY expressions are part
-        // of the field list. Ensure that all fields used for sorting are part
-        // of the select list.
-        if (empty($db_fields[$fields[$field_name]['column']])) {
-          $db_query->addField($alias, $fields[$field_name]['column']);
         }
       }
     }
@@ -2104,21 +2085,8 @@ class SearchApiDbService extends SearchApiAbstractService {
 
     // Decide which methods we want to use.
     if ($incomplete_key && $settings['suggest_suffix']) {
-      $processed_key = $this->splitKeys($incomplete_key);
-      if ($processed_key) {
-        // In case the $incomplete_key turned out to be more than one word, add
-        // all but the last one to the user input.
-        if (is_array($processed_key)) {
-          unset($processed_key['#conjunction']);
-          $incomplete_key = array_pop($processed_key);
-          if ($processed_key) {
-            $user_input .= ' ' . implode(' ', $processed_key);
-          }
-          $processed_key = $incomplete_key;
-        }
-        $passes[] = 1;
-        $incomplete_like = $this->connection->escapeLike($processed_key) . '%';
-      }
+      $passes[] = 1;
+      $incomplete_like = $this->connection->escapeLike($incomplete_key) . '%';
     }
     if ($settings['suggest_words']
         && (!$incomplete_key || strlen($incomplete_key) >= $this->options['min_chars'])) {

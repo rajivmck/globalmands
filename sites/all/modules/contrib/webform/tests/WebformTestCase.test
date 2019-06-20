@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @file
  * Webform module tests.
  */
 class WebformTestCase extends DrupalWebTestCase {
@@ -11,7 +12,7 @@ class WebformTestCase extends DrupalWebTestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp($added_modules = array()) {
+  function setUp($added_modules = array()) {
     // Enable Webform and Token module if available.
     if (module_exists('token')) {
       $modules = array('webform', 'token');
@@ -81,7 +82,7 @@ class WebformTestCase extends DrupalWebTestCase {
   /**
    * {@inheritdoc}
    */
-  public function tearDown() {
+  function tearDown() {
     // Delete the webform admin and any created nodes.
     foreach ($this->webform_users as $account) {
       $uid = $account->uid;
@@ -98,10 +99,7 @@ class WebformTestCase extends DrupalWebTestCase {
     parent::tearDown();
   }
 
-  /**
-   * Reset the form.
-   */
-  public function webformReset() {
+  function webformReset() {
     $this->_webform_node = NULL;
     $this->_webform_components = NULL;
   }
@@ -113,13 +111,12 @@ class WebformTestCase extends DrupalWebTestCase {
    *   - A default configuration for the component.
    *   - Values to try setting via POST
    *   - Values that should match the database storage when set via POST
-   *   - Values that should match the database storage when using the default
-   *     values.
+   *   - Values that should match the database storage when using the default values.
    *
    * @return array
    *   An array of each component settings.
    */
-  public function webformComponents() {
+  function webformComponents() {
     if (isset($this->_webform_components)) {
       return $this->_webform_components;
     }
@@ -169,10 +166,8 @@ class WebformTestCase extends DrupalWebTestCase {
           'type' => 'grid',
           'value' => '',
           'extra' => array(
-            // Left side.
-            'questions' => "0|Ålphå\n1|ıé†å\n2|Îé¬†å",
-            // Top.
-            'options' => "0|øne\n1|twö\n2|ǼBƇ\n3|€Euro",
+            'questions' => "0|Ålphå\n1|ıé†å\n2|Îé¬†å", // Left side
+            'options' => "0|øne\n1|twö\n2|ǼBƇ\n3|€Euro", // Top
           ),
           'required' => '0',
           'pid' => '2',
@@ -189,10 +184,8 @@ class WebformTestCase extends DrupalWebTestCase {
           'type' => 'grid',
           'value' => '',
           'extra' => array(
-            // Left side.
-            'questions' => "one|What's your option?\ntwo|Agåin?\nthree|One more time!",
-            // Top.
-            'options' => "one|Option one\ntwo|Option 2\nthree| Three is me",
+            'questions' => "one|What's your option?\ntwo|Agåin?\nthree|One more time!", // Left side.
+            'options' => "one|Option one\ntwo|Option 2\nthree| Three is me", // Top
           ),
           'required' => '0',
           'pid' => '0',
@@ -223,8 +216,7 @@ class WebformTestCase extends DrupalWebTestCase {
         'database default values' => array('two'),
         // Conditionals match against the 'sample values'.
         'match conditional values' => array(
-          // ANDed together match.
-          'equal' => array('one', 'three'),
+          'equal' => array('one', 'three'), // ANDed together match.
           'not_equal' => array('two'),
         ),
         'mismatch conditional values' => array(
@@ -994,28 +986,25 @@ class WebformTestCase extends DrupalWebTestCase {
     return $this->_webform_components;
   }
 
-  /**
-   * Create a sample Webform node.
-   */
-  public function webformForm() {
+  function webformForm() {
     if (isset($this->_webform_node)) {
       return $this->_webform_node;
     }
 
     $settings = array(
-      'type' => 'webform',
-      'language'  => LANGUAGE_NONE,
-      'uid' => '1',
-      'status' => '1',
-      'promote' => '1',
-      'moderate' => '0',
-      'sticky' => '0',
-      'tnid' => '0',
-      'translate' => '0',
-      'title' => 'Test Webform',
-      'log' => '',
-      'format' => '1',
-      'webform' => array(
+     'type' => 'webform',
+     'language'  => LANGUAGE_NONE,
+     'uid' => '1',
+     'status' => '1',
+     'promote' => '1',
+     'moderate' => '0',
+     'sticky' => '0',
+     'tnid' => '0',
+     'translate' => '0',
+     'title' => 'Test Webform',
+     'log' => '',
+     'format' => '1',
+     'webform' => array(
         'confirmation' => 'Thanks!',
       ) + webform_node_defaults(),
     );
@@ -1040,7 +1029,7 @@ class WebformTestCase extends DrupalWebTestCase {
    *   An array of input values keyed by the component form key. If none
    *   are specified, the defaults will be pulled from webformComponents().
    */
-  public function webformPost($input_values = NULL) {
+  function webformPost($input_values = NULL) {
     $edit = array();
 
     if (empty($input_values)) {
@@ -1069,8 +1058,7 @@ class WebformTestCase extends DrupalWebTestCase {
   /**
    * Utility function to print out the current page being tested.
    */
-  public function webformPrintPage() {
+  function webformPrintPage() {
     $this->verbose($this->drupalGetContent());
   }
-
 }

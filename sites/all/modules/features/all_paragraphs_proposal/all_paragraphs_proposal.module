@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the all_paragraphs_proposal feature.
+ */
+
+include_once 'all_paragraphs_proposal.features.inc';

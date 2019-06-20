@@ -9,18 +9,13 @@
  * Performs analysis and topological sorting on the conditionals.
  */
 class WebformConditionals {
-  /**
-   * Define constants.
-   *
-   * Define constants for the result of an analysis of the conditionals on a
-   * page for a given set of input values. Determines whether the component is
-   * always hidden, always shown, or may or may not be shown depending upon
-   * other values on the same page. In the last case, the component needs to be
-   * rendered on the page because at least one source component is on the same
-   * page. The field will be hidden with JavaScript.
-   *
-   * @var int
-   */
+
+  // Define constants for the result of an analysis of the conditionals on
+  // a page for a given set of input values. Determines whether the component
+  // is always hidden, always shown, or may or may not be shown depending upon
+  // other values on the same page. In the last case, the component needs to be
+  // rendered on the page because at least one source component is on the same
+  // page. The field will be hidden with JavaScript.
   const componentHidden = 0;
   const componentShown = 1;
   const componentDependent = 2;
@@ -41,7 +36,7 @@ class WebformConditionals {
   /**
    * Creates and caches a WebformConditional for a given node.
    */
-  public static function factory($node) {
+  static function factory($node) {
     if (!isset(self::$conditionals[$node->nid])) {
       self::$conditionals[$node->nid] = new WebformConditionals($node);
     }
@@ -51,7 +46,7 @@ class WebformConditionals {
   /**
    * Constructs a WebformConditional.
    */
-  public function __construct($node) {
+  function __construct($node) {
     $this->node = $node;
   }
 
@@ -89,7 +84,7 @@ class WebformConditionals {
       }
     }
 
-    // Generate T-Orders for each page.
+    // Generate T-Orders for each page
     $new_entry = array('in' => array(), 'out' => array(), 'rgid' => array());
     $page_num = 0;
     // If the first component is a page break, then no component is on page 1. Create empty arrays for page 1.
@@ -99,8 +94,8 @@ class WebformConditionals {
     while ($component) {
       $cid = $component['cid'];
 
-      // Start a new page, if needed.
-      if ($component['page_num'] > $page_num) {
+      // Start a new page, if needed
+      if ($component['page_num'] > $page_num ) {
         $page_num = $component['page_num'];
         // Create an empty list that will contain the sorted elements.
         // This list is known as L in the literature.
@@ -152,7 +147,7 @@ class WebformConditionals {
                   ));
               }
               elseif ($source_component['page_num'] == $page_num && $component['type'] == 'pagebreak') {
-                $errors[$page_num][] = t("The page break %to can't be controlled by %from on the same page.",
+                $errors[$page_num][] = t('The page break %to can\'t be controlled by %from on the same page.',
                   array(
                     '%from' => $source_component['name'],
                     '%to' => $component['name'],
@@ -183,7 +178,7 @@ class WebformConditionals {
           $id = array_shift($start_nodes);
           // If the node represents an actual conditional, it can now be added
           // to the end of the sorted order because anything it depends upon has
-          // already been calculated.
+          // already been calcuated.
           if ($nodes[$id]['rgid']) {
             foreach ($nodes[$id]['rgid'] as $rgid) {
               $sorted[$page_num][] = array(
@@ -208,7 +203,7 @@ class WebformConditionals {
           $nodes[$id]['out'] = array();
         }
 
-        // Check for a cyclic graph (circular dependency).
+        // Check for a cyclic graph (circular dependency)
         foreach ($nodes as $id => $n) {
           if ($n['in'] || $n['out']) {
             $errors[$page_num][] = t('A circular reference involving %name was found.',
@@ -216,9 +211,9 @@ class WebformConditionals {
           }
         }
 
-      } // End finishing previous page.
+      } // End finshing previous page
 
-    } // End component loop.
+    } // End component loop
 
     // Create an empty page map for the preview page.
     $page_map[$page_num + 1] = array();
@@ -231,7 +226,7 @@ class WebformConditionals {
   /**
    * Returns the (possibly cached) topological sort order.
    */
-  public function getOrder() {
+  function getOrder() {
     if (!$this->topologicalOrder) {
       $this->topologicalSort();
     }
@@ -241,7 +236,7 @@ class WebformConditionals {
   /**
    * Returns an index of components by page number.
    */
-  public function getPageMap() {
+  function getPageMap() {
     if (!$this->pageMap) {
       $this->topologicalSort();
     }
@@ -253,7 +248,7 @@ class WebformConditionals {
    *
    * User's who can't fix the webform are shown a single, simplified message.
    */
-  public function reportErrors() {
+  function reportErrors() {
     $this->getOrder();
     if ($this->errors) {
       if (webform_node_update_access($this->node)) {
@@ -276,10 +271,10 @@ class WebformConditionals {
    *
    * Called after the component tree has been made and then flattened again.
    * Alas, the children data is removed when the tree is flattened. The
-   * components are indexed by cid but in tree order. Because cid's are
+   * components are indexecd by cid but in tree order. Because cid's are
    * numeric, they may not appear in IDE's or debuggers in their actual order.
    */
-  public function getChildrenMap() {
+  function getChildrenMap() {
     if (!$this->childrenMap) {
       $map = array();
       foreach ($this->node->webform['components'] as $cid => $component) {
@@ -295,7 +290,7 @@ class WebformConditionals {
   }
 
   /**
-   * Deletes the value of the given component, plus any descendants.
+   * Deletes the value of the given component, plus any descendents.
    */
   protected function deleteFamily(&$input_values, $parent_id, &$page_visiblity_page) {
     if (isset($input_values[$parent_id])) {
@@ -313,11 +308,10 @@ class WebformConditionals {
   protected $resultStack;
 
   /**
-   * Initializes an execution stack for a conditional group's rules.
-   *
-   * Also initializes sub-conditional rules.
+   * Initializes an execution stack for a conditional group's rules and
+   * sub-conditional rules.
    */
-  public function executionStackInitialize($andor) {
+  function executionStackInitialize($andor) {
     $this->stackPointer = -1;
     $this->resultStack = array();
     $this->executionStackPush($andor);
@@ -326,7 +320,7 @@ class WebformConditionals {
   /**
    * Starts a new subconditional for the given and/or operator.
    */
-  public function executionStackPush($andor) {
+  function executionStackPush($andor) {
     $this->resultStack[++$this->stackPointer] = array(
       'results' => array(),
       'andor' => $andor,
@@ -334,16 +328,16 @@ class WebformConditionals {
   }
 
   /**
-   * Adds a rule's result to the current sub-conditional.
+   * Adds a rule's result to the current sub-condtional.
    */
-  public function executionStackAccumulate($result) {
+  function executionStackAccumulate($result) {
     $this->resultStack[$this->stackPointer]['results'][] = $result;
   }
 
   /**
    * Finishes a sub-conditional and adds the result to the parent stack frame.
    */
-  public function executionStackPop() {
+  function executionStackPop() {
     // Calculate the and/or result.
     $stack_frame = $this->resultStack[$this->stackPointer];
     // Pop stack and protect against stack underflow.
@@ -356,15 +350,14 @@ class WebformConditionals {
   }
 
   /**
-   * Executes the conditionals on a submission.
-   *
-   * This removes any data which should be hidden.
+   * Executes the conditionals on a submission, removing any data which should
+   * be hidden.
    */
-  public function executeConditionals($input_values, $page_num = 0) {
+  function executeConditionals($input_values, $page_num = 0) {
     $this->getOrder();
     $this->getChildrenMap();
     if (!$this->visibilityMap || $page_num == 0) {
-      // Create a new visibility map, with all components shown.
+      // Create a new visitibily map, with all components shown.
       $this->visibilityMap = $this->pageMap;
       array_walk_recursive($this->visibilityMap, function (&$status) {
         $status = WebformConditionals::componentShown;
@@ -437,11 +430,10 @@ class WebformConditionals {
               // in webform.conditionals.inc.
               switch ($conditional_type) {
                 case 'numeric':
-                  webform_component_include('number');
+                  module_load_include('inc', 'webform', 'components/number');
                   break;
-
                 case 'select':
-                  webform_component_include($conditional_type);
+                  module_load_include('inc', 'webform', 'components/select');
                   break;
               }
 
@@ -450,11 +442,9 @@ class WebformConditionals {
               // Record page number to later determine any intra-page dependency on this source.
               $source_page_nums[$source_component['page_num']] = $source_component['page_num'];
               break;
-
             case 'conditional_start':
               $this->executionStackPush($rule['operator']);
               break;
-
             case 'conditional_end':
               $this->executionStackAccumulate($this->executionStackPop());
               break;
@@ -474,11 +464,9 @@ class WebformConditionals {
                 $targetLocked[$target] = TRUE;
               }
               break;
-
             case 'require':
               $this->requiredMap[$page_num][$target] = $action_result;
               break;
-
             case 'set':
               if ($components[$target]['type'] == 'markup') {
                 $this->markupMap[$page_num][$target] = FALSE;
@@ -498,6 +486,7 @@ class WebformConditionals {
           }
         }
 
+
       } // End conditinal loop
     } // End page loop
 
@@ -507,27 +496,24 @@ class WebformConditionals {
   /**
    * Returns whether the conditionals have been executed yet.
    */
-  public function isExecuted() {
-    return (boolean) ($this->visibilityMap);
+  function isExecuted() {
+    return (boolean)($this->visibilityMap);
   }
 
   /**
-   * Returns the required status for a component.
-   *
    * Returns whether a given component is always hidden, always shown, or might
    * be shown depending upon other sources on the same page.
    *
    * Assumes that the conditionals have already been executed on the given page.
    *
-   * @param int $cid
-   *   The component id of the component whose visibility is being sought.
-   * @param int $page_num
+   * @param integer $cid
+   *   The component id of the component whose visibilty is being sought.
+   * @param integer $page_num
    *   The page number that the component is on.
-   *
-   * @return int
+   * @return integer
    *   self::componentHidden, ...Shown, or ...Dependent.
    */
-  public function componentVisibility($cid, $page_num) {
+  function componentVisibility($cid, $page_num) {
     if (!$this->visibilityMap) {
       // The conditionals have not yet been executed on a submission.
       $this->executeConditionals(array(), 0);
@@ -537,19 +523,17 @@ class WebformConditionals {
   }
 
   /**
-   * Returns whether a given page should be displayed.
+   * Returns whether a given page should be displayed. This requires any
+   * conditional for the page itself to be shown, plus at least one component
+   * within the page must be shown too. The first and preview pages are always
+   * shown, however.
    *
-   * This requires any conditional for the page itself to be shown, plus at
-   * least one component within the page must be shown too. The first and
-   * preview pages are always shown, however.
-   *
-   * @param int $page_num
+   * @param integer $page_num
    *   The page number that the component is on.
-   *
-   * @return int
+   * @return integer
    *   self::componentHidden or  ...Shown.
    */
-  public function pageVisibility($page_num) {
+  function pageVisibility($page_num) {
     $result = self::componentHidden;
     if ($page_num == 1 || empty($this->visibilityMap[$page_num])) {
       $result = self::componentShown;
@@ -566,22 +550,19 @@ class WebformConditionals {
   }
 
   /**
-   * Returns the required status for a component.
-   *
    * Returns whether a given component is always required, always optional, or
    * unchanged by conditional logic.
    *
    * Assumes that the conditionals have already been executed on the given page.
    *
-   * @param int $cid
+   * @param integer $cid
    *   The component id of the component whose required state is being sought.
-   * @param int $page_num
+   * @param integer $page_num
    *   The page number that the component is on.
-   *
-   * @return bool
+   * @return boolean
    *   Whether the component is required based on conditionals.
    */
-  public function componentRequired($cid, $page_num) {
+  function componentRequired($cid, $page_num) {
     if (!$this->requiredMap) {
       // The conditionals have not yet been executed on a submission.
       $this->executeConditionals(array(), 0);
@@ -590,20 +571,19 @@ class WebformConditionals {
     return isset($this->requiredMap[$page_num][$cid]) ? $this->requiredMap[$page_num][$cid] : NULL;
   }
 
-  /**
+    /**
    * Returns whether a given component has been set by conditional logic.
    *
    * Assumes that the conditionals have already been executed on the given page.
    *
-   * @param int $cid
+   * @param integer $cid
    *   The component id of the component whose set state is being sought.
-   * @param int $page_num
+   * @param integer $page_num
    *   The page number that the component is on.
-   *
-   * @return bool
+   * @return boolean
    *   Whether the component was set based on conditionals.
    */
-  public function componentSet($cid, $page_num) {
+  function componentSet($cid, $page_num) {
     if (!$this->setMap) {
       // The conditionals have not yet been executed on a submission.
       $this->executeConditionals(array(), 0);
@@ -612,20 +592,19 @@ class WebformConditionals {
     return isset($this->setMap[$page_num][$cid]) ? $this->setMap[$page_num][$cid] : NULL;
   }
 
-  /**
+    /**
    * Returns the calculated markup as set by conditional logic.
    *
    * Assumes that the conditionals have already been executed on the given page.
    *
-   * @param int $cid
+   * @param integer $cid
    *   The component id of the component whose set state is being sought.
-   * @param int $page_num
+   * @param integer $page_num
    *   The page number that the component is on.
-   *
    * @return string
    *   The conditional markup, or NULL if none.
    */
-  public function componentMarkup($cid, $page_num) {
+  function componentMarkup($cid, $page_num) {
     if (!$this->markupMap) {
       // The conditionals have not yet been executed on a submission.
       $this->executeConditionals(array(), 0);

@@ -76,4 +76,24 @@
 
 <?php echo render($page['content']) ?>
 
+<?php //print render($messages) ?>
+
+<!-- Footer Start -->
+<!--<footer class="global-footer">
+    <section class="footer">
+        <div class="footer-inner">
+            <div class="footer-section">
+                <div class="logo-container">
+                    <a href="http://www.mckinsey.com" class="mck-footer__logo">McKinsey &amp; Company | © 2016</a>
+                    <?php //print render($page['footer']) ?>
+                </div>
+                <div class="footer-links">
+                    <?php //print render($page['navigation']); ?>
+                </div>
+            </div>
+        </div>
+    </section>
+</footer>-->
+<!-- Footer End -->
+
 <div style="clear: both;"></div>
