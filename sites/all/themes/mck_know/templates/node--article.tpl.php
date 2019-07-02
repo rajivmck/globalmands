@@ -107,6 +107,9 @@ $ArrayExts = array("pptx", "ppt");
 $pdf = isset($node->field_pdf_upload['und'][0]['uri']) ? $node->field_pdf_upload['und'][0]['uri']: NULL;
 
 $pdfreplace = str_replace('public://', '', $pdf);
+
+// $serviceLine =   isset($node->['field_service_line'][0]['taxonomy_term'][189]['#term']->name) ? $node->['field_service_line'][0]['taxonomy_term'][189]['#term']->name: NULL;
+
 ?>
 
 <?php 
@@ -124,6 +127,15 @@ $pdfreplace = str_replace('public://', '', $pdf);
   hide($content['field_industries']);
   hide($content['field_regions']);
   hide($content['field_case_link']);
+  hide($content['field_service_line']);
+  hide($content['field_growth_platform']);
+  hide($content['field_link']);
+  hide($content['field_video_type']);
+  hide($content['field_file']);
+  hide($content['field_urls']);
+  hide($content['field_compass']);
+  hide($content['field_case_link']);
+
 
   /*$referer = explode('/', $_SERVER['HTTP_REFERER']);
   $class = !in_array('front', $referer) ? 'blue' : '';*/
@@ -180,16 +192,33 @@ $pdfreplace = str_replace('public://', '', $pdf);
     </div> 
   </div>
   <div class="popup-sidebar">
+     <?php if (render($content['field_year_case_was_tapped'])): ?>
+      <div class="field-case-id">
+        <label><?php print $content['field_year_case_was_tapped']['#title']; ?>:</label>
+        <?php print render($content['field_year_case_was_tapped']); ?>
+      </div>
+    <?php endif; ?>
+
     <?php if (render($content['field_case_id'])): ?>
       <div class="field-case-id">
         <label><?php print $content['field_case_id']['#title']; ?>:</label>
         <?php print render($content['field_case_id']); ?>
       </div>
     <?php endif; ?>
+      <?php if (render($content['field_service_line'])): ?>
+      <div class="field-service-id">
+       <div class="valign-wrapper"><div> <label><?php print $content['field_service_line']['#title']; ?>:</label></div>
+       <div>
+        <?php print render($content['field_service_line']); ?>
+      </div>
+    </div>
+      </div>
+    <?php endif; ?>
     <?php if (render($content['field_industries'])): ?>
       <div class="field-industry-sector">
-        <label><?php print $content['field_industries']['#title']; ?>:</label>
-        <?php print render($content['field_industries']); ?>
+        <div class="valign-wrapper"><div> <label><?php print $content['field_industries']['#title']; ?>:</label></div>
+        <div><?php print render($content['field_industries']); ?></div>
+      </div>
       </div>
     <?php endif; ?>
       <?php if (render($content['field_regions'])): ?>
@@ -205,7 +234,16 @@ $pdfreplace = str_replace('public://', '', $pdf);
         <?php print render($content['field_cst_contracts']); ?>
       </div>
     <?php endif; ?>
-    
+  
+      <?php if (render($content['field_growth_platform'])): ?>
+      <div class="field-industry-sector">
+         <div class="valign-wrapper"><div> <label><?php print $content['field_growth_platform']['#title']; ?>:</label></div>
+         <div>
+           <?php print render($content['field_growth_platform']); ?>
+          </div>
+        </div>
+      </div>
+    <?php endif; ?>
   
     <?php if (render($content['field_related_materials'])): ?>
       <div class="field-related-materials">

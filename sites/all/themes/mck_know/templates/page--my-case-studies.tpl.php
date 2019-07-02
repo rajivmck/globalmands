@@ -251,11 +251,12 @@
     <section class="full-text-section case-box section-inner-wrapper">
       <div class="page-wrapper">
         <div class="row">
-          <div class="col-lg-9 col-md-8 col-sm-12 content">
+         <div class="col-lg-9 col-md-8 col-sm-12 content left-sidebar">
              
                 <?php global $user; ?>
                 <?php $args = bookmark_get_items($user->uid);?>
                 <?php print views_embed_view("case_studies", "page_1", $args); ?>
+                FA
                 <div class="more-like-this">
                  <div class="mx-auto text-center"><div class="header"><h5>More Like This</h5></div></div>
                  <?php
@@ -284,17 +285,12 @@
 <section class="white-bk">
 <div class="section-inner-wrapper">
   <div>
-
-
-
      <?php
               $blockObject = block_load('views', 'resources-block');
               $block = _block_get_renderable_array(_block_render_blocks(array($blockObject)));
               $output = drupal_render($block);
               print $output;
-            ?>
-
-
+      ?>
   </div>
 </div>
 </section>

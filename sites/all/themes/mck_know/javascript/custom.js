@@ -188,13 +188,25 @@
       if (active === 0) {
         $('.right-sidebar .sort-by-wrapper .views-widget-sort-by a,.sort-title .sort-by-wrapper .views-widget-sort-by a,.left-sidebar .sort-by-wrapper .views-widget-sort-by a').first().addClass('active');
       }
-      
-      $('.right-sidebar .sort-by-value,.sort-title .sort-by-value,.left-sidebar .sort-by-value').text($('.left-sidebar .sort-by-wrapper .views-widget-sort-by a.active,.right-sidebar .sort-by-wrapper .views-widget-sort-by a.active,.sort-title .sort-by-wrapper .views-widget-sort-by a.active').text());
+     $('.left-sidebar .sort-by-value').text(
+            $('.left-sidebar .sort-by-wrapper .views-widget-sort-by a.active').text()
+        ); 
+      // $('.right-sidebar .sort-by-value,.sort-title .sort-by-value,.left-sidebar .sort-by-value').text(
+      //       $('.left-sidebar .sort-by-wrapper .views-widget-sort-by a.active,.right-sidebar .sort-by-wrapper .views-widget-sort-by a.active,.sort-title .sort-by-wrapper .views-widget-sort-by a.active').text()
+      //   );
       
       $('.right-sidebar .sort-by-wrapper .sort-by-value,.sort-title .sort-by-value,.left-sidebar .sort-by-wrapper .sort-by-value,.sort-title .sort-by-value').on('click', function(){
+
         $('.right-sidebar .views-widget-sort-by a,.sort-title .views-widget-sort-by a,.left-sidebar .views-widget-sort-by a,.sort-title .views-widget-sort-by a').parent().show();
         $('.right-sidebar .views-widget-sort-by a.active,.sort-title .views-widget-sort-by a.active,.left-sidebar .views-widget-sort-by a.active').parent().hide();
         $(this).next().show();
+        
+      
+
+         $('.left-sidebar .sort-by-value').text(
+            $('.left-sidebar .sort-by-wrapper .views-widget-sort-by a.active').text()
+        );
+      
       });
             
       $('.right-sidebar .views-widget-sort-by .bef-select-as-links a, .sort-title .views-widget-sort-by .bef-select-as-links a,.left-sidebar .views-widget-sort-by .bef-select-as-links a').on('click', function(){
@@ -332,7 +344,7 @@ if ($("body").hasClass("case-studies")) {
 
       if (((now - lastDatePopupShowed) >= (15 * 86400000)) || !lastDatePopupShowed) {
         $.magnificPopup.open({
-          items: { src: 'http://globalmands.intranet.mckinsey.com/sites/default/files/globalms-new.mp4' },
+          items: { src: 'http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4' },
           type: 'iframe'
         }, 0);
 

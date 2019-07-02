@@ -222,7 +222,7 @@
     <section class="full-text-section case-box section-inner-wrapper">
       <div class="page-wrapper">
         <div class="row">
-          <div class="col-lg-9 col-md-8 col-sm-12 content">
+          <div class="col-lg-9 col-md-8 col-sm-12 content left-sidebar">
             <?php global $user; ?>
             <?php $args = bookmark_get_items($user->uid);?>
             <?php print views_embed_view("video", "page_1", $args); ?>

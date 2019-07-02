@@ -75,7 +75,7 @@ $link = isset($fields['field_link']->content) ? $fields['field_link']->content :
                 <h3><a href="<?php print $file; ?>"><?php print $title; ?></a></h3>
 
           <?php elseif ($link): ?>                
-                <h3><a href="<?php print $link; ?>"><?php print $title; ?></a></h3>                 
+                <h3><a href="<?php print $link; ?>" target="_blank"><?php print $title; ?></a></h3>                 
            <?php else: ?> 
                <h3><?php print $title; ?></h3>
           <?php endif; ?>  
@@ -85,7 +85,7 @@ $link = isset($fields['field_link']->content) ? $fields['field_link']->content :
           <?php if ($file): ?> 
                     <a href="<?php print $file;?>" class="views-more-link cta -arrow">  Read More </a>
           <?php elseif ($link): ?> 
-                <a href="<?php print $link;?>" class="views-more-link cta -arrow">  Read More </a>
+                <a href="<?php print $link;?>" class="views-more-link cta -arrow" target="_blank">  Read More </a>
            <?php else: ?> 
           
           <?php endif; ?>  
