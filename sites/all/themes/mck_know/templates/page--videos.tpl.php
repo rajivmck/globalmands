@@ -269,9 +269,13 @@
 <footer id="global_footer_0_MainFooter" class="global-footer" lang="en">
 
     <section class="footer-main">
-
+<h2 style="padding-bottom: 15px;
+    margin-top: -50px;">Contact Us</h2>
         <div class="footer-top">
-
+          
+          <p>
+            If you have any inquiries about the site then please reach out to the <a href="mailto:Global_Marketing_and_Sales_Casebook@mckinsey.com">Global M&S Casebook Team</a>.
+          </p>
             <div class="mck-logo-icon">
                 <span class="visually-hidden">McKinsey&amp;Company</span>
             </div>
@@ -288,7 +292,6 @@
     <section class="footer">
 
         <div class="footer-inner">
-
 
             <div id="global_footer_0_AppLinksBlock" class="app-links">
                   <?php print theme('custom_main_menu'); ?>

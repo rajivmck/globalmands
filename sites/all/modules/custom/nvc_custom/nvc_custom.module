@@ -1,0 +1,1688 @@
+<?php
+
+
+function nvc_custom_menu()
+{
+
+    $items['entries/me'] = array(
+        'title' => 'My Entries',
+        'page callback' => 'nvc_custom_last_node',
+        'access callback' => 'nvc_custom_check_last',
+        'type' => MENU_NORMAL_ITEM,
+        'menu_name' => 'main-menu',
+    );
+
+    return $items;
+
+}
+
+/**
+ * Notify Team members when field collection updated.
+ *
+ * Funtion is used inside notify team members rule.
+ */
+function notifyTeamMembers($item_id)
+{
+
+    // Load the host entity of the field collection by id.
+    $node = getHostEnitity($item_id);
+
+    // If we have a node.
+    if ($node) {
+        global $user;
+
+        // Get relevant users from the entry node.
+        $users = getEntryUserList($node);
+
+        // If we have a list of users.
+        if ($users) {
+
+            // Get email template based on the node.
+            $mailInfo = getMailInfo($node);
+
+            // Put subject and message into $params.
+            $params = array(
+                'subject' => $mailInfo['subject'],
+                'body' => $mailInfo['message'],
+            );
+
+            // Set from address. This may need to be changed to site mail.
+            $from = 'New_Ventures_Competition@mckinsey.com';
+
+            // Add for testing. Remove later.
+            $users[] = 'info@loclio.com';
+            $users[] = 'faisal_shabir@mckinsey.com';
+            $users[] = 'famaash@gmail.com';
+
+            // List of users comes back as array. So convert it to string.
+            $recipients = implode(',', $users);
+
+            $simple = TRUE;
+
+            // Send email.
+            if (!$simple) {
+                $result = drupal_mail('nvc_custom', 'notify_entry_team', $recipients, language_default(), $params, $from);
+            } else {
+
+                $from = "New_Ventures_Competition@mckinsey.com";
+                $subject = $mailInfo['subject'];
+                $body = $mailInfo['message'];
+
+                watchdog("nvc_custom_module", "My message !var %var2", array("!var" => $users, "%var2" => $message), WATCHDOG_NOTICE, "http://mylink.com");
+
+
+                $users = implode(", ", $users);
+                simple_mail_send($from, $recipients, $subject, $body);
+
+
+            }
+        }
+    }
+
+    // Log sending of the email.
+    watchdog('nvc_custom', 'Notify team members triggered for %title', array('%title' => $node->title), WATCHDOG_NOTICE, 'link');
+
+}
+
+/**
+ * Get Host Entity from the field collection item_id.
+ */
+function getHostEnitity($item_id)
+{
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+        ->fieldCondition('field_judges_feedback', 'value', $item_id, '=');
+    $result = $query->execute();
+
+    if (!empty($result['node'])) {
+        $nid = key($result['node']);
+        return node_load($nid);
+
+    }
+    return FALSE;
+}
+
+/**
+ * Get all email from entry node for sending emails.
+ */
+function getEntryUserList($node)
+{
+    $uids = [];
+
+    // Get team member uids.
+    if (!empty($node->field_other_team_members)) {
+        $field_other_team_members = array_column($node->field_other_team_members['und'], 'uid');
+        $uids = array_merge($uids, $field_other_team_members);
+    }
+
+    // Get team coaches uids.
+    if (!empty($node->field_team_coaches)) {
+        $field_team_coaches = array_column($node->field_team_coaches['und'], 'uid');
+        $uids = array_merge($uids, $field_team_coaches);
+    }
+
+    // Get main contact uid.
+    if (!empty($node->field_main_contact)) {
+        $field_main_contact = array_column($node->field_main_contact['und'], 'uid');
+        $uids = array_merge($uids, $field_main_contact);
+    }
+
+    // Get unique  uids in case there are duplicates.
+    $uids = array_unique($uids);
+
+    // Check if we got any.
+    if (!empty($uids)) {
+
+        // Load users.
+        $users = user_load_multiple($uids);
+
+
+        $emails = array();
+
+        // Look through user objects and extract emails into $emails array.
+        foreach ($users as $key => $user) {
+            $emails[] = $user->mail;
+        }
+
+        return $emails;
+    }
+    return FALSE;
+}
+
+/**
+ * Get Message array to send message when team field collection updated.
+ */
+function getMailInfo($node)
+{
+
+    $message = $node->title;
+    $message .= '<p>Thank you for participating the New Ventures Competition Practice Rounds! Please go to the NVC website to view the feedback from your practice.</p>';
+    $message .= '<p>If you have been nominated to compete in the Regional Finals you will receive a separate logistics email in the upcoming weeks.</p>';
+    $message .= '<p>Best - <br/>The New Ventures Competition Team';
+
+    $subject = 'Feedback for your entry';
+    watchdog('nvc_custom', 'Attempted to send judge notification eka9p. for %title', array('%title' => $node->title), WATCHDOG_NOTICE, 'link');
+    return ['subject' => $subject, 'message' => $message];
+}
+
+/**
+ * Implements hook_mail().
+ */
+function nvc_custom_mail($key, &$message, $params)
+{
+    if ($key == 'notify_entry_team') {
+        $message['subject'] = $params['subject'];
+        $message['body'][] = $params['body'];
+    }
+}
+
+function nvc_custom_last_node()
+{
+    global $user;
+    $query = new EntityFieldQuery();
+    $result = $query
+        ->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'entry')
+        ->propertyOrderBy('created', 'desc')
+        ->range(0, 1)
+        ->propertyCondition('uid', $user->uid);
+
+    $result = $query->execute();
+    $nid = array_keys($result['node']);
+    drupal_goto('node/' . $nid[0]);
+
+}
+
+
+function nvc_custom_check_last()
+{
+    global $user;
+    $query = new EntityFieldQuery();
+    $result = $query
+        ->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'entry')
+        ->propertyOrderBy('created', 'desc')
+        ->range(0, 1)
+        ->propertyCondition('uid', $user->uid);
+
+
+    $result = $query->execute();
+    $nid = array_keys($result['node']);
+    if (isset($nid[0])) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+function nvc_custom_node_access($node, $op, $account)
+{
+
+    global $user;
+    $edit = false;
+    $delete = false;
+    $uid = $user->uid;
+
+    if ($node->type == "entry") {
+
+        switch ($op):
+
+            case 'update':
+                $author = $node->uid;
+                $member[0] = $node->field_other_team_members;
+                $member[1] = $node->field_team_coaches;
+                $member[2] = $node->field_main_contact;
+
+                if ($author == $uid) {
+                    $edit = true;
+                }
+
+
+                for ($i = 0; $i < count($member); $i++):
+                    for ($b = 0; $b < count($member[$i]['und']); $b++):
+                        if ($member[$i]['und'][$b]['uid'] == $uid) {
+                            $edit = true;
+                        }
+                    endfor;
+                endfor;
+
+                if ($edit == true) {
+                    return NODE_ACCESS_ALLOW;
+                } else {
+                    return NODE_ACCESS_DENY;
+                }
+
+
+                break;
+
+
+            case 'delete':
+                $author = $node->uid;
+
+                if ($author == $uid) {
+                    $delete = true;
+                }
+
+                if ($delete == true) {
+                    return NODE_ACCESS_ALLOW;
+                } else {
+                    return NODE_ACCESS_DENY;
+                }
+
+
+                break;
+
+
+        endswitch;
+
+
+    }
+
+}
+
+
+// function nvc_custom_node_update($node) {
+//   if ($node->type == 'entry') {
+//   // Only take effect if the node is going from unpublished to published.
+//     if ($node->original->status == 0 && $node->status == 1) {
+//   $author = $node->uid;
+//   $user = user_load($author);
+//   $title = $node->title;
+//   $nid = $node->nid;
+//   $email = $user->mail;
+//   $subject = sprintf('The Entry %s has been updated!', $title);
+//    // function url($path = NULL, array $options = array())
+//   $message = sprintf("You can check this updated entry here %s", url("node/$nid", array(null,null,true)));
+//   if(nvc_custom_drupal_mail(null,$email,$subject,$message)){
+//   return true;
+//   }
+
+//   $member[0] = $node->field_other_team_members;
+//         $member[1] = $node->field_team_coaches;
+//         $member[2] = $node->field_main_contact;
+
+//         for($i=0;$i<count($member);$i++):
+//         if(isset($member[$i]['und'])){
+//               for($b=0;$b<count($member[$i]['und']);$b++):
+//               if(isset($member[$i]['und'][$b]['uid'])){
+//     if(isset($user)){unset($user);}
+//     $user = user_load($member[$i]['und'][$b]['uid']);
+//           $email = $user->mail;
+//           if(nvc_custom_drupal_mail(null,$email,$subject,$message)){
+//            return true;
+//            }
+//               }
+//               endfor;
+//        }
+//         endfor;
+
+//     }
+//   }
+// }
+
+/**
+ * Implements hook_node_presave
+ */
+function nvc_custom_node_presave($node)
+{
+
+    //find the value in all the fields and assign 1 to the final practice priority.
+    $priority['field_consumer1'] = isset($node->field_consumer1['und'][0]['tid']) ? $node->field_consumer1['und'][0]['tid'] : NULL;
+    $priority['field_healthcare_systems_and_se1'] = isset($node->field_healthcare_systems_and_se1['und'][0]['tid']) ? $node->field_healthcare_systems_and_se1['und'][0]['tid'] : NULL;
+    $priority['field_high_techmedia_teleco1'] = isset($node->field_high_techmedia_teleco1['und'][0]['tid']) ? $node->field_high_techmedia_teleco1['und'][0]['tid'] : NULL;
+    $priority['field_insurance1'] = isset($node->field_insurance1['und'][0]['tid']) ? $node->field_insurance1['und'][0]['tid'] : NULL;
+    $priority['field_pharmaceuticals_and_medic1'] = isset($node->field_pharmaceuticals_and_medic1['und'][0]['tid']) ? $node->field_pharmaceuticals_and_medic1['und'][0]['tid'] : NULL;
+    $priority['field_private_equity_principal_1'] = isset($node->field_private_equity_principal_1['und'][0]['tid']) ? $node->field_private_equity_principal_1['und'][0]['tid'] : NULL;
+    $priority['field_travel_transport_logistic1'] = isset($node->field_travel_transport_logistic1['und'][0]['tid']) ? $node->field_travel_transport_logistic1['und'][0]['tid'] : NULL;
+    $priority['field_digital_mckinsey1'] = isset($node->field_digital_mckinsey1['und'][0]['tid']) ? $node->field_digital_mckinsey1['und'][0]['tid'] : NULL;
+    $priority['field_marketing_sales1'] = isset($node->field_marketing_sales1['und'][0]['tid']) ? $node->field_marketing_sales1['und'][0]['tid'] : NULL;
+    $priority['field_organization1'] = isset($node->field_organization1['und'][0]['tid']) ? $node->field_organization1['und'][0]['tid'] : NULL;
+    $priority['field_risk1'] = isset($node->field_risk1['und'][0]['tid']) ? $node->field_risk1['und'][0]['tid'] : NULL;
+    $priority['field_strategy_corporate_financ1'] = isset($node->field_strategy_corporate_financ1['und'][0]['tid']) ? $node->field_strategy_corporate_financ1['und'][0]['tid'] : NULL;
+    $priority['field_gem_basic_materials1'] = isset($node->field_gem_basic_materials1['und'][0]['tid']) ? $node->field_gem_basic_materials1['und'][0]['tid'] : NULL;
+    $priority['field_gem_chemical_agricultur1'] = isset($node->field_gem_chemical_agricultur1['und'][0]['tid']) ? $node->field_gem_chemical_agricultur1['und'][0]['tid'] : NULL;
+    $priority['field_gem_electric_power_natura1'] = isset($node->field_gem_electric_power_natura1['und'][0]['tid']) ? $node->field_gem_electric_power_natura1['und'][0]['tid'] : NULL;
+    $priority['field_gem_oil_gas1'] = isset($node->field_gem_oil_gas1['und'][0]['tid']) ? $node->field_gem_oil_gas1['und'][0]['tid'] : NULL;
+    $priority['field_operations_capital_proj1'] = isset($node->field_operations_capital_proj1['und'][0]['tid']) ? $node->field_operations_capital_proj1['und'][0]['tid'] : NULL;
+    $priority['field_operations_manufacturin1'] = isset($node->field_operations_manufacturin1['und'][0]['tid']) ? $node->field_operations_manufacturin1['und'][0]['tid'] : NULL;
+    $priority['field_operations_procurement1'] = isset($node->field_operations_procurement1['und'][0]['tid']) ? $node->field_operations_procurement1['und'][0]['tid'] : NULL;
+    $priority['field_operations_product_develo1'] = isset($node->field_operations_product_develo1['und'][0]['tid']) ? $node->field_operations_product_develo1['und'][0]['tid'] : NULL;
+    $priority['field_operations_service_operat1'] = isset($node->field_operations_service_operat1['und'][0]['tid']) ? $node->field_operations_service_operat1['und'][0]['tid'] : NULL;
+    $priority['field_operations_supply_chain_m1'] = isset($node->field_operations_supply_chain_m1['und'][0]['tid']) ? $node->field_operations_supply_chain_m1['und'][0]['tid'] : NULL;
+    $priority['field_public_social_sector1'] = isset($node->field_public_social_sector1['und'][0]['tid']) ? $node->field_public_social_sector1['und'][0]['tid'] : NULL;
+    $priority['field_advanced_industries1'] = isset($node->field_advanced_industries1['und'][0]['tid']) ? $node->field_advanced_industries1['und'][0]['tid'] : NULL;
+    $priority['field_operations_cross_o1'] = isset($node->field_operations_cross_o1['und'][0]['tid']) ? $node->field_operations_cross_o1['und'][0]['tid'] : NULL;
+    $priority['field_banking1'] = isset($node->field_banking1['und'][0]['tid']) ? $node->field_banking1['und'][0]['tid'] : NULL;
+
+    $first = current(array_filter($priority));
+
+    if ($first) {
+        $final_priority = taxonomy_term_load($first);
+        $final_priority = $final_priority->name;
+        $node->field_final_practice_priority['und'][0]['value'] = $final_priority;
+    }
+
+}
+
+function nvc_custom_node_update($node)
+{
+
+    if ($node->type == "entry" && arg(0) == "node-edit-popup") {
+        /**
+         **  When an entry is voted on from the /judge-list/% page, change the nomination status of the Entry to the judge's recommendation vote
+         **  Taxonomy 343 = Practice Nomination
+         **  Taxonomy 344 = Regional Finals
+         **
+         */
+
+        //get the UID of the assigned judge from the round which is assigned to this node
+        $rid = $node->field_round_selection['und'][0]['nid'];
+        $round_node = node_load($rid);
+
+        $round_phase = $round_node->field_phase['und'][0]['tid']; //what phase is the round in
+
+        $assigned_judge_uid = $round_node->field_judge_selection['und'][0]['uid'];
+
+        $feedback = $node->field_judges_feedback['und'];
+
+        foreach ($feedback as $fc_item) {
+            $field_collection = field_collection_item_load($fc_item['value']);
+            if ($assigned_judge_uid == $field_collection->field_curr_judge['und'][0]['uid'] && $field_collection->field_recommendation_prac['und'][0]['value'] == "Nominate") { //i know the status is Nominate, it should be accept. but there was a big mix up and now the value cannot be changed. recommendation_prac should've been for practice but now its for Regional finals.
+
+                //if the current judge in the field collection matches the assigned judge from the round, we have a match.
+                //Begin to assign the node as a Nominee or Winner
+                // if($round_phase == "343") {//if the round phase is in Practice Nomination, set the Nomination status to Nominee
+                //   $node->field_nomination_status['und'][0]['tid'] = 1590;
+                // }
+
+                if ($round_phase == "344") {//if the round phase is in Regional Finals, set the Nomination status to Winner
+
+                    $node->field_nomination_status['und'][0]['tid'] = 1592;
+                }
+            } else {
+                if ($round_phase == "344") {
+
+                    $node->field_nomination_status['und'][0]['tid'] = 1590;
+                }
+            }
+
+
+            if ($assigned_judge_uid == $field_collection->field_curr_judge['und'][0]['uid'] && $field_collection->field_recommendation['und'][0]['value'] == "Accept") {
+                if ($round_phase == "343") {
+                    $node->field_nomination_status['und'][0]['tid'] = 1590;
+                }
+            } else {
+                if ($round_phase == "343") {
+                    $node->field_nomination_status['und'][0]['tid'] = 1594;
+                }
+            }
+
+
+        }//end foreach
+    }//
+
+    //Update the Round Content type field collection scheduling items.
+    //when the Entry node is updated, we need to check to see the value of the booking timeslot and then update
+    // the field colleciton in the Round Content type to mark the FC row item as "booked"
+    if ($node->type == "entry") {
+        $book_fcid = isset($node->field_booking_fcid['und'][0]['value']) ? $node->field_booking_fcid['und'][0]['value'] : NULL;
+
+        if ($book_fcid != "0000" || !empty($book_fcid)) {
+            $field_collection_item = field_collection_item_load($book_fcid); // Load that field collection item.
+            $start = $field_collection_item->field_time_slot['und'][0]['value'];
+            $end = $field_collection_item->field_time_slot['und'][0]['value2'];
+            $time_selected = time_output1($start, $end);
+            $node->field_booking_time['und'][0]['value'] = $time_selected;
+
+
+            if (isset($field_collection_item->item_id)) {
+                //check to make sure this entry can only use up 1 time slot, if not we need to unbook the previous
+                //do this by checking the original node object to see if FCID was previously entered. if it was then
+                //use that FCID to load the Field Collection item and uncheck/remove the booking and NID fields.
+
+                $ogFCID = $node->original->field_booking_fcid['und'][0]['value'];
+                if (isset($ogFCID) && $ogFCID != "0000") {
+                    $fc_item = field_collection_item_load($ogFCID);
+                    $fc_item->field_is_booked['und'][0]['value'] = 0;
+                    $fc_item->field_nid['und'][0]['value'] = "0";
+                    $fc_item->save(TRUE);
+                }
+
+
+                $field_collection_item->field_is_booked['und'][0]['value'] = 1;
+                $field_collection_item->field_nid['und'][0]['value'] = $node->nid;
+                $field_collection_item->save(TRUE); // Save field-collection item.
+            }
+        }
+
+    }//node type = entry
+
+
+}
+
+
+function nvc_custom_drupal_mail($from = 'no-email', $to, $subject, $message)
+{
+    $module = 'nvc_custom';
+    $mail_token = microtime();
+    if ($from == 'no-email') {
+        // Change this to your own default 'from' email address.
+        $from = variable_get('system_mail', 'My Email Address ');
+    }
+    $message = array(
+        'id' => $module . '_' . $mail_token,
+        'to' => $to,
+        'subject' => $subject,
+        'body' => array($message),
+        'headers' => array(
+            'From' => $from,
+            'Sender' => $from,
+            'Return-Path' => $from,
+        ),
+    );
+    $system = drupal_mail_system($module, $mail_token);
+    $message = $system->format($message);
+    if ($system->mail($message)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+
+}
+
+
+function tracks()
+{
+    $block1 = module_invoke('block', 'block_view', '59');
+    $date1 = $block1['content'];
+
+    $block2 = module_invoke('block', 'block_view', '61');
+    $date2 = $block2['content'];
+
+    $output = '<div class="track_selection">
+
+    <div class="steps step1">
+
+    <h2 class="bluetitle">Choose your Competition Entry type</h2>
+    </div>
+      <div class="track1">
+
+
+
+            <div class="fl-left track_button_wrap">
+                <img src="sites/all/themes/nvc/images/icon_about_solutions.png" class="solutionimage">
+            </div>
+              <div class="fl-left track_content">
+                  <h3>Solutions</h3>
+                  <div class="short-hr"></div>
+                  <span class="seecriteria"><a href="/judges-criteria" target="_blank">(new judging criteria)</a></span>
+              </div>
+
+      <!--<a href="#">
+            <div class="fl-left track_button_wrap">
+            <div class="track_button"></div>
+            <span class="checkmark tracks"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span>
+
+
+            <img src="sites/all/themes/nvc/images/icon_about_solutions.png" class="solutionimage">
+            </div>
+              <div class="fl-left track_content">
+              <h3>Solutions</h3>
+              <div class="short-hr"></div>
+              <span class="seecriteria">(new judging criteria)</span>
+
+
+
+
+
+
+              </div>
+      </a>-->
+
+
+            <div class="deadline-date">
+                    <div class="calendar2"><img src="sites/all/themes/nvc/images/icon_home_section_002_calendar.png"></div>
+                    <div class="text">
+                              <p>Next entry deadline<br/>
+                              ' . $date1 . '
+
+                             </p>
+                    </div>
+            </div>
+           <!-- <div class="body-track">
+                  <p>Solutions deliver McKinsey knowledge through technology and specialized teams. They can be deployed by CSTs both during and outside of engagements. Solutions typically help us deliver maximum impact in one of three ways, or through a combination:
+                  <ul>
+                    <li>Software solutions</li>
+                    <li>Analytics solutions</li>
+                    <li>Insights solutions</li>
+
+
+                  </ul>
+                  </p>
+
+            </div>--> <!-- end body-track -->
+
+
+      </div> <!-- end track 1 -->
+<div class="track2">
+
+            <div class="fl-left track_button_wrap">
+               <img src="sites/all/themes/nvc/images/icon_about_knowledge.png" class="knowledgeimage">
+            </div>
+              <div class="fl-left track_content">
+                    <h3>Knowledge</h3>
+                    <div class="short-hr"></div>
+                    <span class="seecriteria"><a href="/judges-criteria" target="_blank">(new judging criteria)</a></span>
+              </div>
+
+    <!--  <a href="#">
+            <div class="fl-left track_button_wrap">
+            <div class="track_button"></div>
+           <span class="checkmark tracks"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span>
+
+
+            <img src="sites/all/themes/nvc/images/icon_about_knowledge.png" class="knowledgeimage">
+            </div>
+              <div class="fl-left track_content">
+              <h3>Knowledge</h3>
+              <div class="short-hr"></div>
+
+
+              <span class="seecriteria">(new judging criteria)</span>
+
+
+
+              </div>
+      </a>
+
+
+            <div class="body-track">
+                  <p>Knowledge is at the core of our client service, and powers our Firm.  The Practice Olympics have celebrated new knowledge for over 20 years, and the New Ventures Competition continues this tradition – with an increased focus on translating that knowledge into impact for clients:
+                     <ul>
+                      <li>Cutting edge perspectives </li>
+                  <li> New approaches for delivering impact </li>
+                  <li>Innovative ways to transform data <br/>into insights</li>
+
+
+                      </ul>
+
+                  </p>
+
+            </div>--> <!-- end body-track -->
+
+
+      </div> <!-- end track 2 -->
+
+
+
+
+<div class="deadline-date-wrap">
+  <div class="deadline-date2">
+    <img src="sites/all/themes/nvc/images/icon_home_section_002_calendar.png">
+    <span>Next entry deadline<br/>
+    ' . $date2 . '
+
+  </div>
+</div>
+<div class="steps step2">
+
+<h2>Tell us about your entry</h2>
+</div>
+
+
+</div>';
+    return $output;
+}
+
+/**
+ * Provide images for entry node edit forms.
+ */
+function image_gallery($nid = NULL)
+{
+    drupal_add_js(drupal_get_path('theme', 'nvc') . "/js/slick/slick.min.js");
+
+    $gallery = nvc_custom_image_gallery_default($nid);
+
+    $output = "
+  <div class='img-gall-desc'>select from the gallery below</div>
+  <ul class='entry_selection_gallery'>";
+
+    foreach ($gallery->field_default_images as $i => $image) {
+        $file = $image->value();
+        $output .= "<li data-index='$i'><img src='" . file_create_url($file['uri']) . "'></li>" . PHP_EOL;
+    }
+
+    $output .= '</ul>';
+    return $output;
+}
+
+/**
+ * Provide default images for the "default gallery" on entry pages.
+ *
+ * Load the default images from the default_image content type marked as
+ * Promoted to front & Sticky to top. This is used to build the image gallery on
+ * the node entry form.
+ */
+function nvc_custom_image_gallery_default($nid = NULL)
+{
+    // Get the latest published default_images node.
+    $query = new EntityFieldQuery();
+    $query
+        ->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'default_images')
+        ->propertyOrderBy('created', 'DESC')
+        ->propertyCondition('status', NODE_PUBLISHED)
+        ->propertyCondition('promote', 1)
+        ->propertyCondition('sticky', 1)
+        ->range(0, 1);
+    if (!is_null($nid)) {
+        $query->propertyCondition('nid', $nid);
+    }
+    $results = $query->execute();
+    if (!empty($results)) {
+        $node = array_shift(array_keys($results['node']));
+        $entity = entity_metadata_wrapper('node', $node);
+        return $entity;
+    }
+}
+
+function nvc_custom_preprocess_views_view(&$vars)
+{
+    $view = &$vars['view'];
+    // Make sure it's the correct view
+    if ($view->name == 'entries_list' && $view->current_display == 'page') {
+        // add needed javascript
+        drupal_add_js(drupal_get_path('module', 'nvc_custom') . '/js/nvc_custom_entry_list_ajax.js', array('scope' => 'footer', 'type' => 'file'));
+    }
+}
+
+function nvc_custom_form_alter(&$form, &$form_state, $form_id)
+{
+
+    //modify the Default option in the exposed filters for /event-entries page
+    if ($form_id == "views_exposed_form") {
+        $form['field_entry_collaborator_role_value']['#options']['All'] = "All Roles";
+        $form['field_practice_tid']['#options']['All'] = "All Practices";
+        $form['field_competition_track_value']['#options']['All'] = "All Entry Types";
+        $form['field_timing_tid']['#options']['All'] = "All Entries";
+        $form['field_winneryear2_tid']['#options']['All'] = "All Years";
+
+
+    }
+    if (arg(0) == "event-entries" && $form_id == "views_exposed_form") {
+        $form['field_practice_tid']['#options']['All'] = "All Practices";
+        $form['field_practice_tid_1']['#options']['All'] = "Functions";
+        $form['field_office_value']['#options']['All'] = "Offices";
+
+    }
+    if (arg(0) == "winners" && $form_id = "views-exposed-form-winners-list-page") {
+
+        $form['field_practice_tid']['#options']['All'] = "All Practices";
+        $form['field-office-value']['#options']['All'] = "Offices";
+
+    }
+    $form['field_winneryear2_tid_1']['#options']['All'] = "All Years";
+
+    $form['field_champion_label_value']['#options']['All'] = "All Sponsors";
+    $form['field_practices_tid']['#options']['All'] = "All Practices";
+    $form['field_office_value']['#options']['All'] = "All Offices";
+    $form['field_region_tid']['#options']['All'] = "All Regions";
+
+
+    if (arg(0) == "sponsors" && $form_id == "views_exposed_form") {
+        // kpr($form);
+        //sponsor page: make practice/office dropdown show only when selection is made
+        $form['field_practices_tid']['#states'] = array(
+            'visible' => array(
+                'select#edit-field-champion-label-value' => array(
+                    'value' => 'Practice Sponsor',
+                ),
+            ),
+        );
+        $form['field_office_value']['#states'] = array(
+            'visible' => array(
+                'select#edit-field-champion-label-value' => array(
+                    'value' => 'Office Sponsor',
+                ),
+            ),
+        );
+    }
+
+//we are adding a custom dropdown menu which is based off the Event Dates defined in the assigned round
+    if ($form_id == "entry_node_form" && !in_array("nvc_modal", arg()) && arg(0) != "entry") {
+
+        $node = node_load(arg(1));
+
+        $round_node = node_load($node->field_round_selection['und'][0]['nid']);
+        $row['none'] = "Select Booking"; //set the default to none
+        foreach ($round_node->field_scheduling_fc['und'] as $key => $fc) {
+            $items = field_collection_item_load($fc['value']);
+            $booked = $items->field_is_booked['und'][0]['value'];
+            if (!$booked) {
+                $start = $items->field_time_slot['und'][0]['value'];
+                $end = $items->field_time_slot['und'][0]['value2'];
+
+                $start = date_create($start);
+                $start_day = date_format($start, "m/d/Y");
+                $start_time = date_format($start, "h:i a");
+
+
+                $end = date_create($end);
+                $end_day = date_format($end, "m/d/Y");
+                $end_time = date_format($end, "h:i a");
+
+
+                if ($start_day == $end_day) {
+                    if ($start_time != $end_time) {
+                        $row[$key][$items->item_id] = $start_day . "  " . $start_time . " -- " . $end_time;
+                    } else {
+                        $row[$key][$items->item_id] = $start_day . "  " . $start_time;
+                    }
+                } else {
+                    if ($start_time != $end_time) {
+                        $row[$key][$items->item_id] = $start_day . "  " . $start_time . " -- " . $end_day . " Time:" . $end_time;
+                    } else {
+                        $row[$key][$items->item_id] = $start_day . " -- " . $end_day . " " . $start_time;
+                    }
+                }
+
+
+//            $row = array_reverse($row);
+
+            }
+        }
+
+
+        $form['booking_selected'] = array(
+            '#type' => 'select',
+            '#title' => t('Booking'),
+            '#options' => $row,
+            '#empty_value' => 'None',
+            '#empty_option' => "Select an available time slot",
+            '#description' => t('Set this to <em>Yes</em> if you would like this category to be selected by default.'),
+            '#weight' => 40,
+        );
+
+        /*
+        *    New scheduling
+        */
+
+
+    }
+
+//    if($form['#node']->type == "round"){
+//        foreach($form['field_scheduling_fc1']['und'] as $fc){
+//            if($fc['#entity_type'] == "field_collection_item"){
+//                $fc['timeslots'] = array(
+//                    '#type'=>'textfield',
+//                    '#default_value' => "Text",
+//                    '#disabled' => TRUE,
+//                );
+//            }
+//
+//        }
+//
+//    }
+
+    if ($form_id == "create_a_team_node_form") {
+
+        $form['competition_trk'] = array(
+            '#markup' => '<div class="track_selection">
+
+    <div class="steps step1">
+
+    <h2 class="bluetitle">Choose your Competition Entry type</h2>
+    </div>
+      <div class="track1">
+
+
+
+            <div class="fl-left track_button_wrap">
+                <img src="sites/all/themes/nvc/images/icon_about_solutions.png" class="solutionimage">
+            </div>
+              <div class="fl-left track_content">
+                  <h3>Solutions</h3>
+                  <div class="short-hr"></div>
+                  
+              </div>
+
+
+      </div>
+      
+      <div class="track2">
+
+            <div class="fl-left track_button_wrap">
+               <img src="sites/all/themes/nvc/images/icon_about_knowledge.png" class="knowledgeimage">
+            </div>
+              <div class="fl-left track_content">
+                    <h3>Knowledge</h3>
+                    <div class="short-hr"></div>
+                    
+              </div>
+
+            </div>
+
+
+      </div> <!-- end track 2 -->',
+        );
+
+        global $user;
+        //provide a default value and hide title
+        $form['title']['#default_value'] = $user->name . " team";
+        hide($form['title']);
+        $form['actions']['submit']['#submit'][] = 'team_node_submit';
+
+
+    }
+}
+
+
+/**
+ * redirect user after submitting their Create a team node
+ */
+function team_node_submit($form, &$form_state)
+{
+    $form_state['redirect'] = array(
+        'join-a-team',
+        array(
+            'query' => array(
+                'success' => 'true'
+            )
+        )
+    );
+}
+
+
+function nvc_form_entry_node_form_alter(&$form, &$form_state, $form_id)
+{
+
+    global $user;
+    foreach ($user->roles as $role) { //hide the revision form from specific role
+        if ($role != "administrator") {
+            hide($form['revision_information']);
+        }
+    }
+
+    $form['title']['#required'] = FALSE;
+    $form['title']['#title'] = "Title *";
+
+    $form['actions']['submit']['#value'] = "Submit"; //change the save button name
+
+    unset($form['field_breakthrough_subtrack']['und']['#options']['_none']); //remove the NONE option from the list
+
+    $form['field_poster_image']['und'][0]['#title'] = 'Upload a cover image or ...';
+
+
+    //rename the add more buttons
+    $form['field_other_team_members']['und']['add_more']['#value'] = "Add another member";
+
+    $form['field_other_team_members']['und']['add_more']['#prefix'] = '<div class="addmore-button bts bt-plus">';
+    $form['field_other_team_members']['und']['add_more']['#suffix'] = '</div>';
+
+    $form['field_team_coaches']['und']['add_more']['#value'] = "Add another coach";
+    $form['field_team_coaches']['und']['add_more']['#prefix'] = '<div class="addmore-button bts bt-plus">';
+    $form['field_team_coaches']['und']['add_more']['#suffix'] = '</div>';
+
+
+    $form['field_entry_collaborators']['und']['add_more']['#value'] = "Add another collaborator";
+    $form['field_entry_collaborators']['und']['add_more']['#prefix'] = '<div class="addmore-button bts bt-plus">';
+    $form['field_entry_collaborators']['und']['add_more']['#suffix'] = '</div>';
+
+
+    $form['field_practice']['und']['#options']['_none'] = "Primary Practice";
+    $form['field_select_the_secondary_pract']['und']['#options']['_none'] = "Secondary Practice";
+    $form['field_secondary_practice_round_y']['und']['#options']['_none'] = "Secondary Practice";
+    $form['field_office']['und']['#options']['_none'] = "Select Office";
+
+    $form['field_abstract']['und'][0]['#title'] = "Description <span class='optional_field'>(limit to 350 characters)</span>";
+    $form['field_additional_tags']['und']['#title'] = "Tags <span class='optional_field'>(optional)</span>";
+    $form['field_image']['und'][0]['#title'] = "Upload a 2 minute video describing your entry <span class='optional_field'>(optional)</span>";
+    $form['field_main_contact']['und']['#title'] = "Main Contact <span class='optional_field'>(Non-partners only)</span>";
+    $form['field_secondary_practice']['und']['#title'] = "Is there a secondary practice that your entry is affliated with? <span class='optional_field'>(optional)</span>";
+
+
+    //dsm($form['field_main_contact']);
+
+
+    $form['field_other_team_members']['und']['#title'] = "Other Team Members <span class='optional_field'>(Non-partners only)</span>";
+
+    $form['field_additional_info']['und'][0]['value']['#title'] = "Any additional thoughts? <span class='optional_field'>(optional)</span>";
+
+    $lang = $form['language']['#value'];
+    // $options = array_filter($form['field_office'][$lang]['#options'], 'nvc_custom_entry_form_filter_offices');
+    // $form['field_office'][$lang]['#options'] = $options;
+
+//pass the Global Energy Materials/Operations TID to Javascript for late processing
+
+    $gem_children = taxonomy_get_children(15);
+    $op_children = taxonomy_get_children(27);
+    foreach ($gem_children as $child) {
+        $gem_ids[] = $child->tid;
+    }
+    foreach ($op_children as $child) {
+        $op_ids[] = $child->tid;
+    }
+    drupal_add_js(array('gem_ids' => $gem_ids, 'op_ids' => $op_ids), 'setting');
+
+//Hide non children elements of GEM
+//    $query = new EntityFieldQuery();
+//    $query->entityCondition('entity_type', 'node')
+//        ->entityCondition('bundle', 'round')
+//        ->propertyCondition('status', NODE_PUBLISHED)
+//        ->fieldCondition('field_applicant_select', 'value', 'NULL', '!=')
+//        ->addMetaData('account', user_load(1));
+//
+//    $result = $query->execute();
+//
+//    $round_select['_none'] = "Practice Round";
+//    if (isset($result['node'])) {
+//        $nids = array_keys($result['node']);
+//        $nodes = node_load_multiple($nids);
+//        foreach($nodes as $node){
+//            $round_select[$node->nid] = $node->title;
+//        }
+//
+//        $form['applicant_selected'] = array(
+//            '#type' => 'select',
+//            '#title' => 'Select your Practice Round',
+//            '#options' => $round_select,
+//            '#weight' => 40,
+//            ''
+//
+//        );
+//    }
+
+
+    return $form;
+}
+
+// /**
+//  * Filter which office terms get shown on the offices taxonomy.
+//  */
+// function nvc_custom_entry_form_filter_offices($office = '') {
+//   $whitelist = array(
+//     'Africa',
+//     'Australia',
+//     'Brazil',
+//     'Canada',
+//     'Central Europe',
+//     'Commonwealth of Independent States',
+//     'France',
+//     'Germany',
+//     'Greater China',
+//     'Iberia',
+//     'India',
+//     'Japan',
+//     'Knowledge Network',
+//     'Korea',
+//     'Mediterranean',
+//     'Mexico',
+//     'Mid-Atlantic (US)',
+//     'Middle East',
+//     'Midwest (US)',
+//     'Northeast (US)',
+//     'Northern Europe',
+//     'Southeast Asia',
+//     'Southern (US)',
+//     'Spanish Latin America',
+//     'Switzerland',
+//     'Turkey',
+//     'UK and Ireland Office',
+//     'West Coast (US)',
+//   );
+//   if (array_search($office, $whitelist) !== FALSE) {
+//     return TRUE;
+//   } else {
+//     return FALSE;
+//   }
+// }
+
+function nvc_custom_form_entry_node_form_alter(&$form, &$form_state, $form_id)
+{
+// kpr($form);
+    $form['#validate'][] = 'field_collection_check_duplicate';
+    $form['#validate'][] = 'nvc_custom_entry_form_validate';
+
+}
+
+/**
+ * Validates entry form.
+ */
+function nvc_custom_entry_form_validate(&$form, &$form_state)
+{
+    $lang = $form_state['values']['language'];
+
+    // Check gallery.
+    // When the user selects one of the gallery images, the front-end dynamically
+    // inserts the value into this field.
+    if (is_null($form_state['values']['field_default_image'][$lang][0]['value'])) {
+        $gallery_empty = TRUE;
+    }
+    // Check user uploaded image: when user populates the image field the fid is
+    // not an empty string.
+    if (empty($form_state['values']['field_poster_image'][$lang][0]['fid'])) {
+        $poster_image_empty = TRUE;
+    }
+
+    if ($poster_image_empty && $gallery_empty) {
+        form_error($form['field_poster_image'], t('Cover image upload or gallery image selection required.'));
+    }
+
+    // Validating to make sure the same user is not p resent in other fields.
+    $member[0] = $form_state['values']['field_other_team_members'];
+    $member[1] = $form_state['values']['field_team_coaches'];
+    $member[2] = $form_state['values']['field_main_contact'];
+
+    $title = $form_state['values']['title'];
+    $query = new EntityFieldQuery();
+    $query
+        ->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'entry')
+        ->propertyCondition('title', $title);
+    $result = $query->execute();
+
+    if (!empty($result['node'])) {
+        foreach ($result['node'] as $id => $value) {
+            if ($id != $form_state['values']['nid']) {
+                form_set_error('Title', t('You must have a unique title for your entry.'));
+            }
+        }
+    }
+
+
+    // Loop through everything and check to see if anyone else exists with same UID.
+
+    for ($i = 0; $i < count($member); $i++):
+        for ($b = 0; $b < count($member[$i]['und']); $b++):
+            $cmid = $member[$i]['und'][$b]['uid'];
+            $unique = 0;
+            if ($cmid > 0):
+                for ($c = 0; $c < count($member); $c++) {
+                    for ($d = 0; $d < count($member[$c]['und']); $d++) {
+
+                        if ($member[$c]['und'][$d]['uid'] > 0) {
+
+
+                            if ($cmid == $member[$c]['und'][$d]['uid']):
+                                $unique++;
+                            endif;
+                        }
+                    }
+                }
+            endif;
+            if ($unique > 1) {
+                form_set_error('User', t('Cannot Have Duplicate User in Other Team Members, Team Coaches or Main Contact.'));
+            }
+        endfor;
+    endfor;
+
+
+    if (isset($_GET['DEBUG'])) {
+//echo "//////<pre>";
+        //    print_r($member);
+//echo "</pre>";
+//      exit();
+
+    }
+
+
+}
+
+function field_collection_check_duplicate(&$form, &$form_state)
+{
+    global $user;
+    $current_user = $user->uid;
+    if (is_array($form_state['field']['field_judges_feedback']) &&
+        is_array($form_state['field']['field_judges_feedback']['und']) &&
+        is_array($form_state['field']['field_judges_feedback']['und']['entity']) &&
+        is_array($form_state['field']['field_judges_feedback']['und']['entity'][0]->item_id)
+    ) {
+        foreach ($form_state['values']['field_judges_feedback'] as $delta => $fc) {
+            foreach ($fc as $item) {
+                // kpr($item['field_current_judge']['und'][0]['uid']);
+                if (is_numeric($item['field_current_judge']['und'][0]['uid'])) { //grab all judges from fc and add it to array
+                    $uid_list[] = $item['field_current_judge']['und'][0]['uid'];
+                }
+            }
+
+            if (count($uid_list) != count(array_unique($uid_list))) { //check if there are duplicate entries in that array
+                form_set_error('field_judges_feedback', "Cannot add user, their comment already exists");
+            }
+            // die();
+            // if(isset($form_state['field']['field_judges_feedback']['und']['entity'][0]->item_id)) {
+            //   // dpm("im in this");
+            //   if($fc[0]['field_current_judge']['und'][0]['uid'] == $current_user) {
+            //   form_set_error('field_judges_feedback', "Cannot add user, their comment already exists");
+            //   }
+            // }
+        }
+    }
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function nvc_custom_theme($existing, $type, $theme, $path)
+{
+    $items = array();
+    $items['nvc_custom_entries_list_block'] = array(
+        'variables' => array(
+            'content' => '',
+        ),
+        'path' => $path . '/tpl',
+        'template' => 'nvc_custom_entries_list_block',
+        'pattern' => 'nvc_custom_entries_list_block__',
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function nvc_custom_preprocess_nvc_custom_entries_list_block(&$variables)
+{
+
+    $variables['content'] .= views_embed_view('entries_list', 'block_1');
+    $variables['content'] .= views_embed_view('entries_list', 'block_2');
+    $variables['content'] .= views_embed_view('entries_list', 'block_3');
+}
+
+/**
+ * Custom function that renders the content of the entries list block.
+ */
+function nvc_custom_entries_list_block()
+{
+    // NW-477 Add dedicated JavaScript file for entries list.
+    drupal_add_js(drupal_get_path('module', 'nvc_custom') . '/js/nvc_custom.js', 'file');
+
+    return theme('nvc_custom_entries_list_block');
+}
+
+
+function nvc_custom_node_view($node, $view_mode, $langcode)
+{
+// $entries = referenced_entries();
+//   $judges = deadline_judge();
+
+//   if($entries) { //if there are entries that are expiring, mark deadline_met field
+//     $entries = node_load_multiple($entries);
+
+//     foreach($entries as $node){
+//       $node_wrapper = entity_metadata_wrapper('node', $node);
+//       $node_wrapper->field_deadline_met->set(1); //set the deadline boolean to true. Meaning, this node will expire tomorrow
+//       $node_wrapper->save();
+//     }
+//   }
+//   // watchdog("cron_custom", $entries);
+//   // watchdog("cron_custom", $judges);
+
+//   if($judges){ //if there are judges/entries that are expiring, mark deadline_met_judge field
+//     $judges = node_load_multiple($judges);
+
+//     foreach($judges as $node){
+//       $node_wrapper = entity_metadata_wrapper('node', $node);
+//       $node_wrapper->field_deadline_met_judge->set(1); //set the deadline boolean to true. Meaning, this node will expire tomorrow
+//       $node_wrapper->save();
+//     }
+//   }
+
+}
+
+/*
+* get all entries who's deadlines are tomorrow
+*/
+function referenced_entries()
+{
+
+    $today = date("Y-m-d");
+    $tomorrow = date("Y-m-d", strtotime($today . "+1 days"));
+
+
+    //grab all rounds that are expiring tomorrow
+    $rounds = new EntityFieldQuery();
+    $rounds
+        ->entityCondition('entity_type', 'node')
+        ->fieldCondition('field_board_review', 'value', $tomorrow, '=')
+        ->entityCondition('bundle', 'round');
+
+    $result = $rounds->execute();
+    $nids = array_keys($result['node']);
+
+    if ($nids) {
+        //grab all entries that have that round referenced
+        $entries = new EntityFieldQuery();
+        $entries
+            ->entityCondition('entity_type', 'node')
+            ->entityCondition('bundle', 'entry')
+            ->fieldCondition('field_round_selection', 'nid', $nids, 'IN');
+
+        $result2 = $entries->execute();
+
+        $nids = array_keys($result2['node']);
+//    ddl($nids);
+        //return all entries as an array
+        return $nids;
+    }
+}
+
+/**
+ * Get all entries for assigned judges and prepare it to be disabled 48 hours after deadline has passed
+ */
+function deadline_judge()
+{
+
+    $today = date("Y-m-d");
+    $deadline = date("Y-m-d", strtotime($today . "-2 days"));
+
+    //grab all rounds that are pasted 48 hours
+    $rounds = new EntityFieldQuery();
+    $rounds
+        ->entityCondition('entity_type', 'node')
+        ->fieldCondition('field_review_deadline', 'value', $deadline, '<')
+        ->entityCondition('bundle', 'round');
+
+    $result = $rounds->execute();
+
+    $nids = array_keys($result['node']);
+
+    //grab all entries that have that round referenced
+    $entries = new EntityFieldQuery();
+    $entries
+        ->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'entry')
+        ->fieldCondition('field_round_selection', 'nid', $nids, 'IN');
+
+    $result2 = $entries->execute();
+
+    $nids = array_keys($result2['node']);
+
+
+    // //return all entries as an array
+    return $nids;
+}
+
+
+function nvc_custom_cron()
+{
+
+    $entries = referenced_entries();
+    /*
+     -- removing judge's code because client doesnt want the judges to hide feedback button for now.
+    */
+
+    //$judges = deadline_judge();
+
+    if ($entries) { //if there are entries that are expiring, mark deadline_met field
+        $entries = node_load_multiple($entries);
+
+        foreach ($entries as $node) {
+            $node_wrapper = entity_metadata_wrapper('node', $node);
+            $node_wrapper->field_deadline_met->set(1); //set the deadline boolean to true. Meaning, this node will expire tomorrow
+            $node_wrapper->field_notify_entrant->set(0); //uncheck notify entrant to hide the Notification bar
+            $node_wrapper->save();
+        }
+    }
+
+    // if($judges){ //if there are judges/entries that are expiring, mark deadline_met_judge field
+    //   $judges = node_load_multiple($judges);
+
+    //   foreach($judges as $node){
+    //     $node_wrapper = entity_metadata_wrapper('node', $node);
+    //     $node_wrapper->field_deadline_met_judge->set(1); //set the deadline boolean to true. Meaning, this node will expire tomorrow
+    //     $node_wrapper->save();
+    //   }
+    // }
+
+
+//email_reminder();
+
+}
+
+//grab all entries expiring in 48 hours
+function email_reminder_cron()
+{
+
+    $today = date("Y-m-d");
+    $deadline = date("Y-m-d", strtotime($today . "+2 days"));
+
+    //grab all rounds that are pasted 48 hours
+    $rounds = new EntityFieldQuery();
+    $rounds
+        ->entityCondition('entity_type', 'node')
+        ->fieldCondition('field_submission_deadline', 'value', $deadline, '=')
+        ->entityCondition('bundle', 'round');
+
+    $result = $rounds->execute();
+
+    $nids = array_keys($result['node']);
+
+    //grab all entries that have that round referenced
+    $entries = new EntityFieldQuery();
+    $entries
+        ->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'entry')
+        ->fieldCondition('field_round_selection', 'nid', $nids, 'IN');
+
+    $result2 = $entries->execute();
+
+    $nids = array_keys($result2['node']);
+
+    $nodes = node_load_multiple($nids);
+    foreach ($nodes as $node) {
+        $title = $node->title;
+        foreach ($node->field_other_team_members['und'] as $team_member) {
+            $user_team = user_load($team_member['uid']);
+            $users[] = $user_team->mail;
+        }
+        foreach ($node->field_main_contact['und'] as $main) {
+            $user_main = user_load($main['uid']);
+            $users[] = $user_main->mail;
+        }
+        foreach ($node->field_team_coaches['und'] as $coaches) {
+            $user_coaches = user_load($coaches['uid']);
+            $users[] = $user_coaches->mail;
+        }
+
+
+        $from = "New_Ventures_Competition@mckinsey.com";
+        $subject = "Your entry deadline is approaching!!! --rajiv's local";
+        $body = "Dear Team,<br/>
+<br/>
+The deadline to submit your final files for your entry is approaching in 48 hours. Please submit by updating your entry on the NVC website and uploading your final files.<br/></br>
+
+" . $node->title . " <br/>
+
+Best,<br/>
+The New Ventures Competition Team";
+        $message = $users;
+        $users = implode(", ", $users);
+        simple_mail_send($from, $users, $subject, $body);
+        unset($users);
+
+    }
+
+}
+
+function nvc_custom_form_field_ui_field_edit_form_alter(&$form, &$form_state, $form_id)
+{
+    // Increase the max cardinality to 20
+    $range = drupal_map_assoc(range(1, 20));
+    $new_options = array(FIELD_CARDINALITY_UNLIMITED => t('Unlimited')) + $range;
+
+    // Change the options
+    $form['field']['cardinality']['#options'] = $new_options;
+}
+
+
+function time_output1($start, $end)
+{
+    $row = array();
+    if ($start) {
+        $start = date_create($start);
+        $start_day = date_format($start, "m/d/Y");
+        $start_time = date_format($start, "h:i a");
+
+        $end = date_create($end);
+        $end_day = date_format($end, "m/d/Y");
+        $end_time = date_format($end, "h:i a");
+
+
+        if ($start_day == $end_day) {
+            if ($start_time != $end_time) {
+                $row = $start_day . "  " . $start_time . " -- " . $end_time;
+            } else {
+                $row = $start_day . "  " . $start_time;
+            }
+        } else {
+            if ($start_time != $end_time) {
+                $row = $start_day . "  " . $start_time . " -- " . $end_day . " Time:" . $end_time;
+            } else {
+                $row = $start_day . " -- " . $end_day . " " . $start_time;
+            }
+        }
+        return $row;
+    }
+}
+
+
+/**
+ * Implements hook_query_TAG_alter()
+ *
+ */
+function nvc_custom_query_gender_alter(QueryAlterableInterface $query)
+{
+    $query->leftJoin('field_data_field_gender', 'g', 'uid = g.entity_id AND g.entity_type = :entity_type');
+    $query->isNull('g.field_gender_value');
+}
+
+/**
+ * Implements hook_query_TAG_alter()
+ *
+ */
+function nvc_custom_query_fmno_alter(QueryAlterableInterface $query)
+{
+    $query->leftJoin('field_data_field_fmno', 'f', 'uid = f.entity_id AND f.entity_type = :entity_type');
+    $query->isNull('f.field_fmno_value');
+}
+
+/**
+ * Implements hook_views_pre_render()
+ * Override field_term1 with the data being derived in this function
+ * The field_term1 field is being overriden to turn into the user's selected practice priorty on the node
+ */
+function nvc_custom_views_pre_render(&$view)
+{
+    if ($view->name == "entry_review") {
+
+        foreach ($view->result as $key => $result) {
+
+            $term1 = isset($result->_field_data['nid']['entity']->field_consumer1) ? $result->_field_data['nid']['entity']->field_consumer1 : NULL;
+            $term2 = isset($result->_field_data['nid']['entity']->field_digital_mckinsey1) ? $result->_field_data['nid']['entity']->field_digital_mckinsey1 : NULL;
+            $term3 = isset($result->_field_data['nid']['entity']->field_gem_basic_materials1) ? $result->_field_data['nid']['entity']->field_gem_basic_materials1 : NULL;
+            $term4 = isset($result->_field_data['nid']['entity']->field_gem_chemical_agricultur1) ? $result->_field_data['nid']['entity']->field_gem_chemical_agricultur1 : NULL;
+            $term5 = isset($result->_field_data['nid']['entity']->field_gem_electric_power_natura1) ? $result->_field_data['nid']['entity']->field_gem_electric_power_natura1 : NULL;
+            $term6 = isset($result->_field_data['nid']['entity']->field_gem_oil_gas1) ? $result->_field_data['nid']['entity']->field_gem_oil_gas1 : NULL;
+            $term7 = isset($result->_field_data['nid']['entity']->field_healthcare_systems_and_se1) ? $result->_field_data['nid']['entity']->field_healthcare_systems_and_se1 : NULL;
+            $term8 = isset($result->_field_data['nid']['entity']->field_high_techmedia_teleco1) ? $result->_field_data['nid']['entity']->field_high_techmedia_teleco1 : NULL;
+            $term9 = isset($result->_field_data['nid']['entity']->field_insurance1) ? $result->_field_data['nid']['entity']->field_insurance1 : NULL;
+            $term10 = isset($result->_field_data['nid']['entity']->field_marketing_sales1) ? $result->_field_data['nid']['entity']->field_marketing_sales1 : NULL;
+            $term11 = isset($result->_field_data['nid']['entity']->field_operations_manufacturin1) ? $result->_field_data['nid']['entity']->field_operations_manufacturin1 : NULL;
+            $term12 = isset($result->_field_data['nid']['entity']->field_operations_procurement1) ? $result->_field_data['nid']['entity']->field_operations_procurement1 : NULL;
+            $term13 = isset($result->_field_data['nid']['entity']->field_operations_product_develo1) ? $result->_field_data['nid']['entity']->field_operations_product_develo1 : NULL;
+            $term14 = isset($result->_field_data['nid']['entity']->field_operations_service_operat1) ? $result->_field_data['nid']['entity']->field_operations_service_operat1 : NULL;
+            $term15 = isset($result->_field_data['nid']['entity']->field_operations_supply_chain_m1) ? $result->_field_data['nid']['entity']->field_operations_supply_chain_m1 : NULL;
+            $term16 = isset($result->_field_data['nid']['entity']->field_organization1) ? $result->_field_data['nid']['entity']->field_organization1 : NULL;
+            $term17 = isset($result->_field_data['nid']['entity']->field_pharmaceuticals_and_medic1) ? $result->_field_data['nid']['entity']->field_pharmaceuticals_and_medic1 : NULL;
+            $term18 = isset($result->_field_data['nid']['entity']->field_private_equity_principal_1) ? $result->_field_data['nid']['entity']->field_private_equity_principal_1 : NULL;
+            $term19 = isset($result->_field_data['nid']['entity']->field_public_social_sector1) ? $result->_field_data['nid']['entity']->field_public_social_sector1 : NULL;
+            $term20 = isset($result->_field_data['nid']['entity']->field_risk1) ? $result->_field_data['nid']['entity']->field_risk1 : NULL;
+            $term21 = isset($result->_field_data['nid']['entity']->field_strategy_corporate_financ1) ? $result->_field_data['nid']['entity']->field_strategy_corporate_financ1 : NULL;
+            $term22 = isset($result->_field_data['nid']['entity']->field_travel_transport_logistic1) ? $result->_field_data['nid']['entity']->field_travel_transport_logistic1 : NULL;
+            $term23 = isset($result->_field_data['nid']['entity']->field_operations_capital_proj1) ? $result->_field_data['nid']['entity']->field_operations_capital_proj1 : NULL;
+            $term24 = isset($result->_field_data['nid']['entity']->field_advanced_industries1) ? $result->_field_data['nid']['entity']->field_advanced_industries1 : NULL;
+            $term25 = isset($result->_field_data['nid']['entity']->field_operations_cross_o1) ? $result->_field_data['nid']['entity']->field_operations_cross_o1 : NULL;
+            $term26 = isset($result->_field_data['nid']['entity']->field_banking1) ? $result->_field_data['nid']['entity']->field_banking1 : NULL;
+            $final = "";
+            if ($term1) $final = $term1;
+            if ($term2) $final = $term2;
+            if ($term3) $final = $term3;
+            if ($term4) $final = $term4;
+            if ($term5) $final = $term5;
+            if ($term6) $final = $term6;
+            if ($term7) $final = $term7;
+            if ($term8) $final = $term8;
+            if ($term9) $final = $term9;
+            if ($term10) $final = $term10;
+            if ($term11) $final = $term11;
+            if ($term12) $final = $term12;
+            if ($term13) $final = $term13;
+            if ($term14) $final = $term14;
+            if ($term15) $final = $term15;
+            if ($term16) $final = $term16;
+            if ($term17) $final = $term17;
+            if ($term18) $final = $term18;
+            if ($term19) $final = $term19;
+            if ($term20) $final = $term20;
+            if ($term21) $final = $term21;
+            if ($term22) $final = $term22;
+            if ($term23) $final = $term23;
+            if ($term24) $final = $term24;
+            if ($term25) $final = $term25;
+            if ($term26) $final = $term26;
+
+            if (isset($final)) {
+                $tid = isset($final['und'][0]['tid']) ? $final['und'][0]['tid'] : NULL;
+
+                //taxonomy term load was not working during this process
+                // db query was used to grab the taxonomy term name
+                if ($tid) {
+                    $query = db_select('taxonomy_term_data', 't')
+                        ->fields('t')
+                        ->condition('tid', $tid, '=')
+                        ->execute()
+                        ->fetchAll();
+
+                    $selectedTerm = $query[0]->name;
+
+
+                    $result->field_field_terms1[0]['rendered']['#markup'] = $selectedTerm;
+                }
+            }
+
+
+        }
+    }
+
+    if ($view->name == "export_user_data") {
+
+        foreach ($view->result as $result) {
+
+            foreach ($result->field_field_other_team_members as $id => $other) {
+                $o_user = $other['raw']['user'];
+                $o_fmno = $o_user->field_fmno['und'][0]['value'];
+                $o_name = $o_user->name;
+                $o_mail = $o_user->mail;
+                $combined = $o_name . "[" . $o_fmno . "][" . $o_mail . "]";
+                $result->field_field_other_team_members[$id]['rendered']['#title'] = $combined;
+            }
+
+            foreach ($result->field_field_team_coaches as $id => $coach) {
+                $c_user = $coach['raw']['user'];
+                $c_fmno = $c_user->field_fmno['und'][0]['value'];
+                $c_name = $c_user->name;
+                $c_mail = $c_user->mail;
+                $combined = $c_name . "[" . $c_fmno . "][" . $c_mail . "]";
+                $result->field_field_team_coaches[$id]['rendered']['#title'] = $combined;
+            }
+
+        }
+
+    }
+
+    if ($view->name = "entrepreneur") {
+    $nids = array();
+        foreach ($view->result as $key => $r) {
+
+            unset($r->node_uid);
+            unset($r->field_field_abstract);
+
+            foreach ($r->field_field_main_contact as $key=>$u) {
+
+                $id = $u['raw']['uid'];
+                //append city to field
+                $r->field_field_fname = $u['raw']['user']->field_city['und'][0]['value'];
+                $r->field_field_main_contact[$key]['rendered']['#title'] .= " - " . $u['raw']['user']->field_city['und'][0]['value'];
+                //query for Winners
+                $result = efq_find_status('field_main_contact', $id, "1592");
+                //if EFQ has result that they are part of another node as a winner, add the NID to the column along with city
+                if (isset($result['node'])) {
+//                    ddl($r);
+                    $nids = array_keys($result['node']);
+                    $nid_list = implode('|', $nids);
+                    if(in_array($r->nid, $nids))
+                    $r->field_field_main_contact[$key]['rendered']['#title'] .= " - Repeat Winner(" . $nid_list . ")";
+                }
+
+                //query for nominees
+                $result1 = efq_find_status('field_main_contact', $id, "1590");
+                //if EFQ has result that they are part of another node as a nominee, add the NID to the column along with city
+                if (isset($result1['node'])) {
+                    $nids1 = array_keys($result1['node']);
+                    $nid_list1 = implode('|', $nids1);
+                    if(!in_array($r->nid, $nids1))
+                        $r->field_field_main_contact[$key]['rendered']['#title'] .= " - Repeat Finalist(" . $nid_list1 . ")";
+                }
+
+            } //end foreach $uid
+
+
+            foreach($r->field_field_other_team_members as $key=>$otm){
+                $r->field_field_other_team_members[$key]['rendered']['#title'] .= " - " . $otm['raw']['user']->field_city['und'][0]['value'];
+
+                //query for Winners
+                $result = efq_find_status('field_other_team_members', $id, "1592");
+                //if EFQ has result that they are part of another node as a winner, add the NID to the column along with city
+                if (isset($result['node'])) {
+                    $nids = array_keys($result['node']);
+                    $nid_list = implode('|', $nids);
+                    if(!in_array($r->nid, $nids))
+                    $r->field_field_other_team_members[$key]['rendered']['#title'] .= " Repeat Winner (" . $nid_list . ")";
+                }
+
+            }
+
+            foreach($r->field_field_team_coaches as $key=>$coach){
+                $id = $coach['raw']['uid'];
+                $coach_city = isset($coach['raw']['user']->field_city['und'][0]['value']) ? $coach['raw']['user']->field_city['und'][0]['value'] : NULL;
+                    if($coach_city)
+                        $r->field_field_team_coaches[$key]['rendered']['#title'] .= " - " . $coach_city;
+                //query for winners
+                    $result = efq_find_status('field_team_coaches', $id, "1592");
+                //if EFQ has result that they are part of another node as a winner, add the NID to the column along with city
+                if (isset($result['node'])) {
+                    $nids = array_keys($result['node']);
+                    $nid_list = implode('|', $nids);
+                    if(!in_array($r->nid, $nids))
+                        $r->field_field_team_coaches[$key]['rendered']['#title'] .= " - Repeat Winner (" . $nid_list . ")";
+                }
+
+                //query for nominees
+                $result1 = efq_find_status('field_team_coaches', $id, "1590");
+                //if EFQ has result that they are part of another node as a nominee, add the NID to the column along with city
+                if (isset($result1['node'])) {
+                    $nids1 = array_keys($result1['node']);
+                    $nid_list1 = implode('|', $nids1);
+                    if(!in_array($r->nid, $nids1))
+                        $r->field_field_team_coaches[$key]['rendered']['#title'] .= " - Repeat Finalist(" . $nid_list1 . ")";
+                }
+            }
+
+
+        } //end foreach $view->$result
+    }
+}
+
+/**
+ * find the if a user has another entry with the given nomination status
+ * @param $fieldname
+ * @param $uid
+ * @param $tid
+ * @return mixed
+ */
+
+function efq_find_status($fieldname, $uid, $tid){
+
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'entry')
+        ->propertyCondition('status', NODE_PUBLISHED)
+        ->fieldCondition($fieldname, 'uid', $uid, '=')
+        ->fieldCondition('field_nomination_status', 'tid', $tid, '=')
+        ->addMetaData('account', user_load(1));
+
+    $result = $query->execute();
+        return $result;
+
+}

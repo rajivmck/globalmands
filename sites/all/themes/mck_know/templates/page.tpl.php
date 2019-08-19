@@ -123,7 +123,6 @@
 </header>
 
 <?php echo render($page['content']) ?>
-
 <?php //print render($messages) ?>
 
 <!-- Footer Start -->

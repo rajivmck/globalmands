@@ -30,7 +30,7 @@
       <?php endforeach ?>
          <li class="nav-item">  <a href="feedback" class="nav-item nav-link-item" >Feedback</a></li>
            
-          <li class="nav-item">  <a href="case-library-submissions" class="nav-item nav-link-item" >Submit a use case</a></li>
+          <li class="nav-item">  <a href="case-library-submissions" class="nav-item nav-link-item" >Submit a new case</a></li>
       </ul>
     </nav>
   </div>

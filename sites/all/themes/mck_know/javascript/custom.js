@@ -344,7 +344,7 @@ if ($("body").hasClass("case-studies")) {
 
       if (((now - lastDatePopupShowed) >= (15 * 86400000)) || !lastDatePopupShowed) {
         $.magnificPopup.open({
-          items: { src: 'http://famaash.com/external/globalmands/sites/all/themes/mck_know/videos/Global-ms-casebook-intro.mp4' },
+          items: { src: 'http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4' },
           type: 'iframe'
         }, 0);
 

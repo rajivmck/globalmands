@@ -268,19 +268,42 @@
     </section>
   </div>
 </div>
-<footer class="global-footer">
-  <section class="footer">
-    <div class="footer-inner">
-      <div class="footer-section">
-        <div class="logo-container">
-          <a href="http://www.mckinsey.com" class="mck-footer__logo">McKinsey &amp; Company | © 2018</a>
-          <div class="footer-text"><?php //echo $node->field_title["und"][0]["value"]; ?></div>
-          <?php //print render($page['footer'])  ?>
+
+<footer id="global_footer_0_MainFooter" class="global-footer" lang="en">
+
+    <section class="footer-main">
+<h2 style="padding-bottom: 15px;
+    margin-top: -50px;">Contact Us</h2>
+        <div class="footer-top">
+          
+          <p>
+            If you have any inquiries about the site then please reach out to the <a href="mailto:Global_Marketing_and_Sales_Casebook@mckinsey.com">Global M&S Casebook Team</a>.
+          </p>
+            <div class="mck-logo-icon">
+                <span class="visually-hidden">McKinsey&amp;Company</span>
+            </div>
+
+            
+            
+
+
         </div>
-        <div class="footer-links">
-          <?php //print render($page['navigation']); ?>
+       
+
+    </section>
+
+    <section class="footer">
+
+        <div class="footer-inner">
+
+            <div id="global_footer_0_AppLinksBlock" class="app-links">
+                  <?php print theme('custom_main_menu'); ?>
+
+            </div>
+            
+            <div class="copyright">© 1996-2019 McKinsey&nbsp;&amp;&nbsp;Company</div>
+
         </div>
-      </div>
-    </div>
-  </section>
+
+    </section>
 </footer>

@@ -1,0 +1,171 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+
+function mck_cc_api_menu(){
+    $items = array();
+
+    $items['api/cc/%'] = array(
+        'type' => MENU_CALLBACK,
+        'page callback' => 'mck_cc_api_callback',
+        'page arguments' => array(2),
+        'access callback' => TRUE,
+    );
+
+    $items['api/cc/form'] = array(
+        'type' => MENU_CALLBACK,
+        'page callback' => 'api_cc_form',
+        'access callback' => TRUE,
+    );
+
+    $items['admin/config/api/cc/settings'] = array(
+        'title' => 'Charge Code API Settings',
+        'description' => 'Administer settings for CC API.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('cc_api_admin_form'),
+        'access arguments' => array('access administration pages'),
+        'file' => 'mck_cc_api.admin.inc',
+        'file path' => drupal_get_path('module', 'mck_cc_api'),
+    );
+
+
+
+    return $items;
+}
+
+/**
+ * Returns the theme for the popup
+ *
+ */
+
+function api_cc_form(){
+    return theme('api_cc_page');
+}
+
+/**
+ * Implements hook_theme().
+ */
+
+function mck_cc_api_theme($existing, $type, $theme, $path){
+    $body = variable_get('cc_api_popup_body');
+    $footer = variable_get('cc_api_popup_footer');
+
+    return array(
+        'api_cc_page' => array(
+            'variables' => array('popup_body' => $body, 'popup_footer' => $footer),
+            'template' => 'mck-cc-api-popup',
+            'path' => drupal_get_path('module', 'mck_cc_api') .'/templates/',
+        )
+    );
+}
+
+function mck_cc_api_preprocess_page($variables){
+    $body = variable_get('cc_api_popup_body');
+    $footer = variable_get('cc_api_popup_footer');
+    $variables['popup_body'] = $body;
+    $variables['popup_footer'] = $footer;
+
+
+}
+/**
+ * Page callback created for AJAX request
+ */
+
+function mck_cc_api_callback($cc){
+
+    $response = api_cc_request($cc);
+    print $response;
+
+    //save entered data to profile by current logged in user
+    if($response == "true"){
+
+        global $user;
+        $user = user_load($user->uid);
+        $wrapper = entity_metadata_wrapper('user', $user);
+        $wrapper->field_entered_charge_codes[] = ($cc);
+        $wrapper->save();
+    }
+
+}
+
+/**
+ * API callback
+ */
+
+function api_cc_request($cc){
+    $token = variable_get('cc_api_token');
+    $url = 'http://api.mckinsey.com/v1/charge_codes/'.$cc.'/validate';
+
+    $options = [
+        'method' => 'GET',
+        'headers' => [
+            'Authorization' => $token
+            ]
+    ];
+
+    $request = drupal_http_request($url, $options);
+    $response = json_decode($request->data);
+    return $response->chargeCode->valid;
+
+}
+
+/**
+ * Implements hook_page_alter().
+ *
+ */
+
+function mck_cc_api_page_alter(&$page){
+
+    $modalToggle = variable_get("cc_api_enable_popup");
+    $isAdminpage = strpos(current_path(), 'admin');
+
+    if($modalToggle && $isAdminpage === FALSE) {
+
+        $modalTitle = variable_get("cc_api_popup_title");
+        $modalSubtitle = variable_get("cc_api_popup_subtitle");
+        $siteFolder = variable_get("cc_api_path");
+
+        drupal_add_js(drupal_get_path("module", "mck_cc_api") . "/js/iziModal/js/iziModal.js");
+        drupal_add_css(drupal_get_path("module", "mck_cc_api") . "/js/iziModal/css/iziModal.css");
+        drupal_add_js(array('mck_cc_api' => array('title' => $modalTitle, 'subtitle' => $modalSubtitle, 'toggle' => $modalToggle, 'sitefolder' => $siteFolder)), array('type' => 'setting'));
+
+
+        drupal_add_js(drupal_get_path("module", "mck_cc_api") . "/js/mck_cc_api.js");
+        $page['content']['system_main']['main']['#markup'] .= theme('api_cc_page');
+    }
+}
+
+/**
+ * Implements hook_form().
+ */
+
+function mck_cc_api_form($form, &$form_state){
+
+    $form = array();
+
+    $form['charge_code'] = array(
+        '#type' => 'textfield',
+    );
+
+    $form['superfooter'] =  array(
+        '#prefix' => '<div class="popup-superfooter">',
+        '#suffix' => '</div>',
+        '#markup' => variable_get('cc_api_popup_superfooter', ''),
+    );
+
+    $form['charge_code_submit'] = array(
+        '#type' => 'button',
+        '#value' => 'Validate',
+        '#ajax' => array(
+            'callback' => 'validate_cc',
+            'wrapper' => '#popup-izimodal .result',
+            'effect' => 'fade',
+        ),
+    );
+
+
+
+    return $form;
+}

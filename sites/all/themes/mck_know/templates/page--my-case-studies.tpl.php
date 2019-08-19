@@ -229,25 +229,8 @@
     </div>
   </div>
 </div>
-  <div class="top-content-wrapper">
-    <div class="section-inner-wrapper">
-      <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 content">
-         
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="section-wrapper case">
-    <div class="top-filters-wrapper">
-      <div class="section-inner-wrapper">
-        <?php
-          $block = module_invoke('views', 'block_view', '-exp-case_studies-page_1');
-          print render($block['content']);
-        ?>
 
-      </div>
-    </div>
+  <div class="section-wrapper case">
     <section class="full-text-section case-box section-inner-wrapper">
       <div class="page-wrapper">
         <div class="row">
@@ -256,7 +239,6 @@
                 <?php global $user; ?>
                 <?php $args = bookmark_get_items($user->uid);?>
                 <?php print views_embed_view("case_studies", "page_1", $args); ?>
-                FA
                 <div class="more-like-this">
                  <div class="mx-auto text-center"><div class="header"><h5>More Like This</h5></div></div>
                  <?php
@@ -296,12 +278,17 @@
 </section>
 
 
+
 <footer id="global_footer_0_MainFooter" class="global-footer" lang="en">
 
     <section class="footer-main">
-
+<h2 style="padding-bottom: 15px;
+    margin-top: -50px;">Contact Us</h2>
         <div class="footer-top">
-
+          
+          <p>
+            If you have any inquiries about the site then please reach out to the <a href="mailto:Global_Marketing_and_Sales_Casebook@mckinsey.com">Global M&S Casebook Team</a>.
+          </p>
             <div class="mck-logo-icon">
                 <span class="visually-hidden">McKinsey&amp;Company</span>
             </div>
@@ -318,7 +305,6 @@
     <section class="footer">
 
         <div class="footer-inner">
-
 
             <div id="global_footer_0_AppLinksBlock" class="app-links">
                   <?php print theme('custom_main_menu'); ?>

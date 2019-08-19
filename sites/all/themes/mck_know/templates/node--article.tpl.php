@@ -192,12 +192,7 @@ $pdfreplace = str_replace('public://', '', $pdf);
     </div> 
   </div>
   <div class="popup-sidebar">
-     <?php if (render($content['field_year_case_was_tapped'])): ?>
-      <div class="field-case-id">
-        <label><?php print $content['field_year_case_was_tapped']['#title']; ?>:</label>
-        <?php print render($content['field_year_case_was_tapped']); ?>
-      </div>
-    <?php endif; ?>
+  
 
     <?php if (render($content['field_case_id'])): ?>
       <div class="field-case-id">

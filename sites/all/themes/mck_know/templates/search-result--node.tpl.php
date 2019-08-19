@@ -73,7 +73,8 @@ $fileupload =isset($result['node']->field_file_upload['und'][0]['uri']) ? $resul
 // $fileupload = isset(['result']['node']->field_file_upload['und'][0]['uri']) ? ['result']['node']->field_file_upload['und'][0]['uri']: NULL;
  $fileuploadURL = file_create_url($fileupload);
 ?>
-<li class="<?php print $classes; ?>"<?php print $attributes; ?>>
+<li class="col-lg-4 col-md-6">
+  <div class="<?php print $classes; ?>">
   <?php print render($title_prefix); ?>
   <h3 class="title"<?php print $title_attributes; ?>>
        <?php if ($type == "LOP Toolkit"): ?>
@@ -95,4 +96,5 @@ $fileupload =isset($result['node']->field_file_upload['und'][0]['uri']) ? $resul
     <?php endif; ?>
     
   </div>
+</div>
 </li>

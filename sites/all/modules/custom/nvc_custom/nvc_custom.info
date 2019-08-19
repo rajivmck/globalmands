@@ -1,0 +1,3 @@
+name = NVC Custom
+description = Misc functions needed for NVC
+core = 7.x

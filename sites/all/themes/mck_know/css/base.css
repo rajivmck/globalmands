@@ -39,18 +39,15 @@ body,
 html,
 body p{
 	font-family: 'McKinsey Theinhardt', 'Helvetica Neue', Calibri, Corbel, Helvetica, Roboto, Droid, sans-serif!important;
-	color: #333;
-	font-weight: 300
+	color: #000000;
 }
 
 .btn{
 	font-family: 'McKinsey Theinhardt', 'Helvetica Neue', Calibri, Corbel, Helvetica, Roboto, Droid, sans-serif!important;
 	color: #000;
-	font-weight: 300
 }
 
 .text-longform p{
-	font-weight: 300
 }
 
 .text-longform h2, .text-longform h3, .text-longform h4, .text-longform h5, .text-longform h6{

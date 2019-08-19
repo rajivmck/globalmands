@@ -34,7 +34,7 @@ $frontpage = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
             <?php endforeach ?>
 
             <li class="nav-item">  <a href="#feedback-popup" class="feedback-btn open-popup-link">Feedback</a></li>           
-            <li class="nav-item">  <a href="#case-popup" class="feedback-btn open-popup-link">Submit a use case</a></li>
+            <li class="nav-item">  <a href="#case-popup" class="feedback-btn open-popup-link">Submit a new case</a></li>
               <!--   <li class="nav-item">  <a href="http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4" class="video-popup video-button">Click to view welcome video</a></li> -->
                        <div id="feedback-popup" class="white-popup mfp-hide">
 
@@ -49,7 +49,7 @@ $frontpage = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
 
 
                             <?php
-                                $block = block_load('webform', 'client-block-1205');
+                                $block = block_load('webform', 'client-block-1126');
                                 $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
                                 $output = drupal_render($render_array);
                                 print $output;

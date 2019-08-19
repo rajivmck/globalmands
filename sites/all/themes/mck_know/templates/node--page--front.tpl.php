@@ -124,5 +124,4 @@
 </div>
 
 <?php echo render($content['field_paragraph']) ?>
-
 <?php echo render($messages) ?>

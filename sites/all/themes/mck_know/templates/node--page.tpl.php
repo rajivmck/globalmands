@@ -83,11 +83,12 @@
 
 
 ?>
-<div class="page-class <?php echo $node->field_theme['und'][0]['value'];?>">
+<div>
   <?php
   //hide all the fields we are manually printing out in this tpl
   hide($content['field_hero_images']);
   print render($content);
+  print render($footer);
   ?>  
 </div>
 
