@@ -32,14 +32,21 @@
                     });
 
                     $("#edit-charge-code-submit").click(function (e) {
+                        $(".spinner").fadeIn();
                         e.preventDefault();
+                        $(this).prop("disabled","disabled");
+                        $(this).val('');
                         $.ajax({
                             url: siteFolder + '/api/cc/' + $("#edit-charge-code").val(),
                             type: 'POST',
                             data: {
                                 'cc': $("#edit-charge-code").val(),
+                                'ed_name': $("#edit-charge-code-ed-name").val(),
                             },
                             success: function (response) {
+                                $(".spinner").fadeOut();
+                                $("#edit-charge-code-submit").prop("disabled",false);
+                                $("#edit-charge-code-submit").val('Validate');
 
                                 if (response == "true") {
                                     $("body > *").removeClass("blur-all");
@@ -52,7 +59,15 @@
                                     $('.result').html("<div class='alert alert-danger'>Charge Code not valid.</div>");
                                 }
 
+                            },
+                            error: function(jqXHR, textStatus, errorThrown){
+                                $('.result').html("<div class='alert alert-danger'>Charge Code not valid.</div>");
+                                $(".spinner").fadeOut();
+                                $("#edit-charge-code-submit").prop("disabled",false);
+                                $("#edit-charge-code-submit").val('Validate');
+
                             }
+
                         });
                     });
 

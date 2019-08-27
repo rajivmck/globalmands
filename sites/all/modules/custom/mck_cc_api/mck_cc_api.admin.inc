@@ -6,6 +6,15 @@ function cc_api_admin_form($form, &$form_state) {
     $form['popup'] = array(
         '#type' => 'fieldset',
         '#title' => 'Charge Code Popup settings',
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+    );
+
+    $form['cc_api'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Charge Code API settings',
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
     );
 
     $form['popup']['cc_api_enable_popup'] = array(
@@ -13,6 +22,12 @@ function cc_api_admin_form($form, &$form_state) {
         '#title' => 'Toggle Popup',
         '#description' => 'Check this box to enable popup. Uncheck to disable.',
         '#default_value' => variable_get('cc_api_enable_popup'),
+    );
+    $form['popup']['cc_api_enable_popup_admin'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'Toggle Popup for admins',
+        '#description' => 'Check this box to enable popup for admin. Uncheck to disable.',
+        '#default_value' => variable_get('cc_api_enable_popup_admin'),
     );
 
     $form['popup']['cc_api_popup_title'] = array(
@@ -50,18 +65,25 @@ function cc_api_admin_form($form, &$form_state) {
         '#default_value' => variable_get('cc_api_popup_footer', ''),
     );
 
-    $form['cc_api_token'] = array(
+    $form['cc_api']['cc_api_secret'] = array(
         '#type' => 'textfield',
-        '#title' => 'Auth Token',
-        '#description' => 'Enter the Authorization token to be used for the API, ex. Bearer Abc123defg456',
-        '#default_value' => variable_get('cc_api_token'),
+        '#title' => 'API Client ID',
+        '#description' => 'Enter the Client ID',
+        '#default_value' => variable_get('cc_api_secret'),
     );
 
-    $form['cc_api_path'] = array(
+    $form['cc_api']['cc_api_key'] = array(
+        '#type' => 'textfield',
+        '#title' => 'API Key',
+        '#description' => 'Enter the API Key',
+        '#default_value' => variable_get('cc_api_key'),
+    );
+
+    $form['cc_api']['cc_api_path'] = array(
         '#type' => 'textfield',
         '#title' => 'Site Folder Name',
-        '#description' => 'If site is in a subdirectory, place folder name here. Ex. /mediaservices/globalms/',
-        '#default_value' => variable_get('cc_api_path', '/meadia-services/globalms/'),
+        '#description' => 'If site is in a subdirectory, place folder name here. Ex. /mediaservices/globalms, (no trailing slash)',
+        '#default_value' => variable_get('cc_api_path', '/media-services/globalms'),
     );
 
     return system_settings_form($form);
