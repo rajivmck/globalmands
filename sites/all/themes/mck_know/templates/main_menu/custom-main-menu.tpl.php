@@ -49,7 +49,7 @@ $frontpage = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
 
 
                             <?php
-                                $block = block_load('webform', 'client-block-1126');
+                                $block = block_load('webform', 'client-block-1205');
                                 $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
                                 $output = drupal_render($render_array);
                                 print $output;
