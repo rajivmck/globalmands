@@ -67,7 +67,7 @@ function mck_cc_api_theme($existing, $type, $theme, $path){
  */
 
 function generate_token($regnerate = FALSE){
-    if($regnerate == TRUE) {
+
 
         $url = "http://apioauth.mckinsey.com/asg/oauth2/access_token";
         $data = array("grant_type" => "client_credentials",
@@ -86,10 +86,16 @@ function generate_token($regnerate = FALSE){
         $datar = json_decode($response->data);
         $token = $datar->access_token;
 
-        if (isset($token)) variable_set("cc_api_bearer_token", $token);
+        if (isset($token)) {
+            $date = date("Y-m-d H:i:s");
+            $expires = date("Y-m-d H:i:s", strtotime($date . "+30 minutes"));
+
+            variable_set("cc_api_bearer_token", $token);
+            variable_set('cc_api_bearer_expires', $expires);
+        }
 
         return $token;
-    }
+
 }
 /**
  * Page callback created for AJAX request
@@ -125,8 +131,18 @@ function mck_cc_api_callback($cc){
  */
 
 function api_cc_request($cc){
-    $token = variable_get("cc_api_bearer_token");
-    $token = isset($token) ? variable_get("cc_api_bearer_token") : generate_token(TRUE);
+
+    $expiration = variable_get("cc_api_bearer_expires");
+    $now = date("Y-m-d H:i:s");
+
+    if($now > $expiration){
+        $token = generate_token();
+    } else {
+        $token = variable_get("cc_api_bearer_token");
+    }
+
+
+
 
     $url = 'http://api.mckinsey.com/v1/charge_codes/'.$cc.'/validate';
 
@@ -159,7 +175,7 @@ function mck_cc_api_page_alter(&$page){
         $modalTitle = variable_get("cc_api_popup_title");
         $modalSubtitle = variable_get("cc_api_popup_subtitle");
         $siteFolder = variable_get("cc_api_path");
-        
+
 
         drupal_add_js(drupal_get_path("module", "mck_cc_api") . "/js/iziModal/js/iziModal.js");
         drupal_add_css(drupal_get_path("module", "mck_cc_api") . "/js/iziModal/css/iziModal.css");
