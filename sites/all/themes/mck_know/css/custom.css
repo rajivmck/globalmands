@@ -7248,3 +7248,35 @@ div#edit-keyword-wrapper {
 .video-link .video-thumbnail{
 		z-index: 	90
 }
+.view-reports {
+  margin: 130px 5% 50px 5%;
+}
+.view-reports .views-table{
+  margin-bottom: 30px;
+  border: 1px solid #000;
+}
+.view-reports .views-table caption{
+  display: none;
+}
+.view-reports .views-table tr,
+.view-reports .views-table tr td,
+.view-reports .views-table tr th{
+  border: 1px solid #000;
+  padding: 0 15px;
+}
+.view-reports .views-table tr td,
+.view-reports .views-table tr th {
+  width: 33.3333% !important;
+  padding-top: 5px !important;
+}
+.view-reports .views-exposed-widgets {
+  margin: 0;
+}
+.view-reports .views-widget-filter-combine {
+  width: 90%;
+}
+.view-reports .views-submit-button {
+  float: right;
+  position: relative;
+  top: 5px;
+}

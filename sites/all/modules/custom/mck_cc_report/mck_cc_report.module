@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * Implementation of hook_permission().
+ */
+function mck_cc_report_permission() {
+  return array(
+    'mck_cc_report_access' => array(
+      'title' => t('McKinsey reports access')
+    ),
+  );
+}
+
+/**
+ * Implement hook_menu().
+ */
+function mck_cc_report_menu() {
+  $items = array();
+  
+  $items['mck_cc_report/add'] = array(
+    'title' => '',
+    'page callback' => 'mck_cc_report_add',
+    'access callback' => TRUE,
+  );
+  
+  $items['admin/config/mck_cc_report/%'] = array(
+    'title' => 'Charge code',
+    'page callback' => 'mck_cc_report_cc_page',
+    'access arguments' => array('registration limit access'),
+  );
+
+  return $items;
+}
+
+/*
+ * mck_cc_report add
+ */
+function mck_cc_report_add(){
+  if($_POST['href']){
+    global $user;
+    $account = user_load($user->uid);
+    $cc_collection_id = array_pop($account->field_ccfc[LANGUAGE_NONE]);
+    $cc_collection = entity_load('field_collection_item', array($cc_collection_id['value']));
+    $charge_code = $cc_collection[$cc_collection_id['value']]->field_entered_charge_codes[LANGUAGE_NONE][0]['value'];
+    $file_name = explode('files/', $_POST['href']);
+    db_insert('mck_cc_report')
+      ->fields(array(
+        'uid' => $user->uid,
+        'charge_code' => $charge_code,
+        'file_name' => $file_name[1],
+        'file_path' => $_POST['href'],
+        'date' => time(),
+      ))
+      ->execute();
+    $output = array('result' => 'done');
+  }
+  
+  return drupal_json_output($output);
+}
+
+/*
+ * Charge code report page
+ */
+function mck_cc_report_cc_page(){
+  $cc_id = arg(3);
+  drupal_set_title('Charge Code ' . $cc_id);
+  $results = db_select('mck_cc_report', 'r')
+    ->fields('r', array('report_id', 'uid', 'charge_code', 'file_name', 'file_path', 'date'))
+    ->condition('r.charge_code', $cc_id, '=')
+    ->execute()->fetchAll();
+  
+  if ($results) {
+    $header = array('Report ID', 'User name', 'Charge code', 'File name', 'Downloaded');
+    $rows = array();
+    foreach($results as $result) {
+      $user = user_load($result->uid);
+      $rows[] = array(
+        $result->report_id,
+        $user->name,
+        $result->charge_code,
+        l($result->file_name, $result->file_path),
+        format_date($result->date, $type = 'short'),
+      );
+    }
+    return theme('table', array('header' => $header, 'rows' => $rows));
+  } else {
+    return 'There is no data for this Charge Code.';
+  }
+}

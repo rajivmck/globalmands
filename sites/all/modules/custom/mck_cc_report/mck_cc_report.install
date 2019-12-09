@@ -1,0 +1,47 @@
+<?php 
+
+function mck_cc_report_schema() {
+  $schema['mck_cc_report'] = array(
+    'fields' => array(
+      'report_id' => array(
+        'description' => 'The primary identifier for a report ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+      'uid' => array(
+        'description' => 'The primary identifier for user ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+      'charge_code' => array(
+        'description' => 'Charge code',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'file_name' => array(
+        'description' => 'File name',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'file_path' => array(
+        'description' => 'File path',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'date' => array(
+        'description' => 'Downloaded date',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+    ),
+    'primary key' => array('report_id'),
+    );
+
+  return $schema;
+}

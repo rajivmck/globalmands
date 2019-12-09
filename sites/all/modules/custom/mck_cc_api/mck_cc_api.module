@@ -208,7 +208,8 @@ function mck_cc_api_form($form, &$form_state){
     $form['charge_code_ed_name'] = array(
         '#type' => 'textfield',
         '#attributes' => array(
-            'placeholder' => 'ED Name (Optional)',
+            'placeholder' => 'ED Name (Mandatory)',
+        '#required' => TRUE,  
         ),
     );
 

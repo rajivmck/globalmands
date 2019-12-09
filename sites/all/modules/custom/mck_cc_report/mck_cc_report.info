@@ -1,0 +1,5 @@
+name = McKinsey Charge code report
+description = McKinsey Charge code report.
+version = 7.x.1.0
+core = 7.x
+scripts[] = js/mck_cc_report.js
