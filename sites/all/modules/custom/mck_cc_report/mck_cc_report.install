@@ -33,6 +33,12 @@ function mck_cc_report_schema() {
         'length' => 255,
         'not null' => TRUE,
       ),
+      'session' => array(
+        'description' => 'Charge code session',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
       'date' => array(
         'description' => 'Downloaded date',
         'type' => 'int',

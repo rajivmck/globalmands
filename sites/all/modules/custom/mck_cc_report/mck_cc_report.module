@@ -35,13 +35,14 @@ function mck_cc_report_menu() {
 /*
  * mck_cc_report add
  */
-function mck_cc_report_add(){
+function mck_cc_report_add() {
   if($_POST['href']){
     global $user;
     $account = user_load($user->uid);
     $cc_collection_id = array_pop($account->field_ccfc[LANGUAGE_NONE]);
     $cc_collection = entity_load('field_collection_item', array($cc_collection_id['value']));
     $charge_code = $cc_collection[$cc_collection_id['value']]->field_entered_charge_codes[LANGUAGE_NONE][0]['value'];
+    $session = $cc_collection[$cc_collection_id['value']]->field_entered_time[LANGUAGE_NONE][0]['value'];
     $file_name = explode('files/', $_POST['href']);
     db_insert('mck_cc_report')
       ->fields(array(
@@ -49,6 +50,7 @@ function mck_cc_report_add(){
         'charge_code' => $charge_code,
         'file_name' => $file_name[1],
         'file_path' => $_POST['href'],
+        'session' => strtotime($session),
         'date' => time(),
       ))
       ->execute();
@@ -61,13 +63,11 @@ function mck_cc_report_add(){
 /*
  * Charge code report page
  */
-function mck_cc_report_cc_page(){
-  $cc_id = arg(3);
-  drupal_set_title('Charge Code ' . $cc_id);
-  $results = db_select('mck_cc_report', 'r')
-    ->fields('r', array('report_id', 'uid', 'charge_code', 'file_name', 'file_path', 'date'))
-    ->condition('r.charge_code', $cc_id, '=')
-    ->execute()->fetchAll();
+function mck_cc_report_cc_page() {
+  $charge_code = arg(3);
+  $session = arg(4);
+  drupal_set_title('Charge Code ' . $charge_code);
+  $results = mck_cc_report_get_by_cc_session($charge_code, $session);
   
   if ($results) {
     $header = array('Report ID', 'User name', 'Charge code', 'File name', 'Downloaded');
@@ -84,6 +84,31 @@ function mck_cc_report_cc_page(){
     }
     return theme('table', array('header' => $header, 'rows' => $rows));
   } else {
-    return 'There is no data for this Charge Code.';
+    return 'There is no data for <i>' . $charge_code . '</i> Charge Code.';
   }
+}
+
+/*
+ * Get data by charge code name
+ */
+function mck_cc_report_get_by_cc_name($charge_code) {
+  $results = db_select('mck_cc_report', 'r')
+    ->fields('r', array('report_id', 'uid', 'charge_code', 'file_name', 'file_path', 'date'))
+    ->condition('r.charge_code', $charge_code, '=')
+    ->execute()->fetchAll();
+  
+  return $results;
+}
+
+/*
+ * Get data by charge code session
+ */
+function mck_cc_report_get_by_cc_session($charge_code, $session) {
+  $results = db_select('mck_cc_report', 'r')
+    ->fields('r', array('report_id', 'uid', 'charge_code', 'file_name', 'file_path', 'date'))
+    ->condition('r.charge_code', $charge_code, '=')
+    ->condition('r.session', $session, '=')
+    ->execute()->fetchAll();
+  
+  return $results;
 }
