@@ -11,3 +11,9 @@
         <?php print $variables['popup_footer']; ?>
     </div>
 </div>
+
+<div id="popup-izimodal-success" style="display:none;">
+	<div class='popup-body'>
+		User has been approved with charge code.
+	</div>
+</div>

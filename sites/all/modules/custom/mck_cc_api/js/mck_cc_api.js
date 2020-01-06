@@ -1,9 +1,31 @@
+// Read a page's GET URL variables and return them as an associative array.
+function getUrlVars() {
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++) {
+    hash = hashes[i].split('=');
+    vars.push(hash[0]);
+    vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
+function check_approved(){
+    $approved = getUrlVars()['approval'];
+    if($approved == "true"){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 (function($) {
     Drupal.behaviors.mck_cc_api = {
         attach: function (context, settings) {
             var toggle = settings.mck_cc_api.toggle;
-            if(toggle) {
+            $approved = check_approved();
+            if(toggle && !$approved) {
                 if(sessionStorage.getItem('cc_popup_lastOpened') == null ) {
                     var title = settings.mck_cc_api.title;
                     var subtitle = settings.mck_cc_api.subtitle;
@@ -75,7 +97,33 @@
                         $('#popup-izimodal').iziModal('open', this);
                     }
                 }//end if sessionStorage.getItem
+            } else {
+                $("#popup-izimodal-success").iziModal({
+                        title: title, //Modal title
+                        subtitle: subtitle, //Modal subtitle
+                        fullscreen: false, //Icon to expand modal to fullscreen
+                        headerColor: 'rgb(51, 76, 123)', //Color of modal header. Hexa colors allowed.
+                        overlayColor: 'rgba(0, 0, 0, 0.4)', //Color of overlay behind the modal
+                        iconColor: '',
+                        iconClass: 'icon-chat',
+                        closeOnEscape: true,
+                        show: true,
+                        focusInput: true,
+                        bodyOverflow: true,
+                        overlayClose: false,
+                        closeButton: true,
+                        transitionOut: 'fadeOutDown',
+                        transitionIn: 'fadeInUp',
+                        timeout: '4000',
+                        onOpening: function() {
+                            $("body > *").not("#popup-izimodal-success").addClass("blur-all");
+                            $("#popup-izimodal").addClass("unblur");
+                        }
+                    });
+                $('#popup-izimodal-success').iziModal('open', this);
+                $()
             } //end if toggle
+
         } //end attach
     }; //end behavior
 

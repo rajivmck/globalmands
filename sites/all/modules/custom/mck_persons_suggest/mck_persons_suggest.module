@@ -1,0 +1,464 @@
+<?php
+
+function mck_persons_suggest_menu(){
+    $items['mck_persons_suggest/autocomplete'] = array(
+        'page callback' => 'mck_persons_suggest_autocomplete',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK
+    );
+
+    $items['mck_persons_suggest/url/autocomplete'] = array(
+        'page callback' => 'mck_persons_suggest_autocomplete',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK
+    );
+
+    $items['mck_persons_suggest/fmno'] = array(
+        'page callback' => 'mck_persons_suggest_fmno',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK
+    );
+
+    $items['admin/config/persons_suggest_api'] = array(
+        'title' => 'McKinsey Persons Suggest API',
+        'description' => 'Configuration for McKinsey Person Suggest API.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('persons_suggest_admin_api'),
+        'access arguments' => array('administer site configuration'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+
+/**
+ * Menu callback for admin/config/person_suggest.
+ */
+function persons_suggest_admin_api() {
+
+    $form = array();
+    $form['mck_persons_suggest_api'] = array(
+        '#title' => 'Firm Person Suggest API',
+        '#description' => "URL for McKinsey's Person Suggest API.",
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => variable_get('mck_persons_suggest_api', 'http://api.mckinsey.com/v3/persons/autosuggest'),
+    );
+    $form['mck_persons_client_id'] = array(
+        '#title' => 'API Client ID',
+        '#description' => 'Alphanumeric username key required to query the McKinsey API.',
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => variable_get('mck_persons_client_id'),
+    );
+    $form['mck_persons_client_secret'] = array(
+        '#title' => 'API Client ID Secret',
+        '#description' => 'Alphanumeric secret key required to query the McKinsey API.',
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => variable_get('mck_persons_client_secret'),
+    );
+    $form['mck_persons_suggest_oauth'] = array(
+        '#title' => 'OAuth Token Server',
+        '#description' => "URL for McKinsey's OAuth authentication servers. Used for retrieving oauth2 access tokens.",
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => variable_get('mck_persons_suggest_oauth', 'http://apioauth.mckinsey.com/asg/oauth2/access_token'),
+    );
+    $form['mck_persons_suggest_oauth_exp'] = array(
+        '#title' => 'OAuth Token Expiration',
+        '#description' => '',
+        '#type' => 'textfield',
+        '#disabled' => TRUE,
+        '#default_value' => variable_get('mck_persons_suggest_oauth_exp', 0),
+    );
+    $form['mck_persons_suggest_oauth_token'] = array(
+        '#title' => 'OAuth Token',
+        '#description' => 'If any OAuth token is currently set, it is displayed here.',
+        '#type' => 'textfield',
+        '#disabled' => TRUE,
+        '#default_value' => variable_get('mck_persons_suggest_oauth_key', mck_get_key()),
+    );
+    $token_exp = 'The current token is set to expire on ' . format_date((int) variable_get('mck_persons_suggest_oauth_exp', 0));
+    $form['mck_persons_suggest_oauth_exp']['#description'] .= $token_exp;
+
+    return system_settings_form($form);
+}
+
+/**
+ * Hide duplicate field element label before rendering.
+ */
+function mck_persons_suggest_field_prerender_expert_search_element($element = NULL, $bar = NULL, $baz = NULL) {
+    unset($element['#title']);
+    return $element;
+}
+
+
+function mck_persons_suggest_autocomplete($string = '') { 
+
+    $key = mck_get_key();
+    $url = "http://api.mckinsey.com/v3/persons/autosuggest?access_token=".$key."&q=".$string;
+
+    $options = array(
+        'method' => 'GET',
+        'timeout' => 15,
+        'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+    );
+
+    $response = drupal_http_request($url,$options);
+    $datar = json_decode($response->data);
+
+
+    if(count($datar->response->persons) == 0){
+        $matches['No Matches'] = 'No Matches Found';
+    }else{
+
+        for($i=0;$i<count($datar->response->persons);$i++):
+            $matches[$datar->response->persons[$i]->core->firstName . ' ' . $datar->response->persons[$i]->core->lastName .' ['.$datar->response->persons[$i]->core->gocOfficeCode.']'] = $datar->response->persons[$i]->core->firstName . ' ' . $datar->response->persons[$i]->core->lastName . ' ['.$datar->response->persons[$i]->core->gocOfficeCode.']';
+        endfor;
+    }
+
+    drupal_json_output($matches);
+}
+
+function mck_persons_suggest_query_name($name = '') {
+    $api = 'http://api.mckinsey.com/v3/persons/autosuggest';
+    $query = array(
+        'access_token' => mck_get_key(),
+        'q' => $name,
+    );
+    $request = url($api, array('query' => $query));
+
+    $options = array(
+        'method' => 'GET',
+        'timeout' => 15,
+        'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+    );
+
+    watchdog('mck_persons_suggest',$request);
+    $response = drupal_http_request($request, $options);
+    return json_decode($response->data);
+}
+
+
+function mck_get_key(){
+    $current_key = variable_get('mck_key',0);
+    $key_expires = variable_get('mck_expires',0);
+
+    if($key_expires < time()){
+
+        $url = "http://apioauth.mckinsey.com/asg/oauth2/access_token";
+        $headers = array('Content-Type' => 'application/x-www-form-urlencoded');
+        $data = array("grant_type" => "client_credentials",
+            "scope" => "public",
+            "client_id" => "2040-bb6b86ac-efcf-4afe-b860-77f3c1bf7dba",
+            "client_secret" => "8ce27d0e-10c1-4d65-8603-244ceb005959");
+
+        $options = array(
+            'method' => 'POST',
+            'data' => drupal_http_build_query($data),
+            'timeout' => 15,
+            'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+        );
+        $response = drupal_http_request($url,$options);
+        $datar = json_decode($response->data);
+
+        variable_set('mck_key',$datar->access_token);
+        variable_set('mck_expires',$datar->expires_in + time());
+        return $datar->access_token;
+    }else{
+        return $current_key;
+    }
+}
+
+function mck_persons_suggest_form_alter(&$form, &$form_state, $form_id){
+
+    /*switch($form_id){
+        case 'expert_view_node_form':
+
+            $field_base = $form['field_expert_search_fc']['und'][0]['field_expert_search']['und'];
+            for($i=0;$i<count($field_base);$i++):
+                if(isset($field_base[$i])){
+
+                    $form['field_expert_search_fc']['und'][$i]['field_expert_search']['und'][0]['uid']['#autocomplete_path'] = "mck_persons_suggest/autocomplete";
+                    $form['field_expert_search_fc']['und'][$i]['field_expert_search']['und'][0]['uid']['#element_validate'][0] = "mck_persons_suggest_autocomplete_validate";
+                    $form['field_expert_search_fc']['und'][$i]['field_expert_search']['und'][0]['uid']['#value_callback'] = "mck_persons_suggest_user_reference_autocomplete_value";
+                }
+            endfor;
+
+            break;
+    }*/
+
+}
+
+function mck_persons_suggest_field_widget_form_alter(&$element, &$form_state, $context) {
+    if($context['field']['type'] == 'user_reference') {
+        $element['uid']['#autocomplete_path'] = "mck_persons_suggest/autocomplete/field_collection_item/field_expert_search_fc/field_expert_search";
+        $element['uid']['#element_validate'][0] = "mck_persons_suggest_autocomplete_validate";
+        $element['uid']['#value_callback'] = "mck_persons_suggest_user_reference_autocomplete_value";
+    }
+}
+
+function mck_persons_suggest_user_reference_autocomplete_value($element, $input = FALSE, $form_state) {
+    if ($input === FALSE) {
+        $uid = $element['#default_value'];
+
+        if (!empty($uid)) {
+            $q = db_select('users', 'u');
+            $q->addField('u', 'name');
+            $q->condition('u.uid', $uid)
+                ->range(0, 1);
+            $result = $q->execute();
+            $value = $result->fetchField();
+            $value .= ' [uid:' . $uid . ']';
+            return $value;
+        }
+    }
+}
+
+function mck_persons_suggest_autocomplete_validate($element, &$form_state, $form)
+{
+    // ddl($form_state);
+
+    $field = field_widget_field($element, $form_state);
+    $instance = field_widget_instance($element, $form_state);
+
+    $value = $element['#value'];
+
+    $uid = NULL;
+
+    if (!empty($value)) {
+        // ddl($value);
+        preg_match('/^(?:\s*|(.*) )?\[\s*uid\s*:\s*(\d+)\s*\]$/', $value, $matches2);
+
+        if (empty($matches2)) {
+
+            $checkoffice = explode('[', $value);
+            if (is_array($checkoffice)) {
+                $fullname = $checkoffice[0];
+
+                $officecode = str_replace("]", "", $checkoffice[1]);
+                // ddl($officecode);
+                // Swap Back
+                if ($officecode == "NYC") {
+                    $officecode = "FIR";
+                }
+
+                //Check If User Exists
+                $email = mck_persons_suggest_find_email($fullname, $officecode);
+
+                //check if user account is active
+                $fmno = mck_persons_suggest_find_fmno($fullname,$officecode);
+                if($fmno != false){
+                    $datar = mck_persons_suggest_fmno($fmno);
+                    if($datar->response->persons[0]->core->workerStatus == "Inactive"){
+                        return form_set_error($element, t('User account is inactive'));
+                    }
+                }
+
+
+                if ($email == 'no_email') {
+                    // ddl("no_email");
+                    return form_set_error($element, t('User Not Found'));
+
+                }
+                if (mck_persons_suggest_validate_user($email) == false) {
+                    $userinfo = mck_persons_suggest_create_user($fullname, $officecode);
+                    // ddl("userinfo");
+                    if ($userinfo == false) {
+                        return form_set_error($element, t('User Not Found'));
+                    }
+                    $value = sprintf("%s [uid:%s]", $fullname, $userinfo->uid);
+                    // ddl("value");
+                } else {
+                    $userinfo = mck_persons_suggest_validate_user($email);
+                    $value = sprintf("%s [uid:%s]", $fullname, $userinfo->uid);
+                }
+            }
+        }
+
+
+        preg_match('/^(?:\s*|(.*) )?\[\s*uid\s*:\s*(\d+)\s*\]$/', $value, $matches);
+
+        if (!empty($matches)) {
+            list(, $name, $uid) = $matches;
+            if (!empty($name)) {
+                $names = _user_reference_get_user_names(array($uid));
+            }
+        }
+
+
+    }
+    form_set_value($element, $uid, $form_state);
+
+}
+
+
+function mck_persons_suggest_fmno($fmno=0){
+
+    $key = mck_get_key();
+    $url = "http://api.mckinsey.com/v3/persons?q=$fmno&access_token=".$key."&random=".time();
+    $headers = array('Content-Type' => 'application/x-www-form-urlencoded');
+    $options = array(
+        'method' => 'GET',
+        'timeout' => 15,
+        'headers' => array('Content-Type' => 'application/x-www-form-urlencoded'),
+    );
+
+    $response = drupal_http_request($url,$options);
+    $datar = json_decode($response->data);
+
+    return $datar;
+}
+
+
+function mck_persons_suggest_validate_user($email){
+    $users = user_load_by_mail($email);
+    if(is_object($users)){
+        return $users;
+    }else{
+        return false;
+    }
+}
+
+
+function mck_persons_suggest_find_fmno($fullname, $office){
+
+    $fullname = ltrim(rtrim($fullname));
+    $fullsep = explode(" ", $fullname);
+
+    switch(count($fullsep)):
+
+        // Four Part Name
+        case 4:
+            $name_queries[] = sprintf('"%s %s" %s %s',$fullsep[0],$fullsep[1],$fullsep[2],$fullsep[3]);
+            $name_queries[] = sprintf('"%s" %s %s %s',$fullsep[0],$fullsep[1],$fullsep[2],$fullsep[3]);
+            $name_queries[] = sprintf('%s "%s %s %s"',$fullsep[0],$fullsep[1],$fullsep[2],$fullsep[3]);
+            break;
+
+        // Three Part Name
+        case 3:
+            $name_queries[] = sprintf('"%s %s" %s',$fullsep[0],$fullsep[1],$fullsep[2]);
+            $name_queries[] = sprintf('"%s" %s %s',$fullsep[0],$fullsep[1],$fullsep[2]);
+            $name_queries[] = sprintf('%s "%s %s"',$fullsep[0],$fullsep[1],$fullsep[2]);
+
+            break;
+
+        default:
+            $name_queries[] = sprintf('"%s" %s',$fullsep[0],$fullsep[1]);
+            break;
+
+
+    endswitch;
+
+
+
+    foreach ($name_queries as $name_query) {
+        $datar = mck_persons_suggest_query_name($name_query);
+
+        if (isset($datar->response->persons)) {
+            foreach ($datar->response->persons as $result => $person) {
+
+                if ($person->core->gocOfficeCode == $office) {
+                    return $person->core->fmno;
+                }
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+function mck_persons_suggest_find_email($fullname,$office){
+
+    $fmno = mck_persons_suggest_find_fmno($fullname,$office);
+
+    if($fmno == false){ return 'no_user'; }else{
+        $datar = mck_persons_suggest_fmno($fmno);
+        if(isset($datar->response->persons[0]->contact->emails[0]->emailAddress)) {
+            $emailAddress = $datar->response->persons[0]->contact->emails[0]->emailAddress;
+        } else {
+            $emailAddress = 'NA';
+        }
+        return $emailAddress;
+    }
+}
+
+function mck_persons_suggest_create_user($fullname,$office){
+
+    $fmno = mck_persons_suggest_find_fmno($fullname,$office);
+
+    if($fmno == false){ return false; }else{
+
+
+        $datar = mck_persons_suggest_fmno($fmno);
+
+        $new_user = array(
+            'name' => $datar->response->persons[0]->core->firstName . " " . $datar->response->persons[0]->core->lastName,
+            'pass' => user_password(),
+            'mail' => $datar->response->persons[0]->contact->emails[0]->emailAddress,
+            'init' => $email,
+            'field_fname' => array(LANGUAGE_NONE => array(array('value' => $datar->response->persons[0]->core->firstName))),
+            'field_lname' => array(LANGUAGE_NONE => array(array('value' => $datar->response->persons[0]->core->lastName))),
+            'field_user_location' => array(LANGUAGE_NONE => array(array('value' => $datar->response->persons[0]->core->geoLocationName))),
+            'field_worker_type' => array(LANGUAGE_NONE => array(array('value' => $datar->response->persons[0]->core->workerType))),
+            'status' => 1,
+            'access' => REQUEST_TIME,
+            'roles' => array(    DRUPAL_AUTHENTICATED_RID => 'authenticated user', 4 => 'Visitors'),
+        );
+
+        $account = user_save(null, $new_user);
+        userpic(null, null, $account->uid);
+
+        return $account;
+
+    }
+
+}
+
+
+function userpic($start=NULL, $end=NULL, $userid = NULL) {
+
+
+        $user = user_load($userid);
+        $name_query = $user->name;
+        $datar = mck_persons_suggest_query_name($name_query);
+        //ddl($datar);
+
+        $photourl = isset($datar->response->persons[0]->personal->photos) ? $datar->response->persons[0]->personal->photos : NULL;
+
+        if ($photourl && $userid != 0) {
+
+            //save the KNOW user image to the file system then to the user profile
+            $doc = system_retrieve_file($photourl, NULL, FALSE, FILE_EXISTS_REPLACE);
+            $file = drupal_add_existing_file($doc);
+            $file->status = 0;
+            $user->picture = $file;
+            user_save((object)array('uid' => $user->uid), (array)$user);
+            $count++;
+        }
+        watchdog('mck_persons_suggest', $user->name . " profile image updated", array('vars' => $count), WATCHDOG_INFO);
+
+
+}
+
+function drupal_add_existing_file($file_drupal_path, $uid = 1, $status = FILE_STATUS_PERMANENT) {
+    $files = file_load_multiple(array(), array('uri' => $file_drupal_path));
+    $file = reset($files);
+
+    if (!$file) {
+        $file = (object) array(
+            'filename' => basename($file_drupal_path),
+            'filepath' => $file_drupal_path,
+            'filemime' => file_get_mimetype($file_drupal_path),
+            'filesize' => filesize($file_drupal_path),
+            'uid' => $uid,
+            'status' => $status,
+            'timestamp' => time(),
+            'uri' => $file_drupal_path,
+        );
+        drupal_write_record('file_managed', $file);
+    }
+    return $file;
+}

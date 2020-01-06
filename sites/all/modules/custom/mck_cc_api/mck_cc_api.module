@@ -1,5 +1,14 @@
 <?php
 
+function _wrapper_debug($w) {
+  $values = array();
+  foreach ($w->getPropertyInfo() as $key => $val) {
+    $values[$key] = $w->$key->value();
+  }
+  return $values;
+}
+
+drupal_load('module', 'mck_persons_suggest');
 /**
  * Implements hook_menu().
  */
@@ -13,6 +22,14 @@ function mck_cc_api_menu(){
         'page arguments' => array(2),
         'access callback' => TRUE,
     );
+
+    $items['api/cc/%/%/%/approved'] = array(
+        'type' => MENU_CALLBACK,
+        'page callback' => 'mck_cc_api_approved',
+        'page arguments' => array(2,3,4),
+        'access callback' => TRUE,
+    );
+
 
     $items['api/cc/form'] = array(
         'type' => MENU_CALLBACK,
@@ -108,7 +125,7 @@ function mck_cc_api_callback($cc){
 
     //save entered data to profile by current logged in user
     if($response == "true"){
-
+        $value = array();
         global $user;
         $user = user_load($user->uid);
 
@@ -122,7 +139,45 @@ function mck_cc_api_callback($cc){
         $cwrapper->field_ed_name = $ed_name;
         $cwrapper->field_entered_time = date('m/d/Y h:m:s');
         $cwrapper->save();
+
+        $fcid = $cwrapper->getIdentifier();
+
+        $from = variable_get('cc_api_mail_from_email');
+        $to = get_email($ed_name);
+        $subject = 'GlobalM&S approval for '. $ed_name . ' under '.$cc;
+        $body = 'Hi '.$ed_name.', <br/><br/>For GlobalM&S site, '. $user->name .' has requested access under '. $cc . '. <br/><br/>Please click the link below to approve.<br/><br/> <a href="http://dev-drupaldev-lx07.amdc.mckinsey.com/media-services/globalms/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/approved">Approve</a>';
+
+        simple_mail_send($from, $to, $subject, $body);
+
+
     }
+
+}
+
+/**
+* Approval callback
+*/
+
+function mck_cc_api_approved($cc, $uid, $fcid){
+    if(isset($uid)) {
+        $user = user_load($uid);
+        $fc_wrapper = entity_metadata_wrapper('field_collection_item', $fcid);
+        $fc_wrapper->field_approval_status->set(TRUE);
+        $fc_wrapper->save();
+
+        $from = variable_get('cc_api_mail_from_email');
+        $user_to = $user->mail;
+        $user_subject = 'Your Charge Code has been Approved';
+        $url  = l('GlobalMS', 'http://dev-drupaldev-lx07.amdc.mckinsey.com/media-services/globalms', array('query' => array('approved'=>'true','fcid'=>$fcid, 'uid'=>$user->uid)));
+        $user_body = 'You may browse the site at ' . $url;
+        ddl($url);
+        // $user_body = 'You may browse the site at <a href="http://dev-drupaldev-lx07.amdc.mckinsey.com/media-services/globalms?approval="'.$fcid.'>GlobalMS</a>';
+        simple_mail_send($from, $user_to, $user_subject, $user_body);
+        drupal_goto('/', array('query' => array('approval'=>'true')));
+    }
+}
+
+function verify_fcid_approval($fcid){
 
 }
 
@@ -140,9 +195,6 @@ function api_cc_request($cc){
     } else {
         $token = variable_get("cc_api_bearer_token");
     }
-
-
-
 
     $url = 'http://api.mckinsey.com/v1/charge_codes/'.$cc.'/validate';
 
@@ -208,9 +260,11 @@ function mck_cc_api_form($form, &$form_state){
     $form['charge_code_ed_name'] = array(
         '#type' => 'textfield',
         '#attributes' => array(
-            'placeholder' => 'ED Name (Mandatory)',
+        'placeholder' => 'ED Name (Mandatory)',
         '#required' => TRUE,  
         ),
+        '#autocomplete_path' => 'mck_persons_suggest/autocomplete',
+
     );
 
     $form['charge_code'] = array(
@@ -246,4 +300,32 @@ function mck_cc_api_form($form, &$form_state){
 
 
     return $form;
+}
+/**
+* Get user's email by full name, ie. $ed_name
+*/
+function get_email($ed_name){
+    $email = NULL;
+    if (!empty($ed_name)) {
+        // ddl($value);
+        preg_match('/^(?:\s*|(.*) )?\[\s*uid\s*:\s*(\d+)\s*\]$/', $ed_name, $matches2);
+
+        if (empty($matches2)) {
+
+            $checkoffice = explode('[', $ed_name);
+            if (is_array($checkoffice)) {
+                $fullname = $checkoffice[0];
+
+                $officecode = str_replace("]", "", $checkoffice[1]);
+                // Swap Back
+                if ($officecode == "NYC") {
+                    $officecode = "FIR";
+                }
+            }
+            //Check If User Exists
+                $email = mck_persons_suggest_find_email($fullname, $officecode);
+        }
+    }
+
+ return $email;
 }

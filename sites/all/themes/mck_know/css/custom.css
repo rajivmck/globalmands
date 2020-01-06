@@ -7280,3 +7280,28 @@ div#edit-keyword-wrapper {
   position: relative;
   top: 5px;
 }
+#autocomplete { 
+	background-color: #f6f6f6;
+	position:absolute;
+	z-index: 1;
+	cursor:pointer;
+	min-width: 245px;
+	overflow: auto;
+	border: 1px solid #ddd;
+	margin-top: 4px;
+}
+#autocomplete ul { 
+	margin-top: 1em;
+	padding-right: 1.5em;
+}
+#autocomplete ul li { 
+	list-style:none;
+	margin-left: -1.5em;
+	padding-bottom: 0.35em;
+	margin-bottom: 10px;
+	padding-top: 0.35em;
+	border-bottom: 1px solid #ddd;
+}
+#autocomplete ul li:hover{
+	color:#1f40e6;
+}

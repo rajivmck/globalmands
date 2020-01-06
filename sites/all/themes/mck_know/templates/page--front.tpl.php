@@ -297,7 +297,7 @@
 
             </div>
             
-            <div class="copyright">© 1996-2019 McKinsey&nbsp;&amp;&nbsp;Company</div>
+            <div class="copyright">© 1996-<?php print date("Y"); ?> McKinsey&nbsp;&amp;&nbsp;Company</div>
 
         </div>
 

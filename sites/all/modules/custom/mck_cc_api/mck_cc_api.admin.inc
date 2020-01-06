@@ -86,5 +86,18 @@ function cc_api_admin_form($form, &$form_state) {
         '#default_value' => variable_get('cc_api_path', '/media-services/globalms'),
     );
 
+    $form['mail'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Email Settings',
+        '#collapsible' => TRUE,
+    );
+    
+    $form['mail']['cc_api_mail_from_email'] = array(
+        '#type' => 'textfield',
+        '#title' => 'From Email Address',
+        '#description' => 'Please enter who the email is being sent as. Ex. admin@mckinsey.com',
+        '#default_value' => variable_get('cc_api_mail_from_email'),
+    );
+
     return system_settings_form($form);
 }

@@ -1,0 +1,3 @@
+name = Mck Persons API
+description = Integrate MCK Persons API to Drupal
+core = 7.x
