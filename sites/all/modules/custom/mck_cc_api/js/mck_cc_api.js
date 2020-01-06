@@ -121,7 +121,7 @@ function check_approved(){
                         }
                     });
                 $('#popup-izimodal-success').iziModal('open', this);
-                $()
+                $("body > *").removeClass("blur-all");
             } //end if toggle
 
         } //end attach
