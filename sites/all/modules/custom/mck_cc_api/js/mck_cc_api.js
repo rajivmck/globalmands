@@ -10,6 +10,7 @@ function getUrlVars() {
     return vars;
 }
 
+
 function check_approved(){
     $approved = getUrlVars()['approval'];
     if($approved == "true"){
@@ -23,8 +24,24 @@ function check_approved(){
 (function($) {
     Drupal.behaviors.mck_cc_api = {
         attach: function (context, settings) {
+            //get the nid attahed to the body class
+            //if the savedNID is in the body tag, we can disable the popup all together.
+            var savedNID = settings.mck_cc_api.savedNID;
+            $checkNID = "";
+
+            $pageNID = $("[class~='page-node-']").attr('class');
+            if($pageNID)
+                $checkNID = $pageNID.indexOf(savedNID);
+
+            if($checkNID > -1) {
+                return false;
+            }
+
+            console.log($checkNID);
+
             var toggle = settings.mck_cc_api.toggle;
             $approved = check_approved();
+
             if(toggle && !$approved) {
                 if(sessionStorage.getItem('cc_popup_lastOpened') == null ) {
                     var title = settings.mck_cc_api.title;

@@ -86,6 +86,14 @@ function cc_api_admin_form($form, &$form_state) {
         '#default_value' => variable_get('cc_api_path', '/media-services/globalms'),
     );
 
+    $form['cc_api']['cc_api_access_denied_node'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Access Denied Node',
+        '#required' => TRUE,
+        '#description' => 'Enter the NID of the node to redirect users to when they have not been approved.',
+        '#default_value' => variable_get('cc_api_access_denied_node'),
+    );
+
     $form['mail'] = array(
         '#type' => 'fieldset',
         '#title' => 'Email Settings',

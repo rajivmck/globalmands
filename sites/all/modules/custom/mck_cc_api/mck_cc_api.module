@@ -228,11 +228,12 @@ function mck_cc_api_page_alter(&$page){
         $modalTitle = variable_get("cc_api_popup_title");
         $modalSubtitle = variable_get("cc_api_popup_subtitle");
         $siteFolder = variable_get("cc_api_path");
+        $savedNID = variable_get("cc_api_access_denied_node");
 
 
         drupal_add_js(drupal_get_path("module", "mck_cc_api") . "/js/iziModal/js/iziModal.js");
         drupal_add_css(drupal_get_path("module", "mck_cc_api") . "/js/iziModal/css/iziModal.css");
-        drupal_add_js(array('mck_cc_api' => array('title' => $modalTitle, 'subtitle' => $modalSubtitle, 'toggle' => $modalToggle, 'sitefolder' => $siteFolder)), array('type' => 'setting'));
+        drupal_add_js(array('mck_cc_api' => array('title' => $modalTitle, 'subtitle' => $modalSubtitle, 'toggle' => $modalToggle, 'sitefolder' => $siteFolder, 'savedNID' => $savedNID)), array('type' => 'setting'));
 
 
         drupal_add_js(drupal_get_path("module", "mck_cc_api") . "/js/mck_cc_api.js");
@@ -329,4 +330,48 @@ function get_email($ed_name){
     }
 
  return $email;
+}
+
+/**
+* Implements hook_user_login().
+*/
+
+function mck_cc_api_user_login(&$edit, $account){
+    $lastCCEntered = end($account->field_ccfc['und'])['value'];
+
+    if(isset($lastCCEntered)) {
+        $fc = field_collection_item_load($lastCCEntered);
+        $approvalStatus = $fc->field_approval_status['und'][0]['value'];
+
+        if($approvalStatus == "0"){
+            ddl("im in here now");
+            // $edit['redirect'] = 'http://globalmands.dd:8080/node/2803';
+            $_GET['destination'] = "node/2803";
+            // header("Location: /node/2803");
+        }
+    }
+}
+
+function mck_cc_api_form_user_login_alter(&$form, &$form_state){
+    // $form['#redirect'] = 'node/2803';
+}
+
+function mck_cc_api_preprocess_page(&$variables){
+    global $user;
+    $uid = $user->uid;
+    $account = user_load($uid);
+
+    $lastCCEntered = end($account->field_ccfc['und'])['value'];
+
+    if(isset($lastCCEntered)) {
+        $fc = field_collection_item_load($lastCCEntered);
+        $approvalStatus = $fc->field_approval_status['und'][0]['value'];
+        $currentPath = current_path();
+        $savedNID = variable_get("cc_api_access_denied_node");
+        $redirectURL = "node/".$savedNID;
+
+        if($approvalStatus == "0" && $currentPath !== $redirectURL && $uid !== "1"){
+            drupal_goto($redirectURL);
+        }
+    }
 }

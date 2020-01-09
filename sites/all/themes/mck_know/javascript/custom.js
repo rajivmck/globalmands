@@ -2,6 +2,11 @@
   Drupal.behaviors.globalmands = {
     attach: function (context, settings) {
 
+      
+      $(".nav-item a").on("click", function(){
+        $('.html').addClass('animated bounceOutLeft');  
+      });
+
       $('.open-popup-link').magnificPopup({
         type:'inline',
         midClick: true 
