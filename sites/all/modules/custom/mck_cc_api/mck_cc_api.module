@@ -171,7 +171,6 @@ function mck_cc_api_approved($cc, $uid, $fcid){
         $user_subject = 'Your Charge Code has been Approved';
         $url  = l('GlobalMS', $base_url, array('query' => array('approved'=>'true','fcid'=>$fcid, 'uid'=>$user->uid)));
         $user_body = 'You may browse the site at ' . $url;
-        ddl($url);
         // $user_body = 'You may browse the site at <a href="http://dev-drupaldev-lx07.amdc.mckinsey.com/media-services/globalms?approval="'.$fcid.'>GlobalMS</a>';
         simple_mail_send($from, $user_to, $user_subject, $user_body);
         drupal_goto('/', array('query' => array('approval'=>'true')));
@@ -342,19 +341,17 @@ function mck_cc_api_user_login(&$edit, $account){
     if(isset($lastCCEntered)) {
         $fc = field_collection_item_load($lastCCEntered);
         $approvalStatus = $fc->field_approval_status['und'][0]['value'];
+        $enteredCC = $fc->field_entered_charge_codes['und'][0]['value'];
 
-        if($approvalStatus == "0"){
-            ddl("im in here now");
-            // $edit['redirect'] = 'http://globalmands.dd:8080/node/2803';
-            $_GET['destination'] = "node/2803";
-            // header("Location: /node/2803");
+
+        if($approvalStatus == "0" && isset($enteredCC)){
+            $savedNID = variable_get("cc_api_access_denied_node");
+            $redirectURL = "node/".$savedNID;
+            $_GET['destination'] = $redirectURL;
         }
     }
 }
 
-function mck_cc_api_form_user_login_alter(&$form, &$form_state){
-    // $form['#redirect'] = 'node/2803';
-}
 
 function mck_cc_api_preprocess_page(&$variables){
     global $user;
@@ -369,9 +366,12 @@ function mck_cc_api_preprocess_page(&$variables){
         $currentPath = current_path();
         $savedNID = variable_get("cc_api_access_denied_node");
         $redirectURL = "node/".$savedNID;
+        $enteredCC = $fc->field_entered_charge_codes['und'][0]['value'];
 
-        if($approvalStatus == "0" && $currentPath !== $redirectURL && $uid !== "1"){
+        if($approvalStatus == "0" && $currentPath !== $redirectURL && isset($enteredCC) && $uid !== "1"){
             drupal_goto($redirectURL);
         }
     }
 }
+
+// function mck_cc_api_get_last_fc

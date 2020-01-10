@@ -28,16 +28,18 @@ function check_approved(){
             //if the savedNID is in the body tag, we can disable the popup all together.
             var savedNID = settings.mck_cc_api.savedNID;
             $checkNID = "";
-
+            console.log(savedNID);
             $pageNID = $("[class~='page-node-']").attr('class');
-            if($pageNID)
-                $checkNID = $pageNID.indexOf(savedNID);
+            console.log($pageNID);
+            // if($pageNID)
+            //     $checkNID = $pageNID.indexOf(savedNID);
 
-            if($checkNID > -1) {
-                return false;
-            }
+            // if($checkNID > -1) {
+            //     console.log("not approved");
+            //     // return false;
+            // }
 
-            console.log($checkNID);
+            // console.log($checkNID);
 
             var toggle = settings.mck_cc_api.toggle;
             $approved = check_approved();
@@ -93,6 +95,7 @@ function check_approved(){
                                     $('.result').html("<div class='alert alert-success'>Valid Charge Code</div>");
                                     setTimeout(function () {
                                         $('#popup-izimodal').iziModal('close');
+                                        window.location.href = "node/" + savedNID;
                                     }, 1500);
                                 } else {
                                     $('.result').html("<div class='alert alert-danger'>Charge Code not valid.</div>");
