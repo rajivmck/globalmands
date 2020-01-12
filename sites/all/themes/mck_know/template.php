@@ -205,3 +205,17 @@ function file_create_url_on_globalmands($uri) {
   
   return $base_path . 'sites/default/files/' . $file_name[1];
 }
+
+function sso_base_url() {
+
+  if(function_exists('sso_basepath_sso_or_not') && sso_basepath_sso_or_not() === TRUE) {
+      $var_base = variable_get('sso_config_base_path');
+      $var_domain = variable_get('sso_config_domain');
+      $sso_base_url = $var_domain . substr($var_base, 0, -1);
+      $base_path = $sso_base_url . '/';
+  } else {
+      $sso_base_url = $options['base_url'];
+      $base_path = base_path();
+  }
+  return $base_path;
+}

@@ -146,7 +146,7 @@ function mck_cc_api_callback($cc){
         $from = variable_get('cc_api_mail_from_email');
         $to = get_email($ed_name);
         $subject = 'GlobalM&S approval for '. $ed_name . ' under '.$cc;
-        $body = 'Hi '.$ed_name.', <br/><br/>For GlobalM&S site, '. $user->name .' has requested access under '. $cc . '. <br/><br/>Please click the link below to approve.<br/><br/> <a href="'.$base_url.'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/approved">Approve</a>';
+        $body = 'Hi '.$ed_name.', <br/><br/>For GlobalM&S site, '. $user->name .' has requested access under '. $cc . '. <br/><br/>Please click the link below to approve.<br/><br/> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/approved">Approve</a>';
 
         simple_mail_send($from, $to, $subject, $body);
 
@@ -169,7 +169,7 @@ function mck_cc_api_approved($cc, $uid, $fcid){
         $from = variable_get('cc_api_mail_from_email');
         $user_to = $user->mail;
         $user_subject = 'Your Charge Code has been Approved';
-        $url  = l('GlobalMS', $base_url, array('query' => array('approved'=>'true','fcid'=>$fcid, 'uid'=>$user->uid)));
+        $url  = l('GlobalMS', sso_base_url(), array('query' => array('approved'=>'true','fcid'=>$fcid, 'uid'=>$user->uid)));
         $user_body = 'You may browse the site at ' . $url;
         // $user_body = 'You may browse the site at <a href="http://dev-drupaldev-lx07.amdc.mckinsey.com/media-services/globalms?approval="'.$fcid.'>GlobalMS</a>';
         simple_mail_send($from, $user_to, $user_subject, $user_body);
