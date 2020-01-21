@@ -223,16 +223,26 @@ function mck_cc_api_page_alter(&$page){
     $adminPopup = variable_get('cc_api_enable_popup_admin');
     global $user;
 
-    function run($modalToggle, &$page){
+
+    function run($modalToggle, &$page, $user){
+
         $modalTitle = variable_get("cc_api_popup_title");
         $modalSubtitle = variable_get("cc_api_popup_subtitle");
         $siteFolder = variable_get("cc_api_path");
         $savedNID = variable_get("cc_api_access_denied_node");
+        $u = user_load($user->uid);
 
+        $lastCCfc = end($u->field_ccfc['und'])['value'];
+
+        if(isset($lastCCfc)) {
+            $fc = field_collection_item_load($lastCCfc);
+            $approvalStatus = !empty($fc->field_entered_charge_codes['und'][0]['value']) ? "Pending" :  $fc->field_approval_status['und'][0]['value'];
+
+        }
 
         drupal_add_js(drupal_get_path("module", "mck_cc_api") . "/js/iziModal/js/iziModal.js");
         drupal_add_css(drupal_get_path("module", "mck_cc_api") . "/js/iziModal/css/iziModal.css");
-        drupal_add_js(array('mck_cc_api' => array('title' => $modalTitle, 'subtitle' => $modalSubtitle, 'toggle' => $modalToggle, 'sitefolder' => $siteFolder, 'savedNID' => $savedNID)), array('type' => 'setting'));
+        drupal_add_js(array('mck_cc_api' => array('title' => $modalTitle, 'subtitle' => $modalSubtitle, 'toggle' => $modalToggle, 'sitefolder' => $siteFolder, 'savedNID' => $savedNID, 'userApprovalStatus' => $approvalStatus)), array('type' => 'setting'));
 
 
         drupal_add_js(drupal_get_path("module", "mck_cc_api") . "/js/mck_cc_api.js");
@@ -242,10 +252,10 @@ function mck_cc_api_page_alter(&$page){
     if($modalToggle && $isAdminpage === FALSE) {
         if($user->uid == "1"){
             if($adminPopup == "1"){
-                run($modalToggle, $page);
+                run($modalToggle, $page, $user);
             }
         } else {
-            run($modalToggle, $page);
+            run($modalToggle, $page, $user);
         }
     }
 }

@@ -28,9 +28,9 @@ function check_approved(){
             //if the savedNID is in the body tag, we can disable the popup all together.
             var savedNID = settings.mck_cc_api.savedNID;
             $checkNID = "";
-            console.log(savedNID);
+
             $pageNID = $("[class~='page-node-']").attr('class');
-            console.log($pageNID);
+
             // if($pageNID)
             //     $checkNID = $pageNID.indexOf(savedNID);
 
@@ -43,8 +43,9 @@ function check_approved(){
 
             var toggle = settings.mck_cc_api.toggle;
             $approved = check_approved();
+            $userApproval = settings.mck_cc_api.userApprovalStatus;
 
-            if(toggle && !$approved) {
+            if(toggle && $userApproval == false) {
                 if(sessionStorage.getItem('cc_popup_lastOpened') == null ) {
                     var title = settings.mck_cc_api.title;
                     var subtitle = settings.mck_cc_api.subtitle;
@@ -117,7 +118,11 @@ function check_approved(){
                         $('#popup-izimodal').iziModal('open', this);
                     }
                 }//end if sessionStorage.getItem
-            } else {
+            } 
+
+            console.log(getUrlVars()['approval']);
+
+             if(getUrlVars()['approval'] == "true") {
                 $("#popup-izimodal-success").iziModal({
                         title: title, //Modal title
                         subtitle: subtitle, //Modal subtitle
