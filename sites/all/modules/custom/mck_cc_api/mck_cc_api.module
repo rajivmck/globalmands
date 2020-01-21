@@ -233,7 +233,7 @@ function mck_cc_api_page_alter(&$page){
         $u = user_load($user->uid);
 
         $lastCCfc = end($u->field_ccfc['und'])['value'];
-
+        $approvalStatus = FALSE;
         if(isset($lastCCfc)) {
             $fc = field_collection_item_load($lastCCfc);
             $approvalStatus = !empty($fc->field_entered_charge_codes['und'][0]['value']) ? "Pending" :  $fc->field_approval_status['und'][0]['value'];
