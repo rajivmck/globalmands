@@ -32,20 +32,9 @@ function check_approved(){
 
             $pageNID = $("[class~='page-node-']").attr('class');
 
-            // if($pageNID)
-            //     $checkNID = $pageNID.indexOf(savedNID);
-
-            // if($checkNID > -1) {
-            //     console.log("not approved");
-            //     // return false;
-            // }
-
-            // console.log($checkNID);
-
             var toggle = settings.mck_cc_api.toggle;
             $approved = check_approved();
             $userApproval = settings.mck_cc_api.userApprovalStatus;
-            console.log($userApproval);
 
             if(toggle && $userApproval == false) {
                 if(sessionStorage.getItem('cc_popup_lastOpened') == null ) {
@@ -98,7 +87,6 @@ function check_approved(){
                                     $('.result').html("<div class='alert alert-success'>Valid Charge Code</div>");
                                     setTimeout(function () {
                                         $('#popup-izimodal').iziModal('close');
-                                        window.location.href = "node/" + savedNID;
                                     }, 1500);
                                 } else {
                                     $('.result').html("<div class='alert alert-danger'>Charge Code not valid.</div>");
@@ -148,6 +136,33 @@ function check_approved(){
                         }
                     });
                 $('#popup-izimodal-success').iziModal('open', this);
+                $("body > *").removeClass("blur-all");
+            } //end if toggle
+
+            if(getUrlVars()['approval'] == "disapproved") {
+                $("#popup-izimodal-disapproved").iziModal({
+                        title: title, //Modal title
+                        subtitle: subtitle, //Modal subtitle
+                        fullscreen: false, //Icon to expand modal to fullscreen
+                        headerColor: 'rgb(51, 76, 123)', //Color of modal header. Hexa colors allowed.
+                        overlayColor: 'rgba(0, 0, 0, 0.4)', //Color of overlay behind the modal
+                        iconColor: '',
+                        iconClass: 'icon-chat',
+                        closeOnEscape: true,
+                        show: true,
+                        focusInput: true,
+                        bodyOverflow: true,
+                        overlayClose: false,
+                        closeButton: true,
+                        transitionOut: 'fadeOutDown',
+                        transitionIn: 'fadeInUp',
+                        timeout: '4000',
+                        onOpening: function() {
+                            $("body > *").not("#popup-izimodal-disapprved").addClass("blur-all");
+                            $("#popup-izimodal").addClass("unblur");
+                        }
+                    });
+                $('#popup-izimodal-disapproved').iziModal('open', this);
                 $("body > *").removeClass("blur-all");
             } //end if toggle
 

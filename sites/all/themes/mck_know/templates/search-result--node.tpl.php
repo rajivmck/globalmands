@@ -66,35 +66,85 @@
 
 
 // kpr($result);
+$NID = isset($result['node']->nid) ? $result['node']->nid:NULL;
+$serviceLine = isset($result['node']->field_service_line) ? $result['node']->field_service_line['und'] : NULL;
 
-$type =isset($result['type']) ? $result['type']: NULL;
+$growth = isset($result['node']->field_growth_related['und'][0]['value']) ? $result['node']->field_growth_related['und'][0]['value']:NULL;
+$compass = isset($result['node']->field_compass['und'][0]['tid']) ? $result['node']->field_compass['und'][0]['tid']:NULL;
+$compassTerm = taxonomy_term_load($compass);
+$compassName = $compassTerm->name;
+$download = isset($result['node']->field_download['und'][0]['uri']) ? $result['node']->field_download['und'][0]['uri']:'';
+$downloadURL = file_create_url($download);
+$link =isset($result['link']) ? $result['link']: NULL;
+$type =isset($result['node']->field_type['und'][0]['tid']) ? $result['node']->field_type['und'][0]['tid']: NULL;
+$typeTerm = taxonomy_term_load($type);
+$typeName = $typeTerm->name;
+$typeTID = $typeTerm->tid;
 $fileupload =isset($result['node']->field_file_upload['und'][0]['uri']) ? $result['node']->field_file_upload['und'][0]['uri']: NULL;
 
 // $fileupload = isset(['result']['node']->field_file_upload['und'][0]['uri']) ? ['result']['node']->field_file_upload['und'][0]['uri']: NULL;
  $fileuploadURL = file_create_url($fileupload);
 ?>
-<li class="col-lg-4 col-md-6">
-  <div class="<?php print $classes; ?>">
-  <?php print render($title_prefix); ?>
-  <h3 class="title"<?php print $title_attributes; ?>>
-       <?php if ($type == "LOP Toolkit"): ?>
+<li class="col-lg-4 col-md-6 col-sm-12">
+  <div class="">
+   
+    <div class="white-box">
+      <div class="field-content bottom-box">
+        <div class="valign-wrapper">
+          <div class="file-icon"><img src="../../sites/all/themes/mck_know/images/file-icon.png"></div>
+          <div class="row">
+            <div class="col-12">
+              <div class="bottom-tags">
+               
+                <?php if($serviceLine):
+                    $linkList = [];
+                    foreach($serviceLine as $serviceLines) {
+                      $serviceLineTerm = isset($serviceLines['entity']->name) ? $serviceLines['entity']->name : '';
+                      $serviceLineTID = isset($serviceLines['entity']->tid) ? $serviceLines['entity']->tid : '';
+                      $linklist[] = '<a href="../../taxonomy/term/'.$serviceLineTID.'">' . $serviceLineTerm . '</a>';
+                    }
+                  ?>  
+                  <?php echo implode(', ', $linklist); ?> 
+                <?php endif;?>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field-content doc-title">
+       
 
-     <a href="<?php print $fileuploadURL; ?>"><?php print $title; ?></a>
-
-    <?php elseif ($type == "Case Studies"): ?>
-      <a href="<?php print $url; ?>"><?php print $title; ?></a>
-   <?php endif; ?>
-    
-  </h3>
-
-
- 
-  <?php print render($title_suffix); ?>
-  <div class="search-snippet-info">
-    <?php if ($snippet): ?>
-      <p class="search-snippet"<?php print $content_attributes; ?>><?php print $snippet; ?></p>
-    <?php endif; ?>
-    
-  </div>
-</div>
+        <a href="<?php print $link;?>" class="video-popup"><?php print $title;?></a></div>
+      <div class="bottom-links">
+        <ul>
+          <li></li>
+          <li>
+            <div class="growth-related"><img src="../../sites/all/themes/mck_know/images/growth-dark-bg.png"></div>
+          </li>
+          <?php if($compassName == "Pricing Compass"):?>
+          <li>
+            <div class="compass"><img src="../../sites/all/themes/mck_know/images/pricing-1.png"></div>
+          </li>
+          <?php elseif($compassName == "Sales Compass"):?>
+            <li>
+                <div class="compass"><img src="../../sites/all/themes/mck_know/images/sales-1.png"></div>
+            </li>
+        <?php endif;?>
+        </ul>
+      </div>
+      <div class="field-content type-bookmark-wrapper">
+        <div class="field-content type-link">
+          <a href="../../taxonomy/term/<?php print $typeTID;?>" typeof="skos:Concept" property="rdfs:label skos:prefLabel" datatype=""><?php print $typeName;?></a>
+        </div>
+        <div class="field-content bookmark">
+          <div class="gray-bk">
+            <div class="valign-wrapper">
+              <div><a href="<?php print $downloadURL;?>" class="mck-icon__download" title="Download"> </a></div>
+               <div><div><span href="#" class="star-icon" data-nid="<?php print $NID;?>" title="Add to Favorites"></span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </li>

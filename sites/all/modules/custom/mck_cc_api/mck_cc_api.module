@@ -23,7 +23,7 @@ function mck_cc_api_menu(){
         'access callback' => TRUE,
     );
 
-    $items['api/cc/%/%/%/approved'] = array(
+    $items['api/cc/%/%/%/%'] = array(
         'type' => MENU_CALLBACK,
         'page callback' => 'mck_cc_api_approved',
         'page arguments' => array(2,3,4),
@@ -122,14 +122,13 @@ function mck_cc_api_callback($cc){
     $ed_name = isset($_POST['ed_name']) ? $_POST['ed_name'] : "";
     $response = api_cc_request($cc);
     print $response;
-
+    ddl($response);
     //save entered data to profile by current logged in user
     if($response == "true"){
         $value = array();
         global $user;
         global $base_url;
         $user = user_load($user->uid);
-
         // Create the collection entity and set it's "host".
         $collection = entity_create('field_collection_item', array('field_name' => 'field_ccfc'));
         $collection->setHostEntity('user', $user);
@@ -145,9 +144,14 @@ function mck_cc_api_callback($cc){
 
         $from = variable_get('cc_api_mail_from_email');
         $to = get_email($ed_name);
+        if(!function_exists(sso_base_url)){
+            function sso_base_url(){
+                return $base_url;
+            }
+        }
         $subject = 'GlobalM&S approval for '. $ed_name . ' under '.$cc;
-        $body = 'Hi '.$ed_name.', <br/><br/>For GlobalM&S site, '. $user->name .' has requested access under '. $cc . '. <br/><br/>Please click the link below to approve.<br/><br/> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/approved">Approve</a>';
-
+        $body = 'Hi '.$ed_name.', <br/><br/>For GlobalM&S site, '. $user->name .' has requested access under '. $cc . '. <br/><br/>Please click the link below to disapprove.<br/><br/> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/disapproved">Disapprove</a> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/approved">Approve</a>';
+        
         simple_mail_send($from, $to, $subject, $body);
 
 
@@ -159,21 +163,23 @@ function mck_cc_api_callback($cc){
 * Approval callback
 */
 
-function mck_cc_api_approved($cc, $uid, $fcid){
+function mck_cc_api_approved($cc, $uid, $fcid, $approval){
     if(isset($uid)) {
-        $user = user_load($uid);
-        $fc_wrapper = entity_metadata_wrapper('field_collection_item', $fcid);
-        $fc_wrapper->field_approval_status->set(TRUE);
-        $fc_wrapper->save();
+        if($approval == "disapproved") {
+            $user = user_load($uid);
+            $fc_wrapper = entity_metadata_wrapper('field_collection_item', $fcid);
+            $fc_wrapper->field_approval_status->set(TRUE);
+            $fc_wrapper->save();
 
-        $from = variable_get('cc_api_mail_from_email');
-        $user_to = $user->mail;
-        $user_subject = 'Your Charge Code has been Approved';
-        $url  = l('GlobalMS', sso_base_url(), array('query' => array('approved'=>'true','fcid'=>$fcid, 'uid'=>$user->uid)));
-        $user_body = 'You may browse the site at ' . $url;
-        // $user_body = 'You may browse the site at <a href="http://dev-drupaldev-lx07.amdc.mckinsey.com/media-services/globalms?approval="'.$fcid.'>GlobalMS</a>';
-        simple_mail_send($from, $user_to, $user_subject, $user_body);
-        drupal_goto('/', array('query' => array('approval'=>'true')));
+            $from = variable_get('cc_api_mail_from_email');
+            $user_to = $user->mail;
+            $user_subject = 'Your Charge Code has been disapproved';
+            $url  = l('GlobalMS', sso_base_url(), array('query' => array('approved'=>'true','fcid'=>$fcid, 'uid'=>$user->uid)));
+            simple_mail_send($from, $user_to, $user_subject, $user_body);
+            drupal_goto('/', array('query' => array('approval'=>'true')));
+        } else {
+            drupal_goto('/', array('query' => array('approval'=>'disapproved')));
+        }
     }
 }
 
@@ -378,8 +384,8 @@ function mck_cc_api_preprocess_page(&$variables){
         $redirectURL = "node/".$savedNID;
         $enteredCC = $fc->field_entered_charge_codes['und'][0]['value'];
 
-        if($approvalStatus == "0" && $currentPath !== $redirectURL && isset($enteredCC) && $uid !== "1"){
-            drupal_goto($redirectURL);
+        if($approvalStatus == "1" && $currentPath !== $redirectURL && isset($enteredCC) && $uid !== "1"){
+            drupal_goto($redirectURL);	
         }
     }
 }

@@ -17,3 +17,9 @@
 		User has been approved with charge code.
 	</div>
 </div>
+
+<div id="popup-izimodal-disapproved" style="display:none;">
+    <div class='popup-body'>
+        User has been disapproved with charge code.
+    </div>
+</div>

@@ -122,7 +122,7 @@
 </header>
 
 
-<div class="wrapper">
+<div class="wrapper case-wrapper" style="padding:0">
   <section class="up">
     <?php print render($page['content']) ?>
   </section>
