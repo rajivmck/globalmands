@@ -1,11 +1,10 @@
 (function ($) {
   Drupal.behaviors.globalmands = {
     attach: function (context, settings) {
-
-      
       $(".nav-item a").on("click", function(){
         $('.html').addClass('animated bounceOutLeft');  
       });
+
 
       $('.open-popup-link').magnificPopup({
         type:'inline',
@@ -317,7 +316,26 @@
         preloader: false,
         fixedContentPos: false
       });
-      
+           
+      // if($("body.logged-in" ).length) {
+      //   $(window).on('load', function() {
+      //     var now, lastDatePopupShowed;
+      //     now = new Date();
+      //     if (localStorage.getItem('lastDatePopupShowed') !== null) {
+      //       lastDatePopupShowed = new Date(parseInt(localStorage.getItem('lastDatePopupShowed')));
+      //     }
+      //     if (((now - lastDatePopupShowed) >= (15 * 86400000)) || !lastDatePopupShowed) {
+      //       $.magnificPopup.open({
+      //         items: {
+      //           src: '#webform-popup' 
+      //         },
+      //         type: 'inline',
+      //         closeOnBgClick: false
+      //       }, 0);
+      //       localStorage.setItem('lastDatePopupShowed', now);
+      //     }
+      //   });
+      // }    
       
       /*$('#quicktabs-front_page .quicktabs-tabs a').on('click', function(){
         $('.top-filters-wrapper form').hide();
@@ -338,22 +356,60 @@
     }
   };
 })(jQuery);
+
+function daysDiff(now, lastDatePopupShowed) {
+  var millisecondsPerDay = 1000 * 60 * 60 * 24;
+  var millisBetween = now.getTime() - lastDatePopupShowed.getTime();
+  var days = Math.floor(millisBetween / millisecondsPerDay);
+
+  return days;
+}
+
 if ($("body").hasClass("case-studies")) {
     $(window).on('load', function() {
-      var now, lastDatePopupShowed;
+      var now, lastDatePopupShowed, days;
       now = new Date();
+      
 
       if (localStorage.getItem('lastDatePopupShowed') !== null) {
-        lastDatePopupShowed = new Date(parseInt(localStorage.getItem('lastDatePopupShowed')));
+        lastDatePopupShowed = new Date(localStorage.getItem('lastDatePopupShowed'));
+        days = daysDiff(now, lastDatePopupShowed);
       }
 
-      if (((now - lastDatePopupShowed) >= (15 * 86400000)) || !lastDatePopupShowed) {
+
+      if (days >= 14 || !lastDatePopupShowed) {
         $.magnificPopup.open({
           items: { src: 'http://globalmands.intranet.mckinsey.com/sites/default/files/global_1.mp4' },
           type: 'iframe'
         }, 0);
-
+       
         localStorage.setItem('lastDatePopupShowed', now);
       }
     });
+}
+else if($("body.logged-in.page-node-2811" ).length) {
+  $(window).on('load', function() {
+    var now, lastDatePopupShowed, days;
+    now = new Date();
+
+    if (localStorage.getItem('lastDatePopupShowed') !== null) {
+      lastDatePopupShowed = new Date(localStorage.getItem('lastDatePopupShowed'));
+      days = daysDiff(now, lastDatePopupShowed);
+    }
+
+    if (days >= 2 || !lastDatePopupShowed) {
+      $.magnificPopup.open({
+        items: {
+          src: '#message-home-popup' 
+        },
+        type: 'inline',
+        closeOnBgClick: true
+      }, 0);
+      $('#close').click(function(){
+        $('.mfp-close').trigger('click');
+      });
+       
+      localStorage.setItem('lastDatePopupShowed', now);
+    }
+  });
 }

@@ -85,11 +85,11 @@
                   </div>
               </div>
               <div class="col-md-3 col-sm-6">
-                    <a href="https://home.intranet.mckinsey.com/practicespaces/ps/marketing-sales/Pricing-Compass.html" target="_blank"><div class="testimonial item"><div class="valign-wrapper"><div><img src="./sites/all/themes/mck_know/images/pricing-1.png"/></div><div>Pricing Compass</div></div>
+                    <a href="https://knowspaces.intranet.mckinsey.com/marketing-sales/pages/pricing-compass" target="_blank"><div class="testimonial item"><div class="valign-wrapper"><div><img src="./sites/all/themes/mck_know/images/pricing-1.png"/></div><div>Pricing Compass</div></div>
                   </div></a>
               </div>
                  <div class="col-md-3 col-sm-6">
-                       <a href="https://home.intranet.mckinsey.com/practicespaces/ps/marketing-sales/Sales-Channel-Compass.html" target="_blank"> <div class="growth item"><div class="valign-wrapper"><div><img src="./sites/all/themes/mck_know/images/sales-1.png"/></div><div>Sales Compass</div></div></div></a>
+                       <a href="https://knowspaces.intranet.mckinsey.com/marketing-sales/pages/sales-channel-compass" target="_blank"> <div class="growth item"><div class="valign-wrapper"><div><img src="./sites/all/themes/mck_know/images/sales-1.png"/></div><div>Sales Compass</div></div></div></a>
                   </div>
                 <div class="col-md-3 col-sm-6">
                 <a href="videos">  

@@ -1759,7 +1759,7 @@ span.file {
   table-layout: fixed;
   width: 100%;
 }
-header{
+.global-header{
   position: fixed!important;
 }
 
@@ -7324,4 +7324,307 @@ div#edit-keyword-wrapper {
 .compass img{
 	top: 2px;
     position: relative;
+}
+.custom-table table td{
+	width:33.333333%!important;
+	text-align: 	center;	
+	vertical-align: middle!important;
+	padding-bottom: 20px
+}
+.custom-table table tr td:first-child{
+	text-align: left!important
+}
+
+.custom-table table img{
+	max-width: 100px;
+	-webkit-filter: grayscale(1) invert(0);
+	filter: grayscale(1) invert(0);
+	-webkit-transition : -webkit-filter 500ms linear
+}	
+.table-category{
+	text-align: left!important
+}
+.custom-table table tr:not(.main-header):not(:last-child){
+	border-bottom: 1px solid #a7a7a7
+}
+.field-collection-container{
+	border-bottom: 	0
+}
+
+.img__wrap {
+  position: relative;
+  min-height: 120px;
+/*  cursor: pointer;*/
+  transition-duration: 0.6s;
+  transition-timing-function: ease-in-out;
+  transform-style: preserve-3d;
+}
+
+.img__description {
+
+  text-align:left;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: #fff;
+
+	  backface-visibility: hidden;
+  transform: rotateX(0deg);
+
+  transform: rotateY(180deg);
+}
+
+.img__wrap:hover .img__description {
+/*	visibility: visible;
+	opacity: 1;*/
+	background-color:#fff;
+	padding:20px;
+/*	-webkit-transform: translateY(20px);
+	transform: translateY(20px);*/
+	-webkit-box-shadow: 2px 2px 2px 1px rgba(0,0,0,0.1);
+	-moz-box-shadow: 2px 2px 2px 1px rgba(0,0,0,0.1);
+	box-shadow: 2px 2px 2px 1px rgba(0,0,0,0.1);
+	height:100%;
+	z-index:5;
+	position: 	relative;	
+  transform: rotateY(180deg);
+}
+.img__wrap:hover .black-logo{
+	opacity: 	0;
+	visibility: 	hidden;	
+	display: 	none
+}
+.black-logo{
+	cursor: 	pointer
+}
+.colorlogo{
+	margin-bottom: 	20px
+}
+.custom-table table:not([class^='scf']):not([class^='ui']) tbody tr:first-child{
+	border-top:0!important;
+}
+.custom-table th:first-child h6{
+	border-bottom: 0;
+	visibility: hidden
+}
+.custom-table table:not([class^='scf']):not([class^='ui']) tbody tr:first-child{
+	text-align: 	center;	
+	border-bottom: 2px solid #000;
+}
+.custom-table th .section-header,.field-collection-item-field-first-cell,.main-header h6 {
+	font-family: 	'McKinsey Theinhardt', 'Helvetica Neue', Calibri, Corbel, Helvetica, Roboto, Droid, sans-serif!important;
+	font-size: 1.2rem
+}
+.custom-table table{
+	border:0!important;
+}
+.page-client-cases .view-client-cases{
+	margin-top: 10rem
+}
+.view-client-cases .section-header{
+	border-top:0;
+}
+
+.card-wrapper {
+  display: inline-block;
+  perspective: 1000px;
+}
+.card-wrapper .card {
+	position: relative;
+	cursor: pointer;
+	transition-duration: 0.6s;
+	transition-timing-function: ease-in-out;
+	transform-style: preserve-3d;
+	background-color: transparent;
+	min-height: 100px;
+	border:0;
+	background-color:#fff;
+	border: 1px solid #c3c3c3;
+	min-height: 	150px;
+	border-radius: 0;
+}
+.client-cases .full-text-section .headline{
+	font-size:1.5rem
+}
+/*.client-cases .full-text-section header,.client-cases .full-text-section center{
+	text-align: left!important
+}*/
+.client-cases .full-text-section header, .client-cases .full-text-section .section-description{
+	max-width: 100%;
+}
+.client-cases .section-wrapper{
+	padding:0 0 10px 0;
+}
+/*.card-wrapper .card .front{
+	position: relative;
+}
+.card-wrapper .card .back{
+	position: absolute;
+}
+*/
+.card-wrapper .card .front{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;	
+    -webkit-backface-visibility: hidden;
+  -moz-backface-visibility:    hidden;
+  -ms-backface-visibility:     hidden;
+ /* transform: rotateX(0deg);*/
+  border:1px solid #c3c3c3;
+}
+.card-wrapper .card .back{
+
+}
+.card-wrapper .card .front {
+  z-index: 2;
+}
+.card-wrapper .card .back,
+.card-wrapper.flip-right .card .back {
+  transform: rotateY(180deg);
+}
+.card-wrapper:hover .card,
+.card-wrapper.flip-right:hover .card {
+  transform: rotateY(180deg);
+}
+.card-wrapper:hover .back{
+	position: relative;
+	min-width: 400px
+}
+
+.card-wrapper .open-popup-link:hover img{
+	filter: none;
+    -webkit-filter: initial;
+}
+.card .front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card .back {
+  background: #fff;
+  overflow-y:auto;
+  max-height: 450px;
+  text-align: left;
+  font-size:1rem;
+  padding:20px;
+}
+
+
+.client-cases table tr td:not(:first-child),
+.client-cases table tr th:not(:first-child){
+	width:50%!important;
+	display: block;
+	float: left;
+	padding:0 15px;
+}
+.client-cases table .main-header,.client-cases table th:first-child{
+	width:20%!important
+}
+
+.client-cases table:not([class^='scf']):not([class^='ui']) tbody tr td:nth-child(5){
+	margin-left: 22.333333%!important;
+}
+
+/*.page-node-2811 .view-client-cases{
+	margin-top: 100px;
+}*/
+
+div.img__description2 p, div.img__description2 a{
+font-size: .9rem;
+line-height: inherit
+}
+
+.page-node-2811 .card-wrapper{
+	display: block;
+	margin-bottom: 20px;
+}
+.card-popup{
+	max-width: 	500px;
+}
+
+/* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+.flip-card {
+  background-color: transparent;
+  width: 300px;
+  height: 200px;
+  border: 1px solid #f1f1f1;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+  z-index: 90
+}
+
+.flip-card-inner .img__description2{
+	padding:20px;
+}
+/* Position the front and back side */
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
+  background-color: #fff;
+  color: #000;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 200px
+}
+
+/* Style the back side */
+.flip-card-back {
+  background-color: #fff;
+  transform: rotateY(180deg);
+  max-height: 450px;
+  overflow-y:auto;
+  text-align:left;
+}
+.flip-card:hover{
+	z-index:20;
+	position:relative    
+}
+#user-login{
+	max-width: 1200px;
+	margin:3rem auto;
+}
+#user-login #edit-submit{
+	margin-top:20px;
+}
+#close {
+    font-family: 'McKinsey Theinhardt', 'Helvetica Neue', Calibri, Corbel, Helvetica, Roboto, Droid, sans-serif!important;
+    margin: auto 20px;
+    border: 1px solid #1F40E6;
+    padding: 5px 15px!important;
+    height: auto!important;
+    margin: 20px 0 0 0;
+    background-color: #1F40E6;
+    color: #ffffff !important;
+    font-size: 1rem;
+    font-weight: 400;
+}
+#message-home-popup{
+	text-align: center;	
 }
