@@ -150,7 +150,8 @@ function mck_cc_api_callback($cc){
             }
         }
         $subject = 'GlobalM&S approval for '. $ed_name . ' under '.$cc;
-        $body = 'Hi '.$ed_name.', <br/><br/>For GlobalM&S site, '. $user->name .' has requested access under '. $cc . '. <br/><br/>Please click the link below to disapprove.<br/><br/> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/disapproved">Disapprove</a> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/approved">Approve</a>';
+        //$body = 'Hi '.$ed_name.', <br/><br/>For GlobalM&S site, '. $user->name .' has requested access under '. $cc . '. <br/><br/>Please click the link below to disapprove.<br/><br/> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/disapproved">Disapprove</a> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/approved">Approve</a>';
+        $body = 'Hi '.$ed_name.', <br/><br/>For GlobalM&S site, '. $user->name .' has requested access under '. $cc . '. <br/><br/>Please click the link below to disapprove.<br/><br/> <a href="'.sso_base_url().'/api/cc/'. $cc . '/' . $user->uid . '/' . $fcid .'/disapproved">Disapprove</a>';
         
         simple_mail_send($from, $to, $subject, $body);
 
